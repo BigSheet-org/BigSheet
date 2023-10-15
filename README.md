@@ -20,15 +20,15 @@ Fonctionnalités
 - Mise à jour en temps réel de l’affichage: Les modifications apportées par d'autres utilisateurs sont instantanément reflétées dans l'affichage du document, garantissant une collaboration efficace.
 
 ## Prérequis
+```
 Node.js - Version X.X.X
-MongoDB - Version X.X.X
-Autres dépendances...
+```
 
 ## Installation
 Clonez ce référentiel.
 
 ```bash
-git clone https://github.com/votre-utilisateur/tableur-client-serveur.git
+git clone https://github.com/Maximelego/BigSheet.git
 ```
 
 Installez les dépendances.
@@ -45,3 +45,8 @@ npm run dev
 
 ## Contribution
 
+Il y a actuellement deux développeurs contribuant au projet : 
+
+| Nom :           | MARCELIN Maxime                                   | JOLY Clément                                     |
+| --------------- | ------------------------------------------------- | ------------------------------------------------ |
+| Profil GitHub : | [@Maximelego](https://github.com/Maximelego)      |  [@aildontknow](https://github.com/@aildontknow) |

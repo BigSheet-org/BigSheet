@@ -40,6 +40,8 @@ services:
     volumes:
       - .:/usr/src/app/
       - /usr/src/app/node_modules
+    environment:
+      - NODE_SERVER_PORT=${NODE_SERVER_PORT}
     ports:
       - "8000:8000"
     restart: always

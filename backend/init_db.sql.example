@@ -1,0 +1,12 @@
+-- Simulates a CREATE DATABASE IF NOT EXISTS.
+-- This command does not exists in postgres databases.
+SELECT 'CREATE DATABASE bigsheetdb'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'bigsheetdb');
+
+alter database bigsheetdb set timezone to 'Europe/Paris';
+
+GRANT ALL PRIVILEGES ON DATABASE bigsheetdb TO bigsheet_admin;
+ALTER USER bigsheet_admin WITH PASSWORD '';
+ALTER DATABASE bigsheetdb OWNER TO bigsheet_admin;
+
+

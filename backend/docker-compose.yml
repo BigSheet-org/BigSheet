@@ -9,11 +9,11 @@ services:
     command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis_data:/var/lib/redis/data
-
     environment:
       - REDIS_DB=${REDIS_DB}
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+
   postgres:
     image: postgres
     ports:
@@ -27,6 +27,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - TZ=Europe/Paris
       - PGTZ=Europe/Paris
+
   adminer:
     image: adminer
     restart: always
@@ -45,6 +46,7 @@ services:
     depends_on:
       - postgres
       - redis
+
 volumes:
   postgres_data:
   static:

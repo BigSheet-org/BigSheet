@@ -1,5 +1,5 @@
 # Starting docker image.
-FROM node:21-alpine
+FROM node:18.18.2
 
 # Create app directory
 WORKDIR /usr/src/app

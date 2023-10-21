@@ -53,6 +53,3 @@ volumes:
   postgres_data:
   static:
   redis_data:
-
-
-

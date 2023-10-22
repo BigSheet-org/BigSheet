@@ -45,8 +45,8 @@ npm run dev
 
 ## Contribution
 
-Il y a actuellement deux développeurs contribuant au projet : 
+Quatre développeurs contribuent au projet actuellement : 
 
-| Nom :           | MARCELIN Maxime                                   | JOLY Clément                                     |
-| --------------- | ------------------------------------------------- | ------------------------------------------------ |
-| Profil GitHub : | [@Maximelego](https://github.com/Maximelego)      |  [@aildontknow](https://github.com/@aildontknow) |
+| Nom :           | MARCELIN Maxime                                   | JOLY Clément                                     | QUEIGNEC Nicolas                                 | BORGONDO David                                     |
+| --------------- | ------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------ | ------------------------------------------------ |
+| Profil GitHub : | [@Maximelego](https://github.com/Maximelego)      | [@aildontknow](https://github.com/@aildontknow)  | [@Fulash](https://github.com/QUEIGNEC) |   [@DB-Sirius](https://github.com/DB-Sirius) | 

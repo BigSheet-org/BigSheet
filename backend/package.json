@@ -4,11 +4,12 @@
   "description": "NodeJS server for the BigSheet web app.",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node ."
+    "dev": "node .",
+    "config_win": ".\\init.ps1",
+    "config_unix": "./init.sh"
   },
   "keywords": [],
-  "author": "MARCELIN Maxime, JOLY Clément",
+  "author": "MARCELIN Maxime",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.3.1",

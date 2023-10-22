@@ -6,7 +6,7 @@ WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'bigsheetdb');
 alter database bigsheetdb set timezone to 'Europe/Paris';
 
 GRANT ALL PRIVILEGES ON DATABASE bigsheetdb TO bigsheet_admin;
-ALTER USER bigsheet_admin WITH PASSWORD '';
+ALTER USER bigsheet_admin WITH PASSWORD 'postgres_key_to_replace';
 ALTER DATABASE bigsheetdb OWNER TO bigsheet_admin;
 
 

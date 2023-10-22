@@ -1,5 +1,4 @@
-#!/bin/bash
-
+#!./bin/bash
 echo "[CONFIG] - Starting project's configuration... "
 
 # Copying files.

@@ -31,22 +31,56 @@ Clonez ce référentiel.
 git clone https://github.com/Maximelego/BigSheet.git
 ```
 
-Installez les dépendances.
+### Frontend
+
+Installez les dépendances :
 ```bash
 cd frontend
 npm install
 ```
 
-Lancez l'application.
+Lancez l'application :
 
 ```bash
 npm run dev
 ```
 
+### Backend
+
+Installez les dépendances :
+```bash
+cd frontend
+npm install
+```
+
+Créez les fichiers de configurations du projet :
+
+- Sous Windows : (Il faut avoir autorisé l'exécution de scripts powershell auparavant. Si ce n'est pas le cas, les instructions nécessaires pour cette action sont disponibles sur le lien suivant : https://www.windows8facile.fr/powershell-execution-de-scripts-est-desactivee-activer/)
+```bash
+npm run config_win
+```
+
+- Sous Unix (Linux ou Mac) :
+```bash
+npm run config_unix
+```
+
+Lancez les containers Docker : 
+
+- En cas de développement sur le serveur Node : 
+```bash
+docker-compose -f docker-compose_backdev.yml up -d
+```
+
+- En cas de développement sur l'application VueJS : 
+```bash
+docker-compose up -d
+```
+
 ## Contribution
 
-Il y a actuellement deux développeurs contribuant au projet : 
+Quatre développeurs contribuent au projet actuellement : 
 
-| Nom :           | MARCELIN Maxime                                   | JOLY Clément                                     |
-| --------------- | ------------------------------------------------- | ------------------------------------------------ |
-| Profil GitHub : | [@Maximelego](https://github.com/Maximelego)      |  [@aildontknow](https://github.com/@aildontknow) |
+| Nom :           | MARCELIN Maxime                                   | JOLY Clément                                     | QUEIGNEC Nicolas                                 | BORGONDO David                                     |
+| --------------- | ------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------ | ------------------------------------------------ |
+| Profil GitHub : | [@Maximelego](https://github.com/Maximelego)      | [@aildontknow](https://github.com/@aildontknow)  | [@Fulash](https://github.com/QUEIGNEC) |   [@DB-Sirius](https://github.com/DB-Sirius) | 

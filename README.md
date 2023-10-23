@@ -50,7 +50,7 @@ npm run dev
 
 Installez les dépendances :
 ```bash
-cd frontend
+cd backend
 npm install
 ```
 

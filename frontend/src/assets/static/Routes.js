@@ -4,7 +4,7 @@ class Routes {
         path: "/"
     }
     static NOT_FOUND = {
-        name: "404 not found",
+        name: "404",
         path: "/404"
     }
 }

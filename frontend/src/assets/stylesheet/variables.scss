@@ -1,0 +1,36 @@
+/* ###################### */
+/* --------THEMES-------- */
+/* ###################### */
+
+/* Backgrounds */
+/* -> Dark theme */
+$dark_background_color: #242424;
+
+/* -> Light theme */
+$light_background_color: #e8dbd2;
+
+/* Text colors */
+/* -> Dark theme */
+$dark_font_main: rgba(255, 255, 255, 0.87);
+
+/* -> Light theme */
+$light_font_main: rgba(255, 255, 255, 0.87);
+
+/* ################################# */
+/* --------TIMINGS AND VALUES------- */
+/* ################################# */
+
+/* Minor transitions */
+$timing_background_transition: 0.2s;
+$timing_border_transition: 0.3s;
+$timing_shadow_transition: 0.3s;
+$timing_font_color_transition: 0.3s;
+$timing_filter_transition: 0.3s;
+$timing_translate_transition: 0.3s;
+$timing_transform_transition: 0.1s;
+$timing_content_transition: 0.1s;
+$timing_height_transition: 0.5s;
+$timing_width_transition: 0.5s;
+$timing_scale_transition: 0.1s;
+$timing_rotate_transition: 0.5s;
+$timing_margin_transition: 0.2s;

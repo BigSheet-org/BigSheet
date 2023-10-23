@@ -1,6 +1,6 @@
 class Data {
     static PROGRAM_VALUES = {
-        timeout: 6000,              // Timeout for requests.
+        timeout: 6000,              // Timeout for requests in ms.
     }
 
     static COMPARISON_DATA = {

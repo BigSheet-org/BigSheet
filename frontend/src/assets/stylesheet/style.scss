@@ -1,19 +1,6 @@
-.logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
-}
-.logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-    filter: drop-shadow(0 0 2em #42b883aa);
-}
+@use "variables";
+@use "transitions";
 
-.read-the-docs {
-    color: #888;
-}
 
 :root {
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -21,8 +8,8 @@
     font-weight: 400;
 
     color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
+    color: variables.$dark_font_main;
+    background-color: variables.$dark_background_color;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -51,8 +38,6 @@ a:hover {
 
 body {
     margin: 0;
-    display: flex;
-    place-items: center;
     min-width: 320px;
     min-height: 100vh;
 }
@@ -95,7 +80,7 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
     :root {
         color: #213547;
-        background-color: #ffffff;
+        background-color: variables.$light_background_color;
     }
     a:hover {
         color: #747bff;

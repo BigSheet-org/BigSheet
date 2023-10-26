@@ -21,14 +21,15 @@ Fonctionnalités
 
 ## Prérequis
 ```
-Node.js - Version X.X.X
+Node.js - Version 18.18.2
+Docker-compose - Version 2.15.1
 ```
 
 ## Installation
 Clonez ce référentiel.
 
 ```bash
-git clone https://github.com/Maximelego/BigSheet.git
+git clone https://github.com/BigSheet-org/BigSheet.git
 ```
 
 ### Frontend
@@ -49,7 +50,7 @@ npm run dev
 
 Installez les dépendances :
 ```bash
-cd frontend
+cd backend
 npm install
 ```
 

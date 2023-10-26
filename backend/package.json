@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "dev": "node .",
-    "config_win": "init.ps1",
-    "config_unix": "./init.sh"
+    "config_win": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command .\\init.ps1",
+    "config_unix": "sh ./init.sh"
   },
   "keywords": [],
   "author": "MARCELIN Maxime",

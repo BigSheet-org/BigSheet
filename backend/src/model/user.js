@@ -1,20 +1,37 @@
-import {Sequelize} from "sequelize";
-import dotenv from "dotenv";
+import sequelize from "../tools/postgres.js";
+import {DataTypes, Model} from "sequelize";
 
-// Env variables.
-// We import the .env file.
-dotenv.config()
-// We extract the env variables.
-let user = process.env.POSTGRES_USER;
-let password = process.env.POSTGRES_PASSWORD;
-let port = process.env.POSTGRES_PORT
-let db_name = process.env.POSTGRES_DB
+class User extends Model {
 
-// Initializing the sequelize model.
-const sequelize = new Sequelize(db_name, user, password, {
-    host: 'localhost',
-    dialect: 'postgres',
-    port: port,
-});
+}
 
-export default sequelize
+// -- Attribute definition in the SQL table -- //
+User.init(
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        firstname: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        lastname: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        mail: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
+        },
+        hash: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        }
+    },
+    {sequelize}
+)
+
+export default User

@@ -34,3 +34,20 @@ $timing_width_transition: 0.5s;
 $timing_scale_transition: 0.1s;
 $timing_rotate_transition: 0.5s;
 $timing_margin_transition: 0.2s;
+
+/* Major transitions */
+// -> Timings :
+$timing_slide_and_fade_transition: 0.5s;
+$translate_slide_and_fade_transition: 0.5s;
+$timing_popup_transition: 0.5s;
+$timing_smooth_fade_transition: 0.5s;
+$timing_extend_transition: 0.5s;
+
+// -> Values :
+// --- Popup --- //
+$pop_up_scale_max: 1.10;
+$pop_up_scale_min: 0;
+$pop_up_scale_mid: 1;
+
+
+

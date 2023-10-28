@@ -19,3 +19,74 @@
     rotate variables.$timing_rotate_transition,
     content variables.$timing_content_transition;
 }
+
+
+/* Transitions for major components */
+/* -- Slide and fade -- */
+.slide_fade-enter-active, .slide_fade-leave-active {
+    transition: all variables.$timing_slide_and_fade_transition ease-out;
+}
+.slide_fade-enter-from {
+    transform: translateX(variables.$translate_slide_and_fade_transition);
+    opacity: 0;
+}
+.slide_fade-leave-to {
+    transform: translateX((variables.$translate_slide_and_fade_transition));
+    opacity: 0;
+}
+.slide_fade-enter-to, .slide-fade-leave-from {
+    opacity: 1;
+}
+
+/* -- Popup -- */
+.pop_up-enter-active {
+    animation: pop_up-in variables.$timing_popup_transition;
+}
+.pop_up-leave-active {
+    animation: pop_up-in variables.$timing_popup_transition reverse;
+}
+@keyframes pop_up-in {
+    0% {
+        transform: scale(variables.$pop_up_scale_max);
+    }
+    50% {
+        transform: scale(variables.$pop_up_scale_max);
+    }
+    100% {
+        transform: scale(variables.$pop_up_scale_mid);
+    }
+}
+
+/* -- Smooth fade -- */
+.smooth_fade-enter-active {
+    animation: smooth_fade-in variables.$timing_smooth_fade_transition;
+}
+.smooth_fade-leave-active {
+    animation: smooth_fade-in variables.$timing_smooth_fade_transition reverse;
+}
+@keyframes smooth_fade-in {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Extend */
+.extend-enter-active {
+    animation: extend-in variables.$timing_extend_transition;
+}
+.extend-leave-active {
+    animation: extend-in variables.$timing_extend_transition reverse;
+}
+@keyframes extend-in {
+    0% {
+        /*transform: scaleY(0);*/
+        transform: translateY(-20px);
+    }
+    100% {
+        /*transform: scaleY(1);*/
+        transform: translateY(0px);
+    }
+}

@@ -10,4 +10,3 @@ import './assets/stylesheet/navbar_style.scss'
 createApp(App)
     .use(router)
     .mount('#app')
-

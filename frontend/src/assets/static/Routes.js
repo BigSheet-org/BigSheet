@@ -3,6 +3,10 @@ class Routes {
         name: "home",
         path: "/"
     }
+    static CONNEXION = {
+        name: "connexion",
+        path: "/connexion"
+    }
     static NOT_FOUND = {
         name: "404",
         path: "/404"

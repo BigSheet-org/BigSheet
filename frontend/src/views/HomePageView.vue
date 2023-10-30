@@ -2,11 +2,18 @@
     import NavBar from "../components/navbar/NavBar.vue";
 
     export default {
-        components: {NavBar}
+        components: {NavBar},
+        methods: {
+            redirect() {
+
+            }
+        }
     }
 </script>
 
 <template>
     <NavBar/>
-    <h1>Hello there !</h1>
+    <button>
+        <router-link to="/connexion">Connexion</router-link>
+    </button>
 </template>

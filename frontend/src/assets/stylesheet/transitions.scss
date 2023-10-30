@@ -1,25 +1,5 @@
 @use "variables";
 
-/* Minor Transitions */
-* {
-    transition: background-color variables.$timing_background_transition,
-    border-color variables.$timing_border_transition,
-    box-shadow variables.$timing_shadow_transition,
-    font-color variables.$timing_font_color_transition,
-    color variables.$timing_font_color_transition,
-    filter variables.$timing_filter_transition,
-    translate variables.$timing_translate_transition,
-    transform variables.$timing_transform_transition,
-    scale variables.$timing_scale_transition,
-    height variables.$timing_height_transition,
-    size variables.$timing_height_transition,
-    margin variables.$timing_margin_transition,
-    width variables.$timing_width_transition,
-    left variables.$timing_translate_transition,
-    rotate variables.$timing_rotate_transition,
-    content variables.$timing_content_transition;
-}
-
 
 /* Transitions for major components */
 /* -- Slide and fade -- */
@@ -31,7 +11,7 @@
     opacity: 0;
 }
 .slide_fade-leave-to {
-    transform: translateX((variables.$translate_slide_and_fade_transition));
+    transform: translateX(-(variables.$translate_slide_and_fade_transition));
     opacity: 0;
 }
 .slide_fade-enter-to, .slide-fade-leave-from {
@@ -90,3 +70,25 @@
         transform: translateY(0px);
     }
 }
+
+
+/* Minor Transitions */
+* {
+    transition: background-color variables.$timing_background_transition,
+    border-color variables.$timing_border_transition,
+    box-shadow variables.$timing_shadow_transition,
+    font-color variables.$timing_font_color_transition,
+    color variables.$timing_font_color_transition,
+    filter variables.$timing_filter_transition,
+    translate variables.$timing_translate_transition,
+    transform variables.$timing_transform_transition,
+    scale variables.$timing_scale_transition,
+    height variables.$timing_height_transition,
+    size variables.$timing_height_transition,
+    margin variables.$timing_margin_transition,
+    width variables.$timing_width_transition,
+    left variables.$timing_translate_transition,
+    rotate variables.$timing_rotate_transition,
+    content variables.$timing_content_transition;
+}
+

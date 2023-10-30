@@ -2,6 +2,7 @@ import {createRouter, createWebHistory} from 'vue-router'
 import HomePage from "../views/HomePageView.vue";
 import Routes from "../assets/static/Routes.js";
 import NotFound from "../views/NotFoundView.vue";
+import ConnexionView from "../views/ConnexionView.vue";
 
 const routes = [
     // Home route
@@ -10,6 +11,13 @@ const routes = [
         path: Routes.HOME.path,
         component: HomePage
     },
+    // Connexion route
+    {
+        name: Routes.CONNEXION.name,
+        path: Routes.CONNEXION.path,
+        component: ConnexionView
+    },
+
     // Not found route
     {
         name: Routes.NOT_FOUND.name,

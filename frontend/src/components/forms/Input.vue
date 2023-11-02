@@ -94,14 +94,6 @@
          :class="this.class === undefined ? '' : this.class">
         <label :for="id">{{this.name}}</label><br/>
 
-        <input v-if="this.inputType === Data.INPUT_TYPES.text"
-               :disabled="this.disabled"
-               :class="{right: this.right, wrong: this.error}"
-               :id="id"
-               v-model="model"
-               :type="this.inputType"
-               @change="this.sendData">
-
         <div class="element_with_tooltip"
              v-if="this.inputType === Data.INPUT_TYPES.mail">
             <input :disabled="this.disabled"
@@ -146,21 +138,28 @@
             <div v-if="this.inputType === Data.INPUT_TYPES.checkbox && this.model">Oui</div>
             <div v-if="this.inputType === Data.INPUT_TYPES.checkbox && !this.model">Non</div>
 
-        <textarea v-if="this.inputType === Data.INPUT_TYPES.textarea"
+        <textarea v-else-if="this.inputType === Data.INPUT_TYPES.textarea"
                   :id="id"
                   :class="{right: this.right, wrong: this.error}"
                   :disabled="this.disabled"
                   v-model="model"
                   @change="this.sendData"/>
 
-        <input v-if="this.inputType === Data.INPUT_TYPES.password"
+        <input v-else-if="this.inputType === Data.INPUT_TYPES.password"
                :id="id"
                :class="{right: this.right, wrong: this.error}"
                :disabled="this.disabled"
                v-model="model"
-               @change="this.sendData"
-               type="password">
+               :type="this.inputType"
+               @change="this.sendData">
 
+        <input v-else-if="this.inputType === Data.INPUT_TYPES.text"
+               :id="id"
+               :class="{right: this.right, wrong: this.error}"
+               :disabled="this.disabled"
+               v-model="model"
+               :type="this.inputType"
+               @change="this.sendData">
 
         <form-error v-if="error"
                     :message="this.error_message"/>

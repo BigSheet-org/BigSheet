@@ -1,13 +1,46 @@
 @use "variables";
 
 .form {
-    background-color: red;
-
-
+    background-color: variables.$dark_form_background_color;
+    padding: 1em;
+    border-radius: 20px;
+    width: 30%;
+    align-self: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
 
     .group {
         input {
-            background-color: #242424;
+            background-color: variables.$dark_input_background_color;
+            border-radius: 5px;
+            border-color: variables.$dark_input_background_color;
+            width: 50%;
+            height: 2em;
+        }
+        label {
+            font-size: 130%;
+        }
+        &.group {
+            padding-top: 1em;
+        }
+    }
+
+    .submit {
+        display: grid;
+        grid-template-columns: 50% 50%;
+        column-gap: 1em;
+
+        button {
+            margin-top: 1em;
+            margin-bottom: 1em;
+            width: 120px;
+            justify-self: right;
+        }
+        a {
+            justify-self: left;
+            width: 120px;
+            align-self: center;
         }
     }
 

@@ -3,6 +3,7 @@ import HomePage from "../views/HomePageView.vue";
 import Routes from "../assets/static/Routes.js";
 import NotFound from "../views/NotFoundView.vue";
 import ConnexionView from "../views/ConnexionView.vue";
+import InscriptionView from "../views/InscriptionView.vue";
 
 const routes = [
     // Home route
@@ -16,6 +17,12 @@ const routes = [
         name: Routes.CONNEXION.name,
         path: Routes.CONNEXION.path,
         component: ConnexionView
+    },
+    // Inscription route
+    {
+        name: Routes.INSCRIPTION.name,
+        path: Routes.INSCRIPTION.path,
+        component: InscriptionView
     },
 
     // Not found route

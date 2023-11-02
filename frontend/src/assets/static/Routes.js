@@ -7,6 +7,10 @@ class Routes {
         name: "connexion",
         path: "/connexion"
     }
+    static INSCRIPTION = {
+        name: "inscription",
+        path: "/inscription"
+    }
     static NOT_FOUND = {
         name: "404",
         path: "/404"

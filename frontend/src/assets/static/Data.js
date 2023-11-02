@@ -15,6 +15,7 @@ class Data {
         checkbox: "checkbox",
         password: "password",
         textarea: "textarea",
+        text: "text",
     }
 }
 

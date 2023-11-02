@@ -1,8 +1,10 @@
 <script>
     import NavBar from "../components/navbar/NavBar.vue";
+    import SlideAndFadeTransition from "../components/transitions/SlideAndFadeTransition.vue";
+    import HomePageContent from "../components/HomePageContent.vue";
 
     export default {
-        components: {NavBar},
+        components: {HomePageContent, SlideAndFadeTransition, NavBar},
         methods: {
             redirect() {
 
@@ -13,7 +15,7 @@
 
 <template>
     <NavBar/>
-    <button>
-        <router-link to="/connexion">Connexion</router-link>
-    </button>
+    <SlideAndFadeTransition>
+        <HomePageContent/>
+    </SlideAndFadeTransition>
 </template>

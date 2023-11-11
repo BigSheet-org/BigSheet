@@ -9,5 +9,9 @@ userRouter
     .get('/me', (req, res) => {
         let currentUser = User.get()
     })
+    .post('/register', (req, res) => {
+
+    })
+
 
 export default userRouter

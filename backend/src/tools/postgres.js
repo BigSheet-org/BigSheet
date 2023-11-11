@@ -18,6 +18,7 @@ const sequelize = new Sequelize(db_name, user, password, {
     dialect: 'postgres',        // DB dialect. It is PostgreSQL.
     port: port,                 // Connexion port.
     freezeTableName: true,      // The name  of the model class will be the same as the table name.
+    logging: false,             // We disable the logging of the application.
 });
 
 export default sequelize

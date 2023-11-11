@@ -1,30 +1,47 @@
+"use strict"        // We activate strict mode.
+
 import express from "express";
 import { createServer } from "http";
+import dotenv from "dotenv";
+import cors from "express"
+
+// -- Routes import -- //
 import tests from "./routes/tests.js"
 import main from "./routes/main.js"
 import auth from "./routes/auth.js"
-import dotenv from "dotenv";
+import user from "./routes/user.js"
+
+// -- Models import -- //
 import User from "./model/user.js";
 
-// We import the .env file.
 dotenv.config()
 
+const origins = ["http://localhost:8000", "http://localhost:5173","https://localhost:8000","https://localhost:5173"]      // A list of accepted origins.
 const app = express();
 const server = createServer(app);
 const port = process.env.NODE_SERVER_PORT;
 
+// Adding CORS.
+app.use(cors({
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+    optionsSuccessStatus: 200,
+}))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
 // -- Routes Import -- //
 // Import my routes into the different paths.
-app.use('/', main)
+app.use('/', main);
 app.use('/tests', tests);
 app.use('/auth', auth);
+app.use('/user', user);
 console.log(`[INFO] - Done mounting paths.`);
 
 
 // -- Models import -- //
-await User.sync({
-    alter: true         // Here we allow for modification inside the table if the model itself is changed. Won't delete already existing data.
-})
+await User.sync({})                                         // We don't change the table if it already exists.
 console.log(`[INFO] - Done Initializing models.`);
 
 // -- Starting Server listener -- //

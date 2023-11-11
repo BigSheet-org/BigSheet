@@ -45,7 +45,6 @@ class User {
         // Trying to log in user
         let promise = User.loginUser(login, password)
             .then((data) => {
-
                 if (data.error_code === undefined) {
                     User.saveToLocalStorage(data['access_token'], data['refresh_token'])
                     return { login_successful: true }

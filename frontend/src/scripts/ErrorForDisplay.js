@@ -1,6 +1,6 @@
 class ErrorForDisplay extends Error {
 
-    constructor(props, error_code, error_message) {
+    constructor(error_code, error_message, props) {
         super(props);
         this._error_code = error_code;
         this._error_message = error_message;

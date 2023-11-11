@@ -1,0 +1,82 @@
+/* ###################### */
+/* --------THEMES-------- */
+/* ###################### */
+
+/* Backgrounds */
+/* -> Dark theme */
+$dark_background_color: #242424;
+$dark_form_background_color: #363636;
+$dark_input_background_color: transparent;
+$dark_navbar_color: #d09110;
+
+/* -> Light theme */
+$light_background_color: #e8dbd2;
+
+/* Shadows */
+$hover_shadow: #1e1d1d;
+
+/* Text colors */
+/* -> Dark theme */
+$dark_font_main: rgba(255, 255, 255, 0.87);
+
+/* -> Light theme */
+$light_font_main: rgba(255, 255, 255, 0.87);
+
+/* Borders */
+/* -> Dark theme */
+$dark_input_border_color: #c4c4c4;
+$dark_input_lighter_border_color: #e0e0e0;
+
+/* -> Light theme */
+$light_input_border_color: #242424;
+$light_input_darker_border_color: #363636;
+
+/* Neutral themes */
+$right_highlight: #159f15;
+$wrong_highlight: #ad1313;
+
+
+
+
+
+/* ################################# */
+/* --------TIMINGS AND VALUES------- */
+/* ################################# */
+
+/* Minor transitions */
+$timing_background_transition: 0.2s;
+$timing_border_transition: 0.3s;
+$timing_shadow_transition: 0.3s;
+$timing_font_color_transition: 0.3s;
+$timing_filter_transition: 0.3s;
+$timing_translate_transition: 0.3s;
+$timing_transform_transition: 0.1s;
+$timing_content_transition: 0.1s;
+$timing_height_transition: 0.5s;
+$timing_width_transition: 0.5s;
+$timing_scale_transition: 0.1s;
+$timing_rotate_transition: 0.5s;
+$timing_margin_transition: 0.2s;
+$timing_ease_transition: 0.2s;
+
+/* Major transitions */
+// -> Timings :
+$timing_slide_and_fade_transition: 0.2s;
+$timing_popup_transition: 0.5s;
+$timing_smooth_fade_transition: 0.5s;
+$timing_extend_transition: 0.5s;
+
+// -> Values :
+// --- Popup --- //
+$pop_up_scale_max: 1.10;
+$pop_up_scale_min: 0;
+$pop_up_scale_mid: 1;
+$spinner_dimensions: 100px;
+
+// --- Popup --- //
+$input_label_focused_scale: 0.9;
+
+// --- Slide And fade --- //
+$translate_slide_and_fade_transition: 20px;
+
+

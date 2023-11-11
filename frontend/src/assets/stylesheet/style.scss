@@ -71,6 +71,18 @@ button:focus-visible {
     text-align: center;
 }
 
+.correct {
+    border-color: variables.$right_highlight;
+    color: variables.$right_highlight;
+    font-weight: bolder;
+}
+
+.error {
+    border-color: variables.$wrong_highlight;
+    color: variables.$wrong_highlight;
+    font-weight: bolder;
+}
+
 @media (prefers-color-scheme: light) {
     :root {
         color: #213547;

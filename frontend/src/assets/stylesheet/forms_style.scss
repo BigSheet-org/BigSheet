@@ -102,15 +102,5 @@
             align-self: center;
         }
     }
-
-    .correct {
-        border-color: variables.$right_highlight;
-        color: variables.$right_highlight;
-    }
-
-    .error {
-        border-color: variables.$wrong_highlight;
-        color: variables.$wrong_highlight;
-    }
 }
 

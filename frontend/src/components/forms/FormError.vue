@@ -20,6 +20,9 @@ export default {
 
 <template>
     <SmoothFade>
-        <div class="error" :class="this.class"> {{message}} </div>
+        <div class="error"
+             :class="this.class">
+            {{message}}
+        </div>
     </SmoothFade>
 </template>

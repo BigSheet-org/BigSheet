@@ -77,7 +77,7 @@
     transition: all ease variables.$timing_ease_transition,
     background-color variables.$timing_background_transition,
     border-color variables.$timing_border_transition,
-    border variables.$timing_border_transition,
+    border ease variables.$timing_border_transition,
     box-shadow variables.$timing_shadow_transition,
     font-color variables.$timing_font_color_transition,
     color variables.$timing_font_color_transition,

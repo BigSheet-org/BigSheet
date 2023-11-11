@@ -1,3 +1,5 @@
+import Data from "../../assets/static/Data.js";
+
 class Formatters {
 
     /**

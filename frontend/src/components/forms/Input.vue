@@ -89,7 +89,6 @@
 </script>
 
 <template>
-
     <div class="group"
          :class="this.class === undefined ? '' : this.class">
 
@@ -158,7 +157,9 @@
                :type="this.inputType"
                @change="this.sendData">
 
-        <label :class="{right : this.right, wrong : this.error}"
+        <label :class="{right : this.right,
+                wrong : this.error,
+                filled: this.model !== ''}"
                :for="id">
             {{this.name}}
         </label>

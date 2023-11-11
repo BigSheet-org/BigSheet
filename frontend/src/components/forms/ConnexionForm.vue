@@ -10,15 +10,20 @@
             },
             Data() {
                 return Data
+            },
+            loginFilled() {
+                return this.login !== "" ? "filled" : "";
             }
         },
         components: {Input},
         methods: {
-            changeLogin() {
-
+            changeLogin(newLogin) {
+                this.login = newLogin;
+                console.log("[DEBUG] - Changed login !")
             },
-            changePassword() {
-
+            changePassword(newPassword) {
+                this.password = newPassword;
+                console.log("[DEBUG] - Changed password !")
             },
             loginUser() {
 
@@ -40,12 +45,12 @@
         <Input name="Identifiant"
                :input-type="Data.INPUT_TYPES.text"
                :prefill="this.login"
-               @changeField="this.changeLogin()" />
+               @changeField="(payload) => { this.changeLogin(payload) }"/>
 
         <Input name="Mot de passe"
                :input-type="Data.INPUT_TYPES.password"
                :prefill="this.password"
-               @changeField="this.changePassword()"/>
+               @changeField="(payload) => { this.changePassword(payload) }"/>
 
         <div class="submit">
             <button @click="this.loginUser()">

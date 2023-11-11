@@ -2,6 +2,7 @@
 import Input from "./Input.vue";
 import Data from "../../assets/static/Data.js";
 import Routes from "../../assets/static/Routes.js";
+import Loading from "../common/Loading.vue";
 
 export default {
     computed: {
@@ -12,7 +13,7 @@ export default {
             return Data
         }
     },
-    components: {Input},
+    components: {Loading, Input},
     methods: {
         changeFirstname() {
 
@@ -32,8 +33,9 @@ export default {
         changeConfirmPassword() {
 
         },
-        loginUser() {
-
+        registerUser() {
+            this.loading = true;
+            setTimeout(() => { this.loading = false}, 2000)
         }
     },
     data(){
@@ -44,6 +46,7 @@ export default {
             login: "",
             password: "",
             confirmPassword: "",
+            loading: false,
         }
     }
 }
@@ -54,37 +57,40 @@ export default {
         <h1>Inscription</h1>
 
         <Input name="Nom"
-               :input-type="Data.INPUT_TYPES.text"
+               :input-type="Data.INPUT_TYPES.TEXT"
                :prefill="this.lastname"
                @changeField="this.changeLastname()" />
         <Input name="Prénom"
-               :input-type="Data.INPUT_TYPES.text"
+               :input-type="Data.INPUT_TYPES.TEXT"
                :prefill="this.firstname"
                @changeField="this.changeFirstname()" />
         <Input name="Adresse E-mail"
-               :input-type="Data.INPUT_TYPES.mail"
+               :input-type="Data.INPUT_TYPES.MAIL"
                :prefill="this.mail"
                @changeField="this.changeMail()" />
         <Input name="Identifiant"
-               :input-type="Data.INPUT_TYPES.text"
+               :input-type="Data.INPUT_TYPES.TEXT"
                :prefill="this.login"
                @changeField="this.changeLogin()" />
 
         <Input name="Mot de passe"
-               :input-type="Data.INPUT_TYPES.password"
+               :input-type="Data.INPUT_TYPES.PASSWORD"
                :prefill="this.password"
                @changeField="this.changePassword()"/>
         <Input name="Confirmer le mot de passe"
-               :input-type="Data.INPUT_TYPES.password"
+               :input-type="Data.INPUT_TYPES.PASSWORD"
                :prefill="this.confirmPassword"
                @changeField="this.changeConfirmPassword()"/>
 
-        <div class="submit">
-            <button @click="this.loginUser()">
+        <div v-if="!this.loading"
+             class="submit">
+            <button @click="this.registerUser()">
                 Inscription
             </button>
 
             <router-link :to="Routes.CONNEXION.path">Déjà un compte ?</router-link>
         </div>
+
+        <Loading v-else/>
     </div>
 </template>

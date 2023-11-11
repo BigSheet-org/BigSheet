@@ -66,7 +66,7 @@
 		methods:{
             sendData(){
                 // If the input type is a phone number, we format it before sending.
-                if(this.inputType === Data.INPUT_TYPES.phone_number) { this.$emit('changeField', Formatters.unformatPhone(this.model)) }
+                if(this.inputType === Data.INPUT_TYPES.PHONE_NUMBER) { this.$emit('changeField', Formatters.unformatPhone(this.model)) }
                 // Otherwise, we just emit the model value.
                 else { this.$emit('changeField', this.model) }
             },
@@ -80,7 +80,7 @@
             if(this.prefill !== undefined) {
                 this.model = this.prefill
 
-                if(this.inputType === Data.INPUT_TYPES.phone_number) {
+                if(this.inputType === Data.INPUT_TYPES.PHONE_NUMBER) {
                     this.formatPhone()
                 }
             }
@@ -92,7 +92,7 @@
     <div class="group"
          :class="this.class === undefined ? '' : this.class">
 
-        <input v-if="this.inputType === Data.INPUT_TYPES.mail"
+        <input v-if="this.inputType === Data.INPUT_TYPES.MAIL"
                :disabled="this.disabled"
                :class="{right: this.right, wrong: this.error}"
                :id="id"
@@ -100,7 +100,7 @@
                v-model="model"
                @change="this.sendData">
 
-        <input v-if="this.inputType === Data.INPUT_TYPES.phone_number"
+        <input v-if="this.inputType === Data.INPUT_TYPES.PHONE_NUMBER"
                :disabled="this.disabled"
                :id="id"
                :class="{right: this.right, wrong: this.error}"
@@ -124,24 +124,24 @@
             </option>
         </select>
 
-        <input v-if="this.inputType === Data.INPUT_TYPES.checkbox"
+        <input v-if="this.inputType === Data.INPUT_TYPES.CHECKBOX"
                :id="id"
                :disabled="this.disabled"
                :class="{right: this.right, wrong: this.error}"
                v-model="model"
                type="checkbox"
                @change="this.sendData">
-            <div v-if="this.inputType === Data.INPUT_TYPES.checkbox && this.model">Oui</div>
-            <div v-if="this.inputType === Data.INPUT_TYPES.checkbox && !this.model">Non</div>
+            <div v-if="this.inputType === Data.INPUT_TYPES.CHECKBOX && this.model">Oui</div>
+            <div v-if="this.inputType === Data.INPUT_TYPES.CHECKBOX && !this.model">Non</div>
 
-        <textarea v-if="this.inputType === Data.INPUT_TYPES.textarea"
+        <textarea v-if="this.inputType === Data.INPUT_TYPES.TEXTAREA"
                   :id="id"
                   :class="{right: this.right, wrong: this.error}"
                   :disabled="this.disabled"
                   v-model="model"
                   @change="this.sendData"/>
 
-        <input v-if="this.inputType === Data.INPUT_TYPES.password"
+        <input v-if="this.inputType === Data.INPUT_TYPES.PASSWORD"
                :id="id"
                :class="{right: this.right, wrong: this.error}"
                :disabled="this.disabled"
@@ -149,7 +149,7 @@
                :type="this.inputType"
                @change="this.sendData">
 
-        <input v-if="this.inputType === Data.INPUT_TYPES.text"
+        <input v-if="this.inputType === Data.INPUT_TYPES.TEXT"
                :id="id"
                :class="{right: this.right, wrong: this.error}"
                :disabled="this.disabled"

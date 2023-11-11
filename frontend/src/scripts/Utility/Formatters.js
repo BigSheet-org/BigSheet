@@ -175,7 +175,7 @@ class Formatters {
                 return cleaned_number; // Returns the not-formatted phone if it is not long enough.
             }
             // Creating the variable to separate pairs of digits.
-            let sep_char = Data.PROGRAM_VALUES.phone_separation_char
+            let sep_char = Data.PROGRAM_VALUES.PHONE_SEPARATION_CHAR
 
             // Splitting the phone number in pairs of digits.
             part1 = cleaned_number.slice(0, 2);
@@ -205,7 +205,7 @@ class Formatters {
      * @returns {String}  Unformatted phone.
      */
     static unformatPhone(phone) {
-        let separator = Data.PROGRAM_VALUES.phone_separation_char
+        let separator = Data.PROGRAM_VALUES.PHONE_SEPARATION_CHAR
         return phone.split(separator).join('');
     }
 }

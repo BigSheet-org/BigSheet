@@ -1,7 +1,8 @@
 class Data {
     static PROGRAM_VALUES = {
-        timeout: 6000,                  // Timeout for requests in ms.
-        phone_separation_char: '.',     // Character used to make phone number separators.
+        TIMEOUT_BEFORE_REQUEST_FAILURE: 6000,                  // Timeout for requests in ms.
+        TIMEOUT_BEFORE_REDIRECT: 2000,  // Timeout for redirections in ms.
+        PHONE_SEPARATION_CHAR: '.',     // Character used to make phone number separators.
     }
 
     static COMPARISON_DATA = {
@@ -10,12 +11,12 @@ class Data {
 
     // Qualifiers for the Input component.
     static INPUT_TYPES = {
-        phone_number: "phone_number",
-        mail: "email",
-        checkbox: "checkbox",
-        password: "password",
-        textarea: "textarea",
-        text: "text",
+        PHONE_NUMBER: "phone_number",
+        MAIL: "email",
+        CHECKBOX: "checkbox",
+        PASSWORD: "password",
+        TEXTAREA: "textarea",
+        TEXT: "text",
     }
 }
 

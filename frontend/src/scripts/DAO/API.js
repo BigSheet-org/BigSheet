@@ -4,6 +4,7 @@
  */
 import ErrorForDisplay from "../ErrorForDisplay.js"
 import User from "./User.js";
+import Data from "../../assets/static/Data.js";
 
 class API {
 
@@ -74,15 +75,16 @@ class API {
                 () => {
                     resolve(new ErrorForDisplay(504 ,
                         "Timeout waiting for response after "
-                        + Data.PROGRAM_VALUES.timeout + " ms"))
+                        + Data.PROGRAM_VALUES.TIMEOUT_BEFORE_REQUEST_FAILURE + " ms"))
                 },
-                Data.PROGRAM_VALUES.timeout
+                Data.PROGRAM_VALUES.TIMEOUT_BEFORE_REQUEST_FAILURE
             )
 
-            // Fetching data from the server
-            const response = await fetch(
-                `${this.API_URL}${url}`,
-                {
+            try {
+                // Fetching data from the server
+                const response = await fetch(
+                    `${this.API_URL}${url}`,
+                    {
                         method: method,
                         headers: header,
                         mode: 'cors',
@@ -90,17 +92,21 @@ class API {
                     }
                 );
 
-            // When we got our response, we check the status code.
-            let data = await response.json()
-            switch (response.status){
-                // Successful response
-                case 200:
-                    resolve(data)
-                    break;
-                // Unsuccessful response
-                default :
-                    resolve(new ErrorForDisplay(response.status, data.detail))
-                    break;
+                // When we got our response, we check the status code.
+                let data = await response.json()
+                switch (response.status){
+                    // Successful response
+                    case 200:
+                        resolve(data)
+                        break;
+                    // Unsuccessful response
+                    default :
+                        resolve(new ErrorForDisplay(response.status, data.detail))
+                        break;
+                }
+            } catch(e) {
+                // This part is mainly called in case of a CORS error.
+                resolve(new ErrorForDisplay(500, e.toString()))
             }
         })
     }

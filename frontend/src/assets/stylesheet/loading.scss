@@ -1,0 +1,8 @@
+@use "variables";
+
+.loading {
+    img {
+        height: variables.$spinner_dimensions;
+        width: variables.$spinner_dimensions;
+    }
+}

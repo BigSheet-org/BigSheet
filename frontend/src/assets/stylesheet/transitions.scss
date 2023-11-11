@@ -74,8 +74,10 @@
 
 /* Minor Transitions */
 * {
-    transition: background-color variables.$timing_background_transition,
+    transition: all ease variables.$timing_ease_transition,
+    background-color variables.$timing_background_transition,
     border-color variables.$timing_border_transition,
+    border variables.$timing_border_transition,
     box-shadow variables.$timing_shadow_transition,
     font-color variables.$timing_font_color_transition,
     color variables.$timing_font_color_transition,
@@ -89,6 +91,6 @@
     width variables.$timing_width_transition,
     left variables.$timing_translate_transition,
     rotate variables.$timing_rotate_transition,
-    content variables.$timing_content_transition;
+    content variables.$timing_content_transition,
 }
 

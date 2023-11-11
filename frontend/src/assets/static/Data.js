@@ -11,7 +11,7 @@ class Data {
     // Qualifiers for the Input component.
     static INPUT_TYPES = {
         phone_number: "phone_number",
-        mail: "mail",
+        mail: "email",
         checkbox: "checkbox",
         password: "password",
         textarea: "textarea",

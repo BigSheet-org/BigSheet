@@ -1,7 +1,7 @@
 @use "variables";
 
 .form {
-    background-color: variables.$dark_form_background_color;
+    display: grid;
     padding: 1em;
     border-radius: 20px;
     width: 30%;
@@ -10,20 +10,72 @@
     margin-right: auto;
     margin-top: 5%;
 
+    background-color: variables.$dark_form_background_color;
+
     .group {
-        input {
+        display: inline-grid;
+        grid-template-rows: auto auto;
+        line-height: 10%;
+        margin-left: auto;
+        margin-right: auto;
+        width: 90%;
+
+        input, textarea {
+            position: relative;
+            z-index: 1110;
+            padding: 1%;
+            width: 80%;
+            justify-self: center;
+            line-height: 1.7em;
+            left: 0;
+
+            font-size: 120%;
+            border-radius: 10px;
+            outline: none;
+            border: 2px solid variables.$dark_input_border_color;
             background-color: variables.$dark_input_background_color;
-            border-radius: 5px;
-            border-color: variables.$dark_input_background_color;
-            width: 50%;
-            height: 2em;
+
+            &:focus {
+                border-color: variables.$dark_input_border_color;
+            }
+            // Pour mettre à jour le style du label en cas de focus sur l'input.
+            &:focus + label {
+                transform: translateY(-1em) scale(variables.$input_label_focused_scale);
+                background-color: variables.$dark_form_background_color;
+                z-index: 1111;
+            }
+
+            &.right {
+                border-color: variables.$right_highlight;
+                color: variables.$right_highlight;
+            }
+            &.wrong {
+                border-color: variables.$wrong_highlight;
+                color: variables.$wrong_highlight;
+            }
         }
+
         label {
-            font-size: 130%;
+            position: relative;
+            width: fit-content;
+            height: 0.9em;
+            bottom: 1em;
+            left: 3em;
+            font-size: 150%;
+            background-color: variables.$dark_form_background_color;
+
+            &.right { color: variables.$right_highlight; }
+            &.wrong { color: variables.$wrong_highlight; }
         }
-        &.group {
-            padding-top: 1em;
+
+        .error {
+            text-align: left;
+            margin-left: 3em;
+            margin-right: 3em;
+            color: variables.$wrong_highlight;
         }
+
+        &.group { margin-top: 2em; }
     }
 
     .submit {
@@ -39,9 +91,8 @@
         }
         a {
             justify-self: left;
-            width: 120px;
+            width: 130px;
             align-self: center;
         }
     }
-
 }

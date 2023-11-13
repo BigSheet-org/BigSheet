@@ -3,7 +3,7 @@
 import express from "express";
 import { createServer } from "http";
 import dotenv from "dotenv";
-import cors from "express"
+import cors from "cors"
 
 // -- Routes import -- //
 import tests from "./routes/tests.js"
@@ -20,15 +20,17 @@ const origins = ["http://localhost:8000", "http://localhost:5173","https://local
 const app = express();
 const server = createServer(app);
 const port = process.env.NODE_SERVER_PORT;
+const cors_middleware = cors(
+    {
+        origin: 'http://localhost:5173',
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+        preflightContinue: false,
+        optionsSuccessStatus: 200,
+    })
 
 // Adding CORS.
-app.use(cors({
-    origin: "*",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    preflightContinue: false,
-    optionsSuccessStatus: 200,
-}))
-app.use(express.json())
+app.use(cors_middleware)
+app.use(express.json())                                     // Adding support for JSON data format.
 app.use(express.urlencoded({ extended: true }))
 
 // -- Routes Import -- //

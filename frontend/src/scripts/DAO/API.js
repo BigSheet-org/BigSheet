@@ -9,10 +9,10 @@ import Data from "../../assets/static/Data.js";
 class API {
 
     /**
-     * @description URL to API. if dev mode is used (npm run dev) : localhost, otherwise, it is the deployed API.
+     * @description URL to API.
      * @type {string}
      */
-    API_URL = import.meta.env.DEV ? 'http://localhost:8000' : '' ;
+    API_URL = 'http://localhost:8000';
 
     /**
      * @enum {CONTENT_TYPE}
@@ -60,7 +60,7 @@ class API {
         return new Promise(async (resolve) => {
             // Building header for the request
             const header = {
-                "Access-Control-Allow-Origin" : this.API_URL,
+                "Access-Control-Allow-Origin": this.API_URL,
                 "Accept": "application/json",                           // <- Indicates what data the application accepts
                 "Origin": window.location.origin,
             }

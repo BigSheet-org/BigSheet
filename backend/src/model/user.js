@@ -1,7 +1,18 @@
 import sequelize from "../tools/postgres.js";
 import {DataTypes, Model} from "sequelize";
+import bcrypt from "bcrypt"
 
 class User extends Model {
+
+    static async hashPassword(plainTextPassword) {
+        return await bcrypt.hash(plainTextPassword, 10);
+    }
+
+    static async comparePassword(plainTextPassword, hash) {
+        return await bcrypt.compare(plainTextPassword, hash);
+    }
+
+
 
 }
 

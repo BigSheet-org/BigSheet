@@ -1,5 +1,5 @@
 import express from "express";
-import sequelize from "../tools/postgres.js";
+import sequelize from "../common/tools/postgres.js";
 
 const testRouter = express.Router()
 testRouter

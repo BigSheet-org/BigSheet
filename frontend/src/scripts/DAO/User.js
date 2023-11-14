@@ -7,7 +7,7 @@ class User {
         return api.request(
             api.METHODS.POST,
             '/auth/login',
-            `username=${login}&password=${password}`,
+            `login=${login}&password=${password}`,
             api.CONTENT_TYPE.URL_ENCODED
         )
     }

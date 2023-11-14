@@ -12,7 +12,8 @@ import auth from "./routes/auth.js"
 import user from "./routes/user.js"
 
 // -- Models import -- //
-import User from "./model/user.js";
+import UserModel from "./model/UserModel.js";
+import sequelize from "./common/tools/postgres.js";
 
 dotenv.config()
 
@@ -20,16 +21,16 @@ const origins = ["http://localhost:8000", "http://localhost:5173","https://local
 const app = express();
 const server = createServer(app);
 const port = process.env.NODE_SERVER_PORT;
-const cors_middleware = cors(
+const corsMiddleware = cors(
     {
-        origin: 'http://localhost:5173',
+        origin: origins,
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
         preflightContinue: false,
         optionsSuccessStatus: 200,
     })
 
 // Adding CORS.
-app.use(cors_middleware)
+app.use(corsMiddleware)
 app.use(express.json())                                     // Adding support for JSON data format.
 app.use(express.urlencoded({ extended: true }))
 
@@ -43,7 +44,7 @@ console.log(`[INFO] - Done mounting paths.`);
 
 
 // -- Models import -- //
-await User.sync({})                                         // We don't change the table if it already exists.
+await UserModel.sync({ alter: true });           // We allow the insertion of new columns.
 console.log(`[INFO] - Done Initializing models.`);
 
 // -- Starting Server listener -- //

@@ -1,7 +1,5 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import auth from "../../routes/auth.js";
-
 
 class TokenFactory {
 
@@ -11,7 +9,7 @@ class TokenFactory {
      * @param userID Id of the user that needs tokens.
      * @returns {{auth: (string), refresh: (string)}}
      */
-    static createTokens(userID){
+    static createTokens(userID) {
         let authSecret = process.env.JWT_AUTH_SECRET_KEY
         let refreshSecret = process.env.JWT_REFRESH_SECRET_KEY
         return {
@@ -36,9 +34,6 @@ class TokenFactory {
         return jwt.sign(data, secret)
     }
 
-    banUserTokens(){
-
-    }
 }
 
 export default TokenFactory

@@ -11,10 +11,10 @@ class UserController {
     static async getById(req, res) {
         let user = await UserModel.getById(req.params.id)
         if (user === null) {
-            res.status(404)
+            return res.status(404)
                 .send(`User with id ${req.params.id} does not exists.`)
         } else {
-            res.send(user)
+            return res.send(user)
         }
     }
     /**

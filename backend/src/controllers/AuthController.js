@@ -1,5 +1,5 @@
 import AuthMiddleware from "../common/middleware/AuthMiddleware.js";
-import TokenFactory from "../common/tools/TokenFactory.js";
+import TokenFactory from "../common/tools/Factories/TokenFactory.js";
 import UserModel from "../model/UserModel.js";
 
 class AuthController {
@@ -17,10 +17,11 @@ class AuthController {
             // We prepare the auth and refresh tokens.
             let tokens = TokenFactory.createTokens(userConcerned.id)
 
-            res.send(tokens)
+            // We send the generated tokens.
+            return res.send(tokens)
         } else {
             // We send an 401 auth code.
-            res.status(401)
+            return res.status(401)
                .send("Invalid login or password.")
         }
     }

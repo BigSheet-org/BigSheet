@@ -2,6 +2,24 @@ import bcrypt from "bcrypt";
 import UserModel from "../../model/UserModel.js";
 
 class AuthMiddleware {
+
+    /**
+     * Validator for the login request. Check if the mandatory fields are present.
+     *
+     * @param req Request provided.
+     * @param res Response to send.
+     * @param next Next method to call.
+     * @returns {*}
+     */
+    static hasValidLoginFields(req, res, next){
+        if (!req.body.login || !req.body.password) {
+            return res.status(400)
+                      .send("Mandatory fields are missing.")
+        }
+        return next()
+    }
+
+
     /**
      * This method will provide the hash of the plain text password provided.
      * It will use the bcrypt hash method and a salt that is 10 character long.
@@ -25,7 +43,7 @@ class AuthMiddleware {
     }
 
     /**
-     * This method checks the credentials of the user.
+     * This method checks the credentials provided by the user.
      *
      * @param login Login of the user.
      * @param password Plain text password.
@@ -43,9 +61,10 @@ class AuthMiddleware {
         return await AuthMiddleware.comparePassword(password, userConcerned.hash)
     }
 
-    static async generateTokens() {
+    static checkTokens(tokens) {
 
     }
+
 
 }
 export default AuthMiddleware

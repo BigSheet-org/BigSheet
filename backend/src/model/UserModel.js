@@ -38,8 +38,6 @@ class UserModel extends Model {
 }
 
 
-
-
 // -- Attribute definition in the SQL table -- //
 UserModel.init(
     {

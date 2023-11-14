@@ -21,6 +21,7 @@ class UserController {
 
     /**
      * This method will provide the hash of the plain text password provided.
+     * It will use the bcrypt hash method and a salt that is 10 character long.
      *
      * @param plainTextPassword Password to hash.
      * @returns {Promise<void|*>}

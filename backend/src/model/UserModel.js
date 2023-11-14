@@ -19,6 +19,22 @@ class UserModel extends Model {
         users.length === 0 ? users = null : users = users[0];
         return users
     }
+
+    /**
+     * Returns the user corresponding to the login provided.
+     * WARNING : This method also returns the hash of the user.
+     * It should only be used by methods inside the server.
+     *
+     * @param login Login to find.
+     * @returns {Promise<UserModel>} It returns null if no user were found. Returns the user otherwise.
+     */
+    static async getUserByLogin(login) {
+        let users = await UserModel.findAll({
+            where: { login: login },
+        });
+        users.length === 0 ? users = null : users = users[0];
+        return users
+    }
 }
 
 

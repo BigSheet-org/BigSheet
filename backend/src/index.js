@@ -44,7 +44,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use('/', main);
 app.use('/tests', tests);
 app.use('/auth', auth);
-app.use('/user', user);
+app.use('/users', user);
 console.log(`[INFO] - Done mounting paths.`);
 
 // -- Models import -- //

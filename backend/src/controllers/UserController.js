@@ -12,7 +12,7 @@ class UserController {
         let user = await UserModel.getById(req.params.id)
         if (user === null) {
             return res.status(404)
-                .send(`User with id ${req.params.id} does not exists.`)
+                .send({"message" : `User with id ${req.params.id} does not exists.`})
         } else {
             return res.send(user)
         }
@@ -25,7 +25,9 @@ class UserController {
      * @returns {Promise<void>}
      */
     static async getCurrentUser(req, res) {
-
+        res.send({
+            firstname: "loliloulz"
+        })
     }
 }
 

@@ -14,7 +14,7 @@ class AuthController {
         if (await AuthMiddleware.authenticate(req.body.login, req.body.password)) {
             // We find the user concerned by the login.
             let userConcerned = await UserModel.getUserByLogin(req.body.login)
-            // We send the generated tokens.
+            // We generate and send the tokens.
             return res.send(Tokens.generateTokens(userConcerned.id))
         } else {
             // We send an 401 auth code.
@@ -27,7 +27,7 @@ class AuthController {
 
     }
 
-    static async refreshTokens() {
+    static async refreshTokens(req, res) {
 
     }
 }

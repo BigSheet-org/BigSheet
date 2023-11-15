@@ -18,15 +18,15 @@ class Tokens {
      * This function generates a pair of refresh and auth tokens.
      *
      * @param userID User concerned by the token.
-     * @returns {{auth: (String), refresh: (String)}}
+     * @returns {{access_token: (*), refresh_token: (*)}}
      */
     static generateTokens(userID){
         let authOptions = { expiresIn: Tokens.UTILS.AUTH_EXP_TIME }
         let refreshOptions = { expiresIn: Tokens.UTILS.REFRESH_EXP_TIME }
 
         return {
-            auth: Tokens.generateToken(Tokens.UTILS.AUTH_SECRET, userID, authOptions),
-            refresh: Tokens.generateToken(Tokens.UTILS.REFRESH_SECRET, userID, refreshOptions)
+            access_token: Tokens.generateToken(Tokens.UTILS.AUTH_SECRET, userID, authOptions),
+            refresh_token: Tokens.generateToken(Tokens.UTILS.REFRESH_SECRET, userID, refreshOptions)
         }
     }
 
@@ -42,7 +42,7 @@ class Tokens {
         let data = {
             time: Date(),
             userID: userID,
-            salt: bcrypt.genSalt(10)
+            salt: bcrypt.genSalt(10)        // TODO : Fix the salt.
         }
         return jwt.sign(data, secret, options)
     }
@@ -52,11 +52,7 @@ class Tokens {
      * (Not expired and signed properly.)
      */
     static verifyAuthToken(auth) {
-        try {
-            return jwt.verify(auth, Tokens.UTILS.AUTH_SECRET)
-        } catch (e) {
-            console.log(e)
-        }
+        return Tokens.verifyToken(auth, Tokens.UTILS.AUTH_SECRET)
     }
 
     /**
@@ -64,10 +60,32 @@ class Tokens {
      * (Not expired and signed properly.)
      */
     static verifyRefreshTokens(refresh) {
+        return Tokens.verifyToken(refresh, Tokens.UTILS.REFRESH_SECRET)
+    }
+
+    /**
+     * This method uses the token and the secret provided to decode the token.
+     * It returns the data inside if it has been successfully decoded, an error object otherwise.
+     *
+     * @param token Token to decode.
+     * @param secret Secret to use to decode the token.
+     * @returns {*|{error: string, status: boolean}}
+     */
+    static verifyToken(token, secret) {
         try {
-            return jwt.verify(refresh, Tokens.UTILS.REFRESH_SECRET)
+            return jwt.verify(token, secret)
         } catch (e) {
-            console.log(e)
+            if (e.toString() === "TokenExpiredError: jwt expired") {
+                return {
+                    status: false,
+                    error: "expired"
+                }
+            } else {
+                return {
+                    status: false,
+                    error: "invalid"
+                }
+            }
         }
     }
 }

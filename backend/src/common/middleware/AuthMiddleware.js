@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import UserModel from "../../model/UserModel.js";
 import Tokens from "../tools/Tokens.js";
+import {validator} from "sequelize/lib/utils/validator-extras";
 
 class AuthMiddleware {
 
@@ -62,10 +63,34 @@ class AuthMiddleware {
         return await AuthMiddleware.comparePassword(password, userConcerned.hash)
     }
 
-    static checkTokens(auth, refresh) {
-        // We check the user's tokens.
-        let t = new Tokens(auth, refresh)
-        let data = t.verifyAuthToken()
+    static checkAuthToken(req, res, next) {
+        let data = Tokens.verifyAuthToken(
+            req.headers.authorization.replace(
+                'Bearer ',
+                ''
+            ))
+        return AuthMiddleware.validateNext(data, res, next)
+    }
+
+    static checkRefreshToken(req, res, next) {
+        let data = Tokens.verifyRefreshTokens(
+            req.body.refresh_token)
+        return AuthMiddleware.validateNext(data, res, next)
+    }
+
+    static validateNext(data, res, next) {
+        if (!data.status && data.error !== undefined) {
+            // If the token was expired or invalid.
+            if(data.error === "expired") {
+                return res.status(401)
+                    .send({"message": "Expired Token"})
+            } else {
+                return res.status(401)
+                    .send({"message": "Invalid Token"})
+            }
+        } else {
+            return next()
+        }
     }
 
 

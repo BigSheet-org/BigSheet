@@ -1,5 +1,6 @@
 import express from "express";
 import AuthController from "../controllers/AuthController.js";
+import AuthMiddleware from "../common/middleware/AuthMiddleware.js";
 
 const authRouter = express.Router();
 authRouter
@@ -12,8 +13,9 @@ authRouter
 
     })
     /** Route for the refresh operation of the tokens.*/
-    .post('/refresh', (req, res) => {
-
-    })
+    .post('/refresh', [
+        AuthMiddleware.checkRefreshToken,
+        AuthController.refreshTokens
+    ])
 
 export default authRouter

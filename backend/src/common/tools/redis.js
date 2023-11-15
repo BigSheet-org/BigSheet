@@ -1,13 +1,15 @@
 import { createClient } from 'redis';
 
-const client = createClient();
+const RedisClient = createClient({
+            password:  process.env.REDIS_PASSWORD
+        });
 
-client.on(
+RedisClient.on(
     'error',
         err => console.log('[ERROR] - Redis Client Error : ', err)
 );
-client.connect().then(
+RedisClient.connect().then(
     () => console.log('[INFO] - Redis Client is up !')
 );
 
-export default client
+export default RedisClient

@@ -73,8 +73,7 @@ class AuthMiddleware {
     }
 
     static checkRefreshToken(req, res, next) {
-        let data = Tokens.verifyRefreshTokens(
-            req.body.refresh_token)
+        let data = Tokens.verifyRefreshTokens(req.body.refresh_token)
         return AuthMiddleware.validateNext(data, res, next)
     }
 
@@ -82,6 +81,7 @@ class AuthMiddleware {
         if (!data.status && data.error !== undefined) {
             // If the token was expired or invalid.
             if(data.error === "expired") {
+                console.log("expired")
                 return res.status(401)
                     .send({"message": "Expired Token"})
             } else {
@@ -92,7 +92,5 @@ class AuthMiddleware {
             return next()
         }
     }
-
-
 }
 export default AuthMiddleware

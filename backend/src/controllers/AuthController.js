@@ -23,12 +23,20 @@ class AuthController {
         }
     }
 
-    static async logout() {
+    static async logout(req, res) {
+        // We need to ban the auth and refresh tokens.
 
     }
 
     static async refreshTokens(req, res) {
-
+        // We extract the data from the old token.
+        let data = Tokens.verifyRefreshTokens(req.body.refresh_token)
+        // We generate a new pair.
+        let newTokens = Tokens.generateTokens(data.userID)
+        // We blacklist the older refresh token.
+        await Tokens.banToken(req.body.refresh_token, data)
+        // We send the new pair.
+        return res.send(newTokens)
     }
 }
 

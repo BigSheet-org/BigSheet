@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import RedisClient from "./redis.js";
 
 class Tokens {
 
@@ -52,7 +53,8 @@ class Tokens {
      * (Not expired and signed properly.)
      */
     static verifyAuthToken(auth) {
-        return Tokens.verifyToken(auth, Tokens.UTILS.AUTH_SECRET)
+        return Tokens.verifyToken(auth, Tokens.UTILS.AUTH_SECRET) 
+            && !Tokens.isBanned(auth)
     }
 
     /**
@@ -61,6 +63,8 @@ class Tokens {
      */
     static verifyRefreshTokens(refresh) {
         return Tokens.verifyToken(refresh, Tokens.UTILS.REFRESH_SECRET)
+            && !Tokens.isBanned(refresh)
+
     }
 
     /**
@@ -87,6 +91,15 @@ class Tokens {
                 }
             }
         }
+    }
+
+    static async banToken(token, dataInToken) {
+        await RedisClient.set(token, dataInToken.userID)
+        await RedisClient.expireAt(token, dataInToken.exp)
+    }
+
+    static isBanned(auth) {
+        return RedisClient.get(auth) !== null;
     }
 }
 

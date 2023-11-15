@@ -80,34 +80,27 @@ class API {
                 Data.PROGRAM_VALUES.TIMEOUT_BEFORE_REQUEST_FAILURE
             )
 
-            try {
-                // Fetching data from the server
-                const response = await fetch(
-                    `${this.API_URL}${url}`,
-                    {
-                        method: method,
-                        headers: header,
-                        mode: 'cors',
-                        body: body
-                    }
-                );
+            // Fetching data from the server
+            const response = await fetch(
+                `${this.API_URL}${url}`,
+                {
+                    method: method,
+                    headers: header,
+                    mode: 'cors',
+                    body: body
+                });
 
-                // When we got our response, we check the status code.
-                let data = await response.json()
-                switch (response.status){
-                    // Successful response
-                    case 200:
-                        resolve(data)
-                        break;
-                    // Unsuccessful response
-                    default :
-                        resolve(new ErrorForDisplay(response.status, data.detail))
-                        break;
+            // When we got our response, we check the status code.
+            let data = await response.json()
+            switch (response.status){
+                // Successful response
+                case 200:
+                    resolve(data)
+                    break;// Unsuccessful response
+                default :
+                    resolve(new ErrorForDisplay(response.status, data.detail))
+                    break;
                 }
-            } catch(e) {
-                // This part is mainly called in case of a CORS error.
-                resolve(new ErrorForDisplay(500, e.toString()))
-            }
         })
     }
 

@@ -1,5 +1,5 @@
 import AuthMiddleware from "../common/middleware/AuthMiddleware.js";
-import TokenFactory from "../common/tools/Factories/TokenFactory.js";
+import Tokens from "../common/tools/Tokens.js";
 import UserModel from "../model/UserModel.js";
 
 class AuthController {
@@ -11,18 +11,15 @@ class AuthController {
      * @returns {Promise<void>}
      */
     static async login(req, res) {
-        if(await AuthMiddleware.authenticate(req.body.login, req.body.password)) {
+        if (await AuthMiddleware.authenticate(req.body.login, req.body.password)) {
+            // We find the user concerned by the login.
             let userConcerned = await UserModel.getUserByLogin(req.body.login)
-
-            // We prepare the auth and refresh tokens.
-            let tokens = TokenFactory.createTokens(userConcerned.id)
-
             // We send the generated tokens.
-            return res.send(tokens)
+            return res.send(Tokens.generateTokens(userConcerned.id))
         } else {
             // We send an 401 auth code.
             return res.status(401)
-               .send("Invalid login or password.")
+                      .send("Invalid login or password.")
         }
     }
 

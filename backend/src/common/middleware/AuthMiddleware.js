@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import UserModel from "../../model/UserModel.js";
+import Tokens from "../tools/Tokens.js";
 
 class AuthMiddleware {
 
@@ -61,8 +62,10 @@ class AuthMiddleware {
         return await AuthMiddleware.comparePassword(password, userConcerned.hash)
     }
 
-    static checkTokens(tokens) {
-
+    static checkTokens(auth, refresh) {
+        // We check the user's tokens.
+        let t = new Tokens(auth, refresh)
+        let data = t.verifyAuthToken()
     }
 
 

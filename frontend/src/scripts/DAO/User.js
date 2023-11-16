@@ -1,4 +1,5 @@
 import {api} from './API.js'
+import Data from "../../assets/static/Data.js";
 
 class User {
 
@@ -6,7 +7,7 @@ class User {
         return api.request(
             api.METHODS.POST,
             '/auth/login',
-            `username=${login}&password=${password}`,
+            `login=${login}&password=${password}`,
             api.CONTENT_TYPE.URL_ENCODED
         )
     }
@@ -46,21 +47,9 @@ class User {
         let promise = User.loginUser(login, password)
             .then((data) => {
                 if (data.error_code === undefined) {
-                    User.saveToLocalStorage(data['access_token'], data['refresh_token'])
-                    return { login_successful: true }
-                } else {
-                    if (data.detail === "Incorrect login or password."){
-                        return {
-                            login_successful: false,
-                            reason: Data.COMPARISON_DATA.ERROR_INVALID_CREDENTIALS
-                        }
-                    } else {
-                        return {
-                            login_successful: false,
-                            reason: data.statusText
-                        }
-                    }
+                    User.saveToLocalStorage(data.access_token, data.refresh_token)
                 }
+                return data
             })
         return await promise
     }

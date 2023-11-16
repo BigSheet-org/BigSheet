@@ -9,10 +9,10 @@ import Data from "../../assets/static/Data.js";
 class API {
 
     /**
-     * @description URL to API. if dev mode is used (npm run dev) : localhost, otherwise, it is the deployed API.
+     * @description URL to API.
      * @type {string}
      */
-    API_URL = import.meta.env.DEV ? 'http://localhost:8000' : '' ;
+    API_URL = 'http://localhost:8000';
 
     /**
      * @enum {CONTENT_TYPE}
@@ -60,7 +60,7 @@ class API {
         return new Promise(async (resolve) => {
             // Building header for the request
             const header = {
-                "Access-Control-Allow-Origin" : this.API_URL,
+                "Access-Control-Allow-Origin": this.API_URL,
                 "Accept": "application/json",                           // <- Indicates what data the application accepts
                 "Origin": window.location.origin,
             }
@@ -80,34 +80,27 @@ class API {
                 Data.PROGRAM_VALUES.TIMEOUT_BEFORE_REQUEST_FAILURE
             )
 
-            try {
-                // Fetching data from the server
-                const response = await fetch(
-                    `${this.API_URL}${url}`,
-                    {
-                        method: method,
-                        headers: header,
-                        mode: 'cors',
-                        body: body
-                    }
-                );
+            // Fetching data from the server
+            const response = await fetch(
+                `${this.API_URL}${url}`,
+                {
+                    method: method,
+                    headers: header,
+                    mode: 'cors',
+                    body: body
+                });
 
-                // When we got our response, we check the status code.
-                let data = await response.json()
-                switch (response.status){
-                    // Successful response
-                    case 200:
-                        resolve(data)
-                        break;
-                    // Unsuccessful response
-                    default :
-                        resolve(new ErrorForDisplay(response.status, data.detail))
-                        break;
+            // When we got our response, we check the status code.
+            let data = await response.json()
+            switch (response.status){
+                // Successful response
+                case 200:
+                    resolve(data)
+                    break;// Unsuccessful response
+                default :
+                    resolve(new ErrorForDisplay(response.status, data.detail))
+                    break;
                 }
-            } catch(e) {
-                // This part is mainly called in case of a CORS error.
-                resolve(new ErrorForDisplay(500, e.toString()))
-            }
         })
     }
 

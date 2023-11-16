@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "dev": "node .",
+    "checkstyle": "npx eslint ./src/*/*",
     "config_win": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command .\\init.ps1",
     "config_unix": "sh ./init.sh"
   },
@@ -12,8 +13,23 @@
   "author": "MARCELIN Maxime",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "redis": "^4.6.10",
+    "sequelize": "^6.33.0"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "eslint": "^8.52.0",
+    "eslint-config-semistandard": "^17.0.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-n": "^15.7.0",
+    "eslint-plugin-promise": "^6.1.1"
+  }
 }

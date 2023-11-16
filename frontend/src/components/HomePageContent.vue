@@ -3,6 +3,11 @@ import Routes from "../assets/static/Routes.js";
 import User from "../scripts/DAO/User.js";
 
 export default {
+    data() {
+        return {
+            user: null,
+        }
+    },
     computed: {
         Routes() {
             return Routes
@@ -12,7 +17,14 @@ export default {
         }
     },
     methods: {
-
+        async fetchUserData() {
+            this.user = await User.fetchUserData();
+        }
+    },
+    beforeMount() {
+        if (this.CheckAuthentication) {
+            this.fetchUserData();
+        }
     }
 
 }
@@ -30,6 +42,6 @@ export default {
     </div>
 
     <div v-else>
-        <h1>Bienvenue !</h1>
+        <h1>Bienvenue {{user !== null ? user.firstname : "" }} !</h1>
     </div>
 </template>

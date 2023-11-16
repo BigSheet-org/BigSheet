@@ -40,9 +40,6 @@ class UserMiddleware {
         let userID = Number(await Tokens.getUserIdFromToken(await Tokens.getAuthTokenFromHeader(req)));
         let userIDToDelete = Number(req.params.id);
 
-        console.log(userID)
-        console.log(userIDToDelete)
-
         if(userID !== userIDToDelete) {
             return res.status(401)
                       .send(Data.ANSWERS.ERRORS_401.INSUFFICIENT_PERMS)

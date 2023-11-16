@@ -13,15 +13,17 @@
         align-items: start;
         grid-column: 1;
         align-self: start;
+
         img {
             width: 100px;
             height: 100px;
             grid-column: 1;
-            &:hover {
-                filter: drop-shadow(2mm 2mm 2mm variables.$hover_shadow);
-            }
+            margin-top: 0.5em;
+
+            &:hover { filter: drop-shadow(2mm 2mm 2mm variables.$hover_shadow); }
         }
         h1 {
+            margin-top: 0.5em;
             font-size: 200%;
             grid-column: 2;
             align-self: center;
@@ -33,7 +35,12 @@
         grid-template-rows: auto auto;
         justify-self: center;
         grid-column: 2;
+        height: fit-content;
         margin-top: 1em;
         margin-left: 80%;
+
+        a {
+            margin-bottom: 0.5em;
+        }
     }
 }

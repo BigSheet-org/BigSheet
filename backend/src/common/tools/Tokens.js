@@ -7,6 +7,7 @@ class Tokens {
 
     /**
      * Collection of data useful for the token's management and generation.
+     *
      * @type {{AUTH_EXP_TIME: string, REFRESH_SECRET: string, REFRESH_EXP_TIME: string, AUTH_SECRET: string}}
      */
     static UTILS = {
@@ -53,19 +54,16 @@ class Tokens {
      * This method checks if the auth token is valid.
      * (Not expired, not in the blacklist and signed properly.)
      */
-    static verifyAuthToken(auth) {
-        return Tokens.verifyToken(auth, Tokens.UTILS.AUTH_SECRET) 
-            && !Tokens.isBanned(auth)
+    static async verifyAuthToken(auth) {
+        return Tokens.verifyToken(auth, Tokens.UTILS.AUTH_SECRET)
     }
 
     /**
      * This method checks if the refresh token is valid.
      * (Not expired, not in the blacklist and signed properly.)
      */
-    static verifyRefreshTokens(refresh) {
+    static async verifyRefreshTokens(refresh) {
         return Tokens.verifyToken(refresh, Tokens.UTILS.REFRESH_SECRET)
-            && !Tokens.isBanned(refresh)
-
     }
 
     /**
@@ -76,20 +74,18 @@ class Tokens {
      * @param secret Secret to use to decode the token.
      * @returns {*|{error: string, status: boolean}}
      */
-    static verifyToken(token, secret) {
+    static async verifyToken(token, secret) {
         try {
-            return jwt.verify(token, secret)
-        } catch (e) {
-            if (e.toString() === "TokenExpiredError: jwt expired") {
-                return {
-                    status: false,
-                    error: Data.SERVER_COMPARISON_DATA.TOKENS.EXPIRED
-                }
+            if(await Tokens.isBanned(token)) {
+                return {error: Data.SERVER_COMPARISON_DATA.TOKENS.BANNED}
             } else {
-                return {
-                    status: false,
-                    error: Data.SERVER_COMPARISON_DATA.TOKENS.INVALID
-                }
+                return jwt.verify(token, secret)
+            }
+        } catch (e) {
+            if (e.toString() === Data.SERVER_COMPARISON_DATA.TOKENS.EXPIRED_JWT_ERROR) {
+                return {error: Data.SERVER_COMPARISON_DATA.TOKENS.EXPIRED}
+            } else {
+                return {error: Data.SERVER_COMPARISON_DATA.TOKENS.INVALID}
             }
         }
     }
@@ -110,11 +106,11 @@ class Tokens {
     /**
      * This method checks if the token is present in the blacklist or not.
      *
-     * @param auth Token to check.
+     * @param token Token to check.
      * @returns {boolean} Returns if it is in the blacklist or not.
      */
-    static isBanned(auth) {
-        return RedisClient.get(auth) !== null;
+    static async isBanned(token) {
+        return await RedisClient.get(token) !== null;
     }
 }
 

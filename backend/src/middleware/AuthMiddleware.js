@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
-import UserModel from "../../model/UserModel.js";
-import Tokens from "../tools/Tokens.js";
-import Data from "../data/Data.js";
+import UserModel from "../model/UserModel.js";
+import Tokens from "../common/tools/Tokens.js";
+import Data from "../common/data/Data.js";
 
 class AuthMiddleware {
 
@@ -21,6 +21,37 @@ class AuthMiddleware {
         return next()
     }
 
+    /**
+     * Validator for the login request. Check if the mandatory fields are present.
+     *
+     * @param req Request provided.
+     * @param res Response to send.
+     * @param next Next method to call.
+     * @returns {*}
+     */
+    static hasValidLogoutFields(req, res, next){
+        if (!req.body.refresh_token || !req.body.access_token) {
+            return res.status(400)
+                .send(Data.ANSWERS.ERRORS_400.MISSING_FIELDS)
+        }
+        return next()
+    }
+
+    /**
+     * Validator for the login request. Check if the mandatory fields are present.
+     *
+     * @param req Request provided.
+     * @param res Response to send.
+     * @param next Next method to call.
+     * @returns {*}
+     */
+    static hasValidRefreshFields(req, res, next){
+        if (!req.body.refresh_token) {
+            return res.status(400)
+                .send(Data.ANSWERS.ERRORS_400.MISSING_FIELDS)
+        }
+        return next()
+    }
 
     /**
      * This method will provide the hash of the plain text password provided.
@@ -63,20 +94,54 @@ class AuthMiddleware {
         return await AuthMiddleware.comparePassword(password, userConcerned.hash)
     }
 
-    static checkAuthToken(req, res, next) {
-        let data = Tokens.verifyAuthToken(
-            req.headers.authorization.replace(
+    /**
+     * This method checks if the auth token is valid.
+     * If it is, we call the next handler of the route.
+     *
+     * @param req Request provided.
+     * @param res Response to send.
+     * @param next Next handler to call.
+     * @returns {*}
+     */
+    static async checkAuthToken(req, res, next) {
+        // We try to find the auth token.
+        let token;
+        if (req.headers.authorization) {        // If it was found in the header.
+            token = req.headers.authorization.replace(
                 'Bearer ',
                 ''
-            ))
+            )
+        } else {                                // We try to find it in the body.
+            token = req.body.access_token
+        }
+        let data = await Tokens.verifyAuthToken(token)
+        // Don't worry, if no token ere found, the validate next method will send a 401 error.
         return AuthMiddleware.validateNext(data, res, next)
     }
 
-    static checkRefreshToken(req, res, next) {
-        let data = Tokens.verifyRefreshTokens(req.body.refresh_token)
+    /**
+     * This method checks if the auth refresh is valid.
+     * If it is, we call the next handler of the route.
+     *
+     * @param req Request provided.
+     * @param res Response to send.
+     * @param next Next handler to call.
+     * @returns {*}
+     */
+    static async checkRefreshToken(req, res, next) {
+        let data = await Tokens.verifyRefreshTokens(req.body.refresh_token)
         return AuthMiddleware.validateNext(data, res, next)
     }
 
+    /**
+     * This method serves as a common checker for the tokens, since the results from the method that checks the
+     * validity of the tokens are the same between auth and refresh tokens.
+     *
+     * @param data Data extracted from the token.
+     * @param res Response to send.
+     * @param next Next handler to call.
+     * @returns {*}
+     */
     static validateNext(data, res, next) {
         if (!data.status && data.error !== undefined) {
             // If the token was expired or invalid.

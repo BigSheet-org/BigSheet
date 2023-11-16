@@ -1,6 +1,7 @@
 import express from "express";
 import UserController from "../controllers/UserController.js";
-import AuthMiddleware from "../common/middleware/AuthMiddleware.js";
+import AuthMiddleware from "../middleware/AuthMiddleware.js";
+import UserMiddleware from "../middleware/UserMiddleware.js";
 
 const userRouter = express.Router()
 userRouter
@@ -16,7 +17,7 @@ userRouter
         UserController.getById
     ])
     .post('/register', [
-
+        UserMiddleware.hasValidRegisterFields,
     ])
 
 

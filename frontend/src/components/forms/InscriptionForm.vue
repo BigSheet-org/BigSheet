@@ -3,6 +3,9 @@ import Input from "./Input.vue";
 import Data from "../../assets/static/Data.js";
 import Routes from "../../assets/static/Routes.js";
 import Loading from "../common/Loading.vue";
+import Utils from "../../scripts/Utility/Utils.js";
+import User from "../../scripts/DAO/User.js";
+import router from "../../router/index.js";
 
 export default {
     computed: {
@@ -15,38 +18,118 @@ export default {
     },
     components: {Loading, Input},
     methods: {
-        changeFirstname() {
-
+        changeField(payload, field) {
+            this.user[field] = payload;
         },
-        changeLastname() {
-
+        resetFields() {
+            for (let attribute in this.error) {
+                this.error[attribute] = false
+            }
+            for (let attribute in this.correct) {
+                this.correct[attribute] = false
+            }
         },
-        changeMail() {
+        checkFields() {
+            let canProceed = true;
+            // We check if all fields are filled.
+            for (let attribute in this.user) {
+                if(this.user[attribute] === "" || this.user[attribute] === undefined) {
+                    this.error[attribute] = true;
+                    this.error_messages[attribute] = Data.MESSAGES.MANDATORY_FIELD;
+                    canProceed = false;
+                } else {
+                    this.correct[attribute] = true;
+                }
+            }
+            // Special checks
+            // Passwords must match
+            if (this.user.password !== this.user.confirmPassword) {
+                this.error["password"] = true;
+                this.error["confirmPassword"] = true;
+                this.error_messages["confirmPassword"] = Data.MESSAGES.PASSWORD_DONT_MATCH;
+                canProceed = false;
+            }
+            // Passwords must be secure enough
+            if (!Utils.validatePassword(this.user.password)) {
+                this.error["password"] = true;
+                this.error_messages["password"] = Data.MESSAGES.PASSWORD_NOT_SECURE;
+                canProceed = false;
+            }
+            // Mail must be correct
+            if (!Utils.validateEmail(this.user.mail)) {
+                this.error["mail"] = true;
+                canProceed = false;
+            }
 
+            return canProceed
         },
-        changeLogin() {
-
-        },
-        changePassword() {
-
-        },
-        changeConfirmPassword() {
-
-        },
-        registerUser() {
+        async registerUser() {
             this.loading = true;
-            setTimeout(() => { this.loading = false}, 2000)
+
+            if (this.checkFields()) {
+                let result = await User.registerUser(this.user);
+
+                if (result.error_code) {
+                    switch (result.error_message) {
+                        case Data.MESSAGES.API_ANSWERS.LOGIN_ALREADY_USED:
+                            this.error["login"] = true;
+                            this.error_messages["login"] = Data.MESSAGES.LOGIN_ALREADY_USED;
+                            break;
+
+                        case Data.MESSAGES.API_ANSWERS.MAIL_ALREADY_USED:
+                            this.error["mail"] = true;
+                            this.error_messages["mail"] = Data.MESSAGES.MAIL_ALREADY_USED;
+                            break;
+                    }
+
+                } else {
+                    this.showPopup = true
+                    setTimeout(
+                        () => { router.push(Routes.HOME.path)},
+                        Data.PROGRAM_VALUES.TIMEOUT_BEFORE_REDIRECT
+                    )
+                }
+            }
+
+            this.loading = false
         }
     },
     data(){
         return {
-            firstname: "",
-            lastname: "",
-            mail: "",
-            login: "",
-            password: "",
-            confirmPassword: "",
+            user: {
+                firstname: undefined,
+                lastname: undefined,
+                login: undefined,
+                mail: undefined,
+                password: undefined,
+                confirmPassword: undefined
+            },
+            error: {
+                firstname: false,
+                lastname: false,
+                login: false,
+                mail: false,
+                password: false,
+                confirmPassword: false,
+            },
+            error_messages: {
+                firstname: "",
+                lastname: "",
+                login: "",
+                mail: "",
+                password: "",
+                confirmPassword: "",
+            },
+            correct: {
+                firstname: false,
+                lastname: false,
+                login: false,
+                mail: false,
+                password: false,
+                confirmPassword: false,
+            },
             loading: false,
+            showPopup: false,
         }
     }
 }
@@ -56,31 +139,57 @@ export default {
     <div class="form">
         <h1>Inscription</h1>
 
-        <Input name="Nom"
-               :input-type="Data.INPUT_TYPES.TEXT"
-               :prefill="this.lastname"
-               @changeField="this.changeLastname()" />
         <Input name="Prénom"
                :input-type="Data.INPUT_TYPES.TEXT"
-               :prefill="this.firstname"
-               @changeField="this.changeFirstname()" />
-        <Input name="Adresse E-mail"
+               :prefill="this.user.firstname"
+               :error="this.error['firstname']"
+               :error_message="this.error_messages['firstname']"
+               :right="this.correct['firstname']"
+               @click="this.resetFields()"
+               @changeField="(payload) => { this.changeField(payload,'firstname') }"/>
+
+        <Input name="Nom"
+               :input-type="Data.INPUT_TYPES.TEXT"
+               :prefill="this.user.lastname"
+               :error="this.error['lastname']"
+               :error_message="this.error_messages['lastname']"
+               :right="this.correct['lastname']"
+               @click="this.resetFields()"
+               @changeField="(payload) => { this.changeField(payload,'lastname') }"/>
+
+        <Input name="Mail"
                :input-type="Data.INPUT_TYPES.MAIL"
-               :prefill="this.mail"
-               @changeField="this.changeMail()" />
+               :prefill="this.user.mail"
+               :error="this.error['mail']"
+               :error_message="this.error_messages['mail']"
+               :right="this.correct['mail']"
+               @click="this.resetFields()"
+               @changeField="(payload) => { this.changeField(payload,'mail') }"/>
+
         <Input name="Identifiant"
                :input-type="Data.INPUT_TYPES.TEXT"
-               :prefill="this.login"
-               @changeField="this.changeLogin()" />
+               :prefill="this.user.login"
+               :error="this.error['login']"
+               :error_message="this.error_messages['login']"
+               :right="this.correct['login']"
+               @click="this.resetFields()"
+               @changeField="(payload) => { this.changeField(payload,'login') }"/>
 
         <Input name="Mot de passe"
                :input-type="Data.INPUT_TYPES.PASSWORD"
-               :prefill="this.password"
-               @changeField="this.changePassword()"/>
+               :error="this.error['password']"
+               :error_message="this.error_messages['password']"
+               :right="this.correct['password']"
+               @click="this.resetFields()"
+               @changeField="(payload) => { this.changeField(payload,'password') }"/>
+
         <Input name="Confirmer le mot de passe"
                :input-type="Data.INPUT_TYPES.PASSWORD"
-               :prefill="this.confirmPassword"
-               @changeField="this.changeConfirmPassword()"/>
+               :error="this.error['confirmPassword']"
+               :error_message="this.error_messages['confirmPassword']"
+               :right="this.correct['confirmPassword']"
+               @click="this.resetFields()"
+               @changeField="(payload) => { this.changeField(payload,'confirmPassword') }"/>
 
         <div v-if="!this.loading"
              class="submit">
@@ -93,4 +202,5 @@ export default {
 
         <Loading v-else/>
     </div>
+
 </template>

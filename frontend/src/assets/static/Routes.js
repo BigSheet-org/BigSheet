@@ -11,6 +11,10 @@ class Routes {
         name: "inscription",
         path: "/inscription"
     }
+    static COMPTE = {
+        name: "compte",
+        path: "/compte"
+    }
     static NOT_FOUND = {
         name: "404",
         path: "/404"

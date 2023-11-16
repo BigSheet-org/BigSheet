@@ -5,12 +5,16 @@ class Data {
             DEFAULT_OK_ANSWER: { "message": "ok" }
         },
         ERRORS_401: {
-            EXPIRED_TOKEN: { "message": "Token has expired."},
-            INVALID_TOKEN: { "message": "Token is invalid."},
-            INVALID_CREDENTIALS: { "message": "Invalid login or password"},
+            EXPIRED_TOKEN: { "message": "Token has expired." },
+            INVALID_TOKEN: { "message": "Token is invalid." },
+            INVALID_CREDENTIALS: { "message": "Invalid login or password" },
+            INSUFFICIENT_PERMS: { "message": "You don't have the permission to do this operation." }
         },
         ERRORS_400: {
-            MISSING_FIELDS: {"message": "Mandatory fields are missing."}
+            MISSING_FIELDS: {"message": "Mandatory fields are missing."},
+            PASSWORD_DONT_MATCH: {"message": "Passwords do not match."},
+            LOGIN_ALREADY_USED: {"message": "Provided login was already used."},
+            MAIL_ALREADY_USED: {"message": "Provided mail was already used."}
         }
     }
 

@@ -26,6 +26,9 @@ class AuthController {
 
     static async logout(req, res) {
         // We need to ban the auth and refresh tokens.
+        console.log(req.body.access_token)
+
+
         await Tokens.banToken(req.body.access_token, Tokens.verifyAuthToken(req.body.access_token))
         await Tokens.banToken(req.body.refresh_token, Tokens.verifyAuthToken(req.body.refresh_token))
         // If both operations have completed successfully, we send a confirmation message.

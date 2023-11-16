@@ -27,6 +27,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - TZ=Europe/Paris
       - PGTZ=Europe/Paris
+    restart: always
 
   adminer:
     image: adminer

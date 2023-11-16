@@ -17,7 +17,9 @@ class Data {
     static SERVER_COMPARISON_DATA = {
         TOKENS: {
             EXPIRED: "expired",
-            INVALID: "invalid"
+            INVALID: "invalid",
+            BANNED: "banned",
+            EXPIRED_JWT_ERROR: "TokenExpiredError: jwt expired",
         }
     }
 }

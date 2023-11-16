@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import UserModel from "../../model/UserModel.js";
 import Tokens from "../tools/Tokens.js";
-import {validator} from "sequelize/lib/utils/validator-extras";
+import Data from "../data/Data.js";
 
 class AuthMiddleware {
 
@@ -16,7 +16,7 @@ class AuthMiddleware {
     static hasValidLoginFields(req, res, next){
         if (!req.body.login || !req.body.password) {
             return res.status(400)
-                      .send("Mandatory fields are missing.")
+                      .send(Data.ANSWERS.ERRORS_400.MISSING_FIELDS)
         }
         return next()
     }
@@ -80,13 +80,12 @@ class AuthMiddleware {
     static validateNext(data, res, next) {
         if (!data.status && data.error !== undefined) {
             // If the token was expired or invalid.
-            if(data.error === "expired") {
-                console.log("expired")
+            if(data.error === Data.SERVER_COMPARISON_DATA.TOKENS.EXPIRED) {
                 return res.status(401)
-                    .send({"message": "Expired Token"})
+                    .send(Data.ANSWERS.ERRORS_401.EXPIRED_TOKEN)
             } else {
                 return res.status(401)
-                    .send({"message": "Invalid Token"})
+                    .send(Data.ANSWERS.ERRORS_401.INVALID_TOKEN)
             }
         } else {
             return next()

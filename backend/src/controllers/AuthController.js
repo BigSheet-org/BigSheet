@@ -1,6 +1,7 @@
 import AuthMiddleware from "../common/middleware/AuthMiddleware.js";
 import Tokens from "../common/tools/Tokens.js";
 import UserModel from "../model/UserModel.js";
+import Data from "../common/data/Data.js";
 
 class AuthController {
     /**
@@ -19,13 +20,15 @@ class AuthController {
         } else {
             // We send an 401 auth code.
             return res.status(401)
-                      .send("Invalid login or password.")
+                      .send(Data.ANSWERS.ERRORS_401.INVALID_CREDENTIALS)
         }
     }
 
     static async logout(req, res) {
         // We need to ban the auth and refresh tokens.
 
+
+        return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER)
     }
 
     static async refreshTokens(req, res) {

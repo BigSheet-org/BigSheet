@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import RedisClient from "./redis.js";
+import Data from "../data/Data.js";
 
 class Tokens {
 
@@ -43,14 +44,14 @@ class Tokens {
         let data = {
             time: Date(),
             userID: userID,
-            salt: bcrypt.genSalt(10)        // TODO : Fix the salt.
+            salt: bcrypt.genSalt(10, (err, salt) => { return salt })
         }
         return jwt.sign(data, secret, options)
     }
 
     /**
      * This method checks if the auth token is valid.
-     * (Not expired and signed properly.)
+     * (Not expired, not in the blacklist and signed properly.)
      */
     static verifyAuthToken(auth) {
         return Tokens.verifyToken(auth, Tokens.UTILS.AUTH_SECRET) 
@@ -59,7 +60,7 @@ class Tokens {
 
     /**
      * This method checks if the refresh token is valid.
-     * (Not expired and signed properly.)
+     * (Not expired, not in the blacklist and signed properly.)
      */
     static verifyRefreshTokens(refresh) {
         return Tokens.verifyToken(refresh, Tokens.UTILS.REFRESH_SECRET)
@@ -82,22 +83,36 @@ class Tokens {
             if (e.toString() === "TokenExpiredError: jwt expired") {
                 return {
                     status: false,
-                    error: "expired"
+                    error: Data.SERVER_COMPARISON_DATA.TOKENS.EXPIRED
                 }
             } else {
                 return {
                     status: false,
-                    error: "invalid"
+                    error: Data.SERVER_COMPARISON_DATA.TOKENS.INVALID
                 }
             }
         }
     }
 
+    /**
+     * This method allows us to blacklist some tokens that have not expired yet.
+     * They will be automatically removed at the end of their validity period.
+     *
+     * @param token Token to ban.
+     * @param dataInToken Data extracted from the token.
+     * @returns {Promise<void>}
+     */
     static async banToken(token, dataInToken) {
         await RedisClient.set(token, dataInToken.userID)
         await RedisClient.expireAt(token, dataInToken.exp)
     }
 
+    /**
+     * This method checks if the token is present in the blacklist or not.
+     *
+     * @param auth Token to check.
+     * @returns {boolean} Returns if it is in the blacklist or not.
+     */
     static isBanned(auth) {
         return RedisClient.get(auth) !== null;
     }

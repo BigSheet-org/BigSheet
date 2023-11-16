@@ -9,9 +9,9 @@ authRouter
         AuthController.login
     ])
     /** Route for the logout of the user.*/
-    .post('/logout', (req, res) => {
+    .post('/logout', [
 
-    })
+    ])
     /** Route for the refresh operation of the tokens.*/
     .post('/refresh', [
         AuthMiddleware.checkRefreshToken,

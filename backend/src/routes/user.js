@@ -15,9 +15,9 @@ userRouter
         AuthMiddleware.checkAuthToken,
         UserController.getById
     ])
-    .post('/register', (req, res) => {
+    .post('/register', [
 
-    })
+    ])
 
 
 export default userRouter

@@ -78,6 +78,12 @@ docker-compose -f docker-compose_backdev.yml up -d
 docker-compose up -d
 ```
 
+Si vous développez l'application backend, vous pouvez lancer le serveur Node avec les commandes suivantes : 
+```bash
+cd backend
+node .
+```
+
 ## Contribution
 
 Quatre développeurs contribuent au projet actuellement : 

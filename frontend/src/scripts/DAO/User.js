@@ -1,5 +1,4 @@
 import {api} from './API.js'
-import Data from "../../assets/static/Data.js";
 
 class User {
 
@@ -60,16 +59,8 @@ class User {
         window.location.reload()
     }
 
-    static registerUser(firstname, lastname, mail, phone, login, password, confirm_password) {
-        const body = JSON.stringify({
-            "firstname": firstname,
-            "lastname": lastname,
-            "mail": mail,
-            "phone": phone,
-            "login": login,
-            "password": password,
-            "confirm_password": confirm_password
-        })
+    static registerUser(user) {
+        const body = JSON.stringify(user)
         return api.request(api.METHODS.POST, "/users/register", body)
     }
 

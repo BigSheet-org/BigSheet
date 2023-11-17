@@ -17,7 +17,7 @@ class UserModel extends Model {
             },
         });
         users.length === 0 ? users = null : users = users[0];
-        return users
+        return users;
     }
 
     /**
@@ -33,7 +33,21 @@ class UserModel extends Model {
             where: { login: login },
         });
         users.length === 0 ? users = null : users = users[0];
-        return users
+        return users;
+    }
+
+    /**
+     * Returns the user corresponding to the mail provided.
+     *
+     * @param mail Mail to find.
+     * @returns {Promise<UserModel>} It returns null if no user were found. Returns the user otherwise.
+     */
+    static async getUserByMail(mail) {
+        let users = await UserModel.findAll({
+            where: { mail: mail },
+        });
+        users.length === 0 ? users = null : users = users[0];
+        return users;
     }
 }
 
@@ -72,6 +86,6 @@ UserModel.init(
         sequelize,
         tableName: 'User'
     }
-)
+);
 
 export default UserModel

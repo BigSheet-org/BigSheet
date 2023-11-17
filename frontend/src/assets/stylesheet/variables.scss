@@ -8,6 +8,7 @@ $dark_background_color: #242424;
 $dark_form_background_color: #363636;
 $dark_input_background_color: transparent;
 $dark_navbar_color: #d09110;
+$dark_wrapper_background: #363636;
 
 /* -> Light theme */
 $light_background_color: #e8dbd2;
@@ -72,6 +73,7 @@ $pop_up_scale_max: 1.10;
 $pop_up_scale_min: 0;
 $pop_up_scale_mid: 1;
 $spinner_dimensions: 100px;
+$popup_opacity_factor: 50%;
 
 // --- Popup --- //
 $input_label_focused_scale: 0.9;

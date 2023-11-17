@@ -98,7 +98,7 @@ class API {
                     resolve(data)
                     break;// Unsuccessful response
                 default :
-                    resolve(new ErrorForDisplay(response.status, data.detail))
+                    resolve(new ErrorForDisplay(response.status, data.message))
                     break;
                 }
         })

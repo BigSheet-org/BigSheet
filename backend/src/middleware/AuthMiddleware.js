@@ -107,10 +107,7 @@ class AuthMiddleware {
         // We try to find the auth token.
         let token;
         if (req.headers.authorization) {        // If it was found in the header.
-            token = req.headers.authorization.replace(
-                'Bearer ',
-                ''
-            )
+            token = await Tokens.getAuthTokenFromHeader(req)
         } else {                                // We try to find it in the body.
             token = req.body.access_token
         }

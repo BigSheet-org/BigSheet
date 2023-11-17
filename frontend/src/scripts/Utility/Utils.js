@@ -28,6 +28,25 @@ class Utils {
         let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/
         return passwordRegex.test(password);
     }
+
+    /**
+     * This method resets to default values the fields that displays the errors.
+     *
+     * @param errors Errors object. Contains boolean values.
+     * @param error_message Error messages object. Contains string values.
+     * @param correct Correct object. Contains boolean values.
+     */
+    static resetErrorAndCorrectValues(errors, error_message, correct) {
+        for (let attribute in errors) {
+            errors[attribute] = false;
+        }
+        for (let attribute in error_message) {
+            error_message[attribute] = "";
+        }
+        for (let attribute in correct) {
+            correct[attribute] = false;
+        }
+    }
 }
 
 export default Utils

@@ -18,17 +18,19 @@ class Data {
         TEXTAREA: "textarea",
         TEXT: "text",
     }
+
     static MESSAGES = {
         PASSWORD_DONT_MATCH: "Les mots de passe ne correspondent pas.",
         PASSWORD_NOT_SECURE: "Le mot de passe doit contenir au moins 1 lettre minuscule, 1 lettre majuscule et 1 chiffre.",
         MANDATORY_FIELD: "Ce champ est obligatoire.",
         LOGIN_ALREADY_USED: "Cet identifiant n'est pas disponible.",
         MAIL_ALREADY_USED: "Cette adresse mail est déjà utilisée.",
+        MAIL_INVALID: "Cette adresse mail n'est pas valide.",
 
         API_ANSWERS : {
             LOGIN_ALREADY_USED: "Provided login was already used.",
             MAIL_ALREADY_USED: "Provided mail was already used."
-        }
+        },
     }
 }
 

@@ -55,12 +55,12 @@
         },
         computed: {
             Data() { return Data },
+            IsFilled() { return this.model !== undefined && this.model !== "" ; },
             id(){ return 'id_'+this.name }
         },
 		data(){
 			return{
                 model: "",
-                address_object: undefined,
             }
 		},
 		methods:{
@@ -71,17 +71,37 @@
                 else { this.$emit('changeField', this.model) }
             },
             formatPhone(){ this.model = Formatters.formatPhone(this.model) },
+            handlePropChange(newProp, oldProp) {
+                // Setting up default values for the fields
+                if(this.inputType === Data.INPUT_TYPES.select
+                    && newProp === undefined) {
+                    this.model = 0;
+                }
+
+                // If prefill elements are given, we setup the default values.
+                this.model = newProp;
+
+                if(this.inputType === Data.INPUT_TYPES.PHONE_NUMBER) {
+                    this.formatPhone();
+                }
+            }
         },
-        beforeMount() {
+        // Watching changes on the props.
+        watch: {
+            prefill: function(newVal, oldVal) {
+                this.handlePropChange(newVal, oldVal);
+            }
+        },
+        mounted() {
             // Setting up default values for the fields
-            if(this.inputType === Data.INPUT_TYPES.select) { this.model = 0 }
+            if(this.inputType === Data.INPUT_TYPES.select) { this.model = 0; }
 
             // If prefill elements are given, we setup the default values.
             if(this.prefill !== undefined) {
-                this.model = this.prefill
+                this.model = this.prefill;
 
                 if(this.inputType === Data.INPUT_TYPES.PHONE_NUMBER) {
-                    this.formatPhone()
+                    this.formatPhone();
                 }
             }
         }
@@ -97,7 +117,7 @@
                :class="{right: this.right, wrong: this.error}"
                :id="id"
                :type="this.inputType"
-               v-model="model"
+               v-model="this.model"
                @change="this.sendData">
 
         <input v-if="this.inputType === Data.INPUT_TYPES.PHONE_NUMBER"
@@ -105,7 +125,7 @@
                :id="id"
                :class="{right: this.right, wrong: this.error}"
                :type="this.inputType"
-               v-model="model"
+               v-model="this.model"
                @keyup="this.formatPhone"
                @change="this.sendData">
 
@@ -113,7 +133,7 @@
                 :id="id"
                 :disabled="this.disabled"
                 :class="{right: this.right, wrong: this.error}"
-                v-model="model"
+                v-model="this.model"
                 @change="this.sendData">
             <option :value="0">
                 - -                 <!-- Default selected option -->
@@ -128,7 +148,7 @@
                :id="id"
                :disabled="this.disabled"
                :class="{right: this.right, wrong: this.error}"
-               v-model="model"
+               v-model="this.model"
                type="checkbox"
                @change="this.sendData">
             <div v-if="this.inputType === Data.INPUT_TYPES.CHECKBOX && this.model">Oui</div>
@@ -138,14 +158,14 @@
                   :id="id"
                   :class="{right: this.right, wrong: this.error}"
                   :disabled="this.disabled"
-                  v-model="model"
+                  v-model="this.model"
                   @change="this.sendData"/>
 
         <input v-if="this.inputType === Data.INPUT_TYPES.PASSWORD"
                :id="id"
                :class="{right: this.right, wrong: this.error}"
                :disabled="this.disabled"
-               v-model="model"
+               v-model="this.model"
                :type="this.inputType"
                @change="this.sendData">
 
@@ -153,13 +173,13 @@
                :id="id"
                :class="{right: this.right, wrong: this.error}"
                :disabled="this.disabled"
-               v-model="model"
+               v-model="this.model"
                :type="this.inputType"
                @change="this.sendData">
 
         <label :class="{right : this.right,
                 wrong : this.error,
-                filled: this.model !== ''}"
+                filled: this.IsFilled}"
                :for="id">
             {{this.name}}
         </label>

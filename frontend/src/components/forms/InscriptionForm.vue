@@ -63,6 +63,7 @@ export default {
             // Mail must be correct
             if (!Utils.validateEmail(this.user.mail)) {
                 this.error["mail"] = true;
+                this.error_messages["mail"] = Data.MESSAGES.MAIL_INVALID;
                 canProceed = false;
             }
 
@@ -129,7 +130,7 @@ export default {
                 confirmPassword: false,
             },
             loading: false,
-            showPopup: false,
+            showPopup: true,
         }
     }
 }

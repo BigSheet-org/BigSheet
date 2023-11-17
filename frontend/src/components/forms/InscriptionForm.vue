@@ -6,6 +6,7 @@ import Loading from "../common/Loading.vue";
 import Utils from "../../scripts/Utility/Utils.js";
 import User from "../../scripts/DAO/User.js";
 import router from "../../router/index.js";
+import PopUp from "../common/PopUp.vue";
 
 export default {
     computed: {
@@ -16,10 +17,14 @@ export default {
             return Data
         }
     },
-    components: {Loading, Input},
+    components: {PopUp, Loading, Input},
     methods: {
         changeField(payload, field) {
             this.user[field] = payload;
+        },
+        hideConfirmMessage() {
+            this.showPopup = false;
+            router.push(Routes.HOME.path)
         },
         resetFields() {
             for (let attribute in this.error) {
@@ -84,13 +89,8 @@ export default {
 
                 } else {
                     this.showPopup = true
-                    setTimeout(
-                        () => { router.push(Routes.HOME.path)},
-                        Data.PROGRAM_VALUES.TIMEOUT_BEFORE_REDIRECT
-                    )
                 }
             }
-
             this.loading = false
         }
     },
@@ -136,71 +136,79 @@ export default {
 </script>
 
 <template>
-    <div class="form">
-        <h1>Inscription</h1>
+    <div>
+        <div class="form">
+            <h1>Inscription</h1>
 
-        <Input name="Prénom"
-               :input-type="Data.INPUT_TYPES.TEXT"
-               :prefill="this.user.firstname"
-               :error="this.error['firstname']"
-               :error_message="this.error_messages['firstname']"
-               :right="this.correct['firstname']"
-               @click="this.resetFields()"
-               @changeField="(payload) => { this.changeField(payload,'firstname') }"/>
+            <Input name="Prénom"
+                   :input-type="Data.INPUT_TYPES.TEXT"
+                   :prefill="this.user.firstname"
+                   :error="this.error['firstname']"
+                   :error_message="this.error_messages['firstname']"
+                   :right="this.correct['firstname']"
+                   @click="this.resetFields()"
+                   @changeField="(payload) => { this.changeField(payload,'firstname') }"/>
 
-        <Input name="Nom"
-               :input-type="Data.INPUT_TYPES.TEXT"
-               :prefill="this.user.lastname"
-               :error="this.error['lastname']"
-               :error_message="this.error_messages['lastname']"
-               :right="this.correct['lastname']"
-               @click="this.resetFields()"
-               @changeField="(payload) => { this.changeField(payload,'lastname') }"/>
+            <Input name="Nom"
+                   :input-type="Data.INPUT_TYPES.TEXT"
+                   :prefill="this.user.lastname"
+                   :error="this.error['lastname']"
+                   :error_message="this.error_messages['lastname']"
+                   :right="this.correct['lastname']"
+                   @click="this.resetFields()"
+                   @changeField="(payload) => { this.changeField(payload,'lastname') }"/>
 
-        <Input name="Mail"
-               :input-type="Data.INPUT_TYPES.MAIL"
-               :prefill="this.user.mail"
-               :error="this.error['mail']"
-               :error_message="this.error_messages['mail']"
-               :right="this.correct['mail']"
-               @click="this.resetFields()"
-               @changeField="(payload) => { this.changeField(payload,'mail') }"/>
+            <Input name="Mail"
+                   :input-type="Data.INPUT_TYPES.MAIL"
+                   :prefill="this.user.mail"
+                   :error="this.error['mail']"
+                   :error_message="this.error_messages['mail']"
+                   :right="this.correct['mail']"
+                   @click="this.resetFields()"
+                   @changeField="(payload) => { this.changeField(payload,'mail') }"/>
 
-        <Input name="Identifiant"
-               :input-type="Data.INPUT_TYPES.TEXT"
-               :prefill="this.user.login"
-               :error="this.error['login']"
-               :error_message="this.error_messages['login']"
-               :right="this.correct['login']"
-               @click="this.resetFields()"
-               @changeField="(payload) => { this.changeField(payload,'login') }"/>
+            <Input name="Identifiant"
+                   :input-type="Data.INPUT_TYPES.TEXT"
+                   :prefill="this.user.login"
+                   :error="this.error['login']"
+                   :error_message="this.error_messages['login']"
+                   :right="this.correct['login']"
+                   @click="this.resetFields()"
+                   @changeField="(payload) => { this.changeField(payload,'login') }"/>
 
-        <Input name="Mot de passe"
-               :input-type="Data.INPUT_TYPES.PASSWORD"
-               :error="this.error['password']"
-               :error_message="this.error_messages['password']"
-               :right="this.correct['password']"
-               @click="this.resetFields()"
-               @changeField="(payload) => { this.changeField(payload,'password') }"/>
+            <Input name="Mot de passe"
+                   :input-type="Data.INPUT_TYPES.PASSWORD"
+                   :error="this.error['password']"
+                   :error_message="this.error_messages['password']"
+                   :right="this.correct['password']"
+                   @click="this.resetFields()"
+                   @changeField="(payload) => { this.changeField(payload,'password') }"/>
 
-        <Input name="Confirmer le mot de passe"
-               :input-type="Data.INPUT_TYPES.PASSWORD"
-               :error="this.error['confirmPassword']"
-               :error_message="this.error_messages['confirmPassword']"
-               :right="this.correct['confirmPassword']"
-               @click="this.resetFields()"
-               @changeField="(payload) => { this.changeField(payload,'confirmPassword') }"/>
+            <Input name="Confirmer le mot de passe"
+                   :input-type="Data.INPUT_TYPES.PASSWORD"
+                   :error="this.error['confirmPassword']"
+                   :error_message="this.error_messages['confirmPassword']"
+                   :right="this.correct['confirmPassword']"
+                   @click="this.resetFields()"
+                   @changeField="(payload) => { this.changeField(payload,'confirmPassword') }"/>
 
-        <div v-if="!this.loading"
-             class="submit">
-            <button @click="this.registerUser()">
-                Inscription
-            </button>
+            <div v-if="!this.loading"
+                 class="submit">
+                <button @click="this.registerUser()">
+                    Inscription
+                </button>
 
-            <router-link :to="Routes.CONNEXION.path">Déjà un compte ?</router-link>
+                <router-link :to="Routes.CONNEXION.path">Déjà un compte ?</router-link>
+            </div>
+
+            <Loading v-else/>
         </div>
 
-        <Loading v-else/>
+        <PopUp v-if="this.showPopup"
+               @dismiss="this.hideConfirmMessage()"
+               popup_class="success"
+               title="Votre compte a été créé !"
+               message="Vous pouvez l'utiliser en vous connectant."/>
     </div>
 
 </template>

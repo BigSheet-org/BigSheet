@@ -18,6 +18,12 @@ userRouter
     ])
     .post('/register', [
         UserMiddleware.hasValidRegisterFields,
+        UserController.createUser
+    ])
+    .delete('/delete/:id', [
+        AuthMiddleware.checkAuthToken,
+        UserMiddleware.hasPermissionToDelete,
+        UserController.deleteUser
     ])
 
 

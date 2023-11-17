@@ -24,13 +24,13 @@ class Tokens {
      * @returns {{access_token: (*), refresh_token: (*)}}
      */
     static generateTokens(userID){
-        let authOptions = { expiresIn: Tokens.UTILS.AUTH_EXP_TIME }
-        let refreshOptions = { expiresIn: Tokens.UTILS.REFRESH_EXP_TIME }
+        let authOptions = { expiresIn: Tokens.UTILS.AUTH_EXP_TIME };
+        let refreshOptions = { expiresIn: Tokens.UTILS.REFRESH_EXP_TIME };
 
         return {
             access_token: Tokens.generateToken(Tokens.UTILS.AUTH_SECRET, userID, authOptions),
             refresh_token: Tokens.generateToken(Tokens.UTILS.REFRESH_SECRET, userID, refreshOptions)
-        }
+        };
     }
 
     /**
@@ -46,8 +46,18 @@ class Tokens {
             time: Date(),
             userID: userID,
             salt: bcrypt.genSalt(10, (err, salt) => { return salt })
-        }
-        return jwt.sign(data, secret, options)
+        };
+        return jwt.sign(data, secret, options);
+    }
+
+    /**
+     * Returns the auth token present inside the header of the request.
+     */
+    static async getAuthTokenFromHeader(req) {
+        return req.headers.authorization.replace(
+            'Bearer ',
+            ''
+        )
     }
 
     /**
@@ -55,7 +65,7 @@ class Tokens {
      * (Not expired, not in the blacklist and signed properly.)
      */
     static async verifyAuthToken(auth) {
-        return Tokens.verifyToken(auth, Tokens.UTILS.AUTH_SECRET)
+        return Tokens.verifyToken(auth, Tokens.UTILS.AUTH_SECRET);
     }
 
     /**
@@ -63,7 +73,7 @@ class Tokens {
      * (Not expired, not in the blacklist and signed properly.)
      */
     static async verifyRefreshTokens(refresh) {
-        return Tokens.verifyToken(refresh, Tokens.UTILS.REFRESH_SECRET)
+        return Tokens.verifyToken(refresh, Tokens.UTILS.REFRESH_SECRET);
     }
 
     /**
@@ -111,6 +121,17 @@ class Tokens {
      */
     static async isBanned(token) {
         return await RedisClient.get(token) !== null;
+    }
+
+    /**
+     * This method uses the token to return the userID encoded within.
+     *
+     * @param token token to extract data from.
+     * @returns {Promise<*>}
+     */
+    static async getUserIdFromToken(token) {
+        let data = await Tokens.verifyAuthToken(token)
+        return data.userID;
     }
 }
 

@@ -27,7 +27,8 @@ router.beforeEach((to) => {
     // Redirections for pages that are not accessible if the user is connected.
     if (User.isUserConnected() &&
         (to.path === Routes.INSCRIPTION.path
-            || to.path === Routes.COMPTE.path
+            || to.path === Routes.CONNEXION.path
+            || to.path === Routes.COMPTE.path 
         )) {
         return Routes.HOME.path
     }

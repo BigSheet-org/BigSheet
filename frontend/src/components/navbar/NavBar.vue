@@ -1,10 +1,10 @@
 <script>
-import routes from "../../assets/static/Routes.js";
+import Routes from "../../assets/static/Routes.js";
 import User from "../../scripts/DAO/User.js";
 
 export default {
     computed: {
-        Routes() { return routes },
+        Routes() { return Routes },
         CheckAuthentication() { return User.isUserConnected(); }
     },
     components:{},
@@ -37,7 +37,7 @@ export default {
         </div>
 
         <div class="buttons" v-else>
-            <router-link :to="Routes['compte'].path">
+            <router-link :to="Routes.COMPTE.path">
                 <button>Mon compte</button>
             </router-link>
             <button @click="this.logout()">

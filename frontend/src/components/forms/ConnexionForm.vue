@@ -9,13 +9,9 @@
 
     export default {
         computed: {
-            Routes() { return Routes },
-            Data() {
-                return Data
-            },
-            loginFilled() {
-                return this.login !== "" ? "filled" : "";
-            }
+            Routes() { return Routes; },
+            Data() { return Data; },
+            loginFilled() { return this.login !== "" ? "filled" : ""; }
         },
         components: {Loading, Input},
         methods: {

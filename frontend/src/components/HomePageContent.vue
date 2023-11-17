@@ -9,7 +9,7 @@ export default {
         }
     },
     computed: {
-        Routes() { return Routes },
+        Routes() { return Routes; },
         CheckAuthentication() { return User.isUserConnected(); }
     },
     methods: {

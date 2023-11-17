@@ -1,24 +1,35 @@
-class Routes {
-    static HOME = {
+const routes = [
+    // Home route
+    {
         name: "home",
-        path: "/"
-    }
-    static CONNEXION = {
+        path: "/",
+        component: HomePage
+    },
+    // Connexion route
+    {
         name: "connexion",
-        path: "/connexion"
-    }
-    static INSCRIPTION = {
+        path: "/connexion",
+        component: ConnexionView
+    },
+    // Inscription route
+    {
         name: "inscription",
-        path: "/inscription"
-    }
-    static COMPTE = {
+        path: "/inscription",
+        component: InscriptionView
+    },
+    // Compte route
+    {
         name: "compte",
-        path: "/compte"
-    }
-    static NOT_FOUND = {
-        name: "404",
-        path: "/404"
-    }
-}
+        path: "/compte",
+        component: CompteView
+    },
 
-export default Routes
+    // Not found route
+    {
+        name: "404",
+        path: "/:pathMatch(.*)*",
+        component: NotFound
+    }
+];
+
+export default routes;

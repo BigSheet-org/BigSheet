@@ -1,5 +1,4 @@
 import {api} from './API.js'
-import Data from "../../assets/static/Data.js";
 
 class User {
 

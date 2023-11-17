@@ -130,7 +130,7 @@ export default {
                 confirmPassword: false,
             },
             loading: false,
-            showPopup: true,
+            showPopup: false,
         }
     }
 }

@@ -7,10 +7,11 @@ class Router {
     routes;
     constructor() {
         this.routes={};
-        this.router=createRouter({
+        this.router=new createRouter({
             history: createWebHistory(),
             routes,                     // Short for routes: routes
-        })
+        });
+        
         for (route in routes) {
             this.routes[route.name]=route;
         }

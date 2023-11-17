@@ -3,8 +3,8 @@ import User from "../scripts/DAO/User.js";
 import Router from './Router.js';
 
 // Init our Router Class
-const myRouter = Router.getInstance()
-const router = myRouter.router
+const myRouter = Router.getInstance();
+const router = myRouter.router;
 // This method allows routes restrictions to users.
 // For instance, if they are not authenticated, they cannot access the account route
 // If you want to redirect the user to another page, simply return the route path.

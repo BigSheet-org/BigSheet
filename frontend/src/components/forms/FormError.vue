@@ -4,12 +4,12 @@ import SmoothFade from "../transitions/SmoothFade.vue";
 
 export default {
     components: {SmoothFade},
-    props:{
+    props: {
         message: {
             required: true,
             type: String
         },
-        class:{
+        class: {
             required: false,
             type: String,
             default: ""

@@ -76,9 +76,11 @@
         }
 
         .error {
+            width: 80%;
             text-align: left;
             margin-left: 3em;
             margin-right: 3em;
+            line-height: normal;
             color: variables.$wrong_highlight;
         }
 

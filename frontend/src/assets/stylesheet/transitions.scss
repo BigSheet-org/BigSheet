@@ -27,7 +27,7 @@
 }
 @keyframes pop_up-in {
     0% {
-        transform: scale(variables.$pop_up_scale_max);
+        transform: scale(variables.$pop_up_scale_min);
     }
     50% {
         transform: scale(variables.$pop_up_scale_max);

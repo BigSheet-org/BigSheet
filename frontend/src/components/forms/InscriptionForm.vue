@@ -3,6 +3,10 @@ import Input from "./Input.vue";
 import Data from "../../assets/static/Data.js";
 import Routes from "../../assets/static/Routes.js";
 import Loading from "../common/Loading.vue";
+import Utils from "../../scripts/Utility/Utils.js";
+import User from "../../scripts/DAO/User.js";
+import router from "../../router/index.js";
+import PopUp from "../common/PopUp.vue";
 
 export default {
     computed: {
@@ -13,84 +17,199 @@ export default {
             return Data
         }
     },
-    components: {Loading, Input},
+    components: {PopUp, Loading, Input},
     methods: {
-        changeFirstname() {
-
+        changeField(payload, field) {
+            this.user[field] = payload;
         },
-        changeLastname() {
-
+        hideConfirmMessage() {
+            this.showPopup = false;
+            router.push(Routes.HOME.path)
         },
-        changeMail() {
-
+        resetFields() {
+            for (let attribute in this.error) {
+                this.error[attribute] = false
+            }
+            for (let attribute in this.correct) {
+                this.correct[attribute] = false
+            }
         },
-        changeLogin() {
+        checkFields() {
+            let canProceed = true;
+            // We check if all fields are filled.
+            for (let attribute in this.user) {
+                if(this.user[attribute] === "" || this.user[attribute] === undefined) {
+                    this.error[attribute] = true;
+                    this.error_messages[attribute] = Data.MESSAGES.MANDATORY_FIELD;
+                    canProceed = false;
+                } else {
+                    this.correct[attribute] = true;
+                }
+            }
+            // Special checks
+            // Passwords must match
+            if (this.user.password !== this.user.confirmPassword) {
+                this.error["password"] = true;
+                this.error["confirmPassword"] = true;
+                this.error_messages["confirmPassword"] = Data.MESSAGES.PASSWORD_DONT_MATCH;
+                canProceed = false;
+            }
+            // Passwords must be secure enough
+            if (!Utils.validatePassword(this.user.password)) {
+                this.error["password"] = true;
+                this.error_messages["password"] = Data.MESSAGES.PASSWORD_NOT_SECURE;
+                canProceed = false;
+            }
+            // Mail must be correct
+            if (!Utils.validateEmail(this.user.mail)) {
+                this.error["mail"] = true;
+                this.error_messages["mail"] = Data.MESSAGES.MAIL_INVALID;
+                canProceed = false;
+            }
 
+            return canProceed
         },
-        changePassword() {
-
-        },
-        changeConfirmPassword() {
-
-        },
-        registerUser() {
+        async registerUser() {
             this.loading = true;
-            setTimeout(() => { this.loading = false}, 2000)
+
+            if (this.checkFields()) {
+                let result = await User.registerUser(this.user);
+
+                if (result.error_code) {
+                    switch (result.error_message) {
+                        case Data.MESSAGES.API_ANSWERS.LOGIN_ALREADY_USED:
+                            this.error["login"] = true;
+                            this.error_messages["login"] = Data.MESSAGES.LOGIN_ALREADY_USED;
+                            break;
+
+                        case Data.MESSAGES.API_ANSWERS.MAIL_ALREADY_USED:
+                            this.error["mail"] = true;
+                            this.error_messages["mail"] = Data.MESSAGES.MAIL_ALREADY_USED;
+                            break;
+                    }
+
+                } else {
+                    this.showPopup = true
+                }
+            }
+            this.loading = false
         }
     },
     data(){
         return {
-            firstname: "",
-            lastname: "",
-            mail: "",
-            login: "",
-            password: "",
-            confirmPassword: "",
+            user: {
+                firstname: undefined,
+                lastname: undefined,
+                login: undefined,
+                mail: undefined,
+                password: undefined,
+                confirmPassword: undefined
+            },
+            error: {
+                firstname: false,
+                lastname: false,
+                login: false,
+                mail: false,
+                password: false,
+                confirmPassword: false,
+            },
+            error_messages: {
+                firstname: "",
+                lastname: "",
+                login: "",
+                mail: "",
+                password: "",
+                confirmPassword: "",
+            },
+            correct: {
+                firstname: false,
+                lastname: false,
+                login: false,
+                mail: false,
+                password: false,
+                confirmPassword: false,
+            },
             loading: false,
+            showPopup: false,
         }
     }
 }
 </script>
 
 <template>
-    <div class="form">
-        <h1>Inscription</h1>
+    <div>
+        <div class="form">
+            <h1>Inscription</h1>
 
-        <Input name="Nom"
-               :input-type="Data.INPUT_TYPES.TEXT"
-               :prefill="this.lastname"
-               @changeField="this.changeLastname()" />
-        <Input name="Prénom"
-               :input-type="Data.INPUT_TYPES.TEXT"
-               :prefill="this.firstname"
-               @changeField="this.changeFirstname()" />
-        <Input name="Adresse E-mail"
-               :input-type="Data.INPUT_TYPES.MAIL"
-               :prefill="this.mail"
-               @changeField="this.changeMail()" />
-        <Input name="Identifiant"
-               :input-type="Data.INPUT_TYPES.TEXT"
-               :prefill="this.login"
-               @changeField="this.changeLogin()" />
+            <Input name="Prénom"
+                   :input-type="Data.INPUT_TYPES.TEXT"
+                   :prefill="this.user.firstname"
+                   :error="this.error['firstname']"
+                   :error_message="this.error_messages['firstname']"
+                   :right="this.correct['firstname']"
+                   @click="this.resetFields()"
+                   @changeField="(payload) => { this.changeField(payload,'firstname') }"/>
 
-        <Input name="Mot de passe"
-               :input-type="Data.INPUT_TYPES.PASSWORD"
-               :prefill="this.password"
-               @changeField="this.changePassword()"/>
-        <Input name="Confirmer le mot de passe"
-               :input-type="Data.INPUT_TYPES.PASSWORD"
-               :prefill="this.confirmPassword"
-               @changeField="this.changeConfirmPassword()"/>
+            <Input name="Nom"
+                   :input-type="Data.INPUT_TYPES.TEXT"
+                   :prefill="this.user.lastname"
+                   :error="this.error['lastname']"
+                   :error_message="this.error_messages['lastname']"
+                   :right="this.correct['lastname']"
+                   @click="this.resetFields()"
+                   @changeField="(payload) => { this.changeField(payload,'lastname') }"/>
 
-        <div v-if="!this.loading"
-             class="submit">
-            <button @click="this.registerUser()">
-                Inscription
-            </button>
+            <Input name="Mail"
+                   :input-type="Data.INPUT_TYPES.MAIL"
+                   :prefill="this.user.mail"
+                   :error="this.error['mail']"
+                   :error_message="this.error_messages['mail']"
+                   :right="this.correct['mail']"
+                   @click="this.resetFields()"
+                   @changeField="(payload) => { this.changeField(payload,'mail') }"/>
 
-            <router-link :to="Routes.CONNEXION.path">Déjà un compte ?</router-link>
+            <Input name="Identifiant"
+                   :input-type="Data.INPUT_TYPES.TEXT"
+                   :prefill="this.user.login"
+                   :error="this.error['login']"
+                   :error_message="this.error_messages['login']"
+                   :right="this.correct['login']"
+                   @click="this.resetFields()"
+                   @changeField="(payload) => { this.changeField(payload,'login') }"/>
+
+            <Input name="Mot de passe"
+                   :input-type="Data.INPUT_TYPES.PASSWORD"
+                   :error="this.error['password']"
+                   :error_message="this.error_messages['password']"
+                   :right="this.correct['password']"
+                   @click="this.resetFields()"
+                   @changeField="(payload) => { this.changeField(payload,'password') }"/>
+
+            <Input name="Confirmer le mot de passe"
+                   :input-type="Data.INPUT_TYPES.PASSWORD"
+                   :error="this.error['confirmPassword']"
+                   :error_message="this.error_messages['confirmPassword']"
+                   :right="this.correct['confirmPassword']"
+                   @click="this.resetFields()"
+                   @changeField="(payload) => { this.changeField(payload,'confirmPassword') }"/>
+
+            <div v-if="!this.loading"
+                 class="submit">
+                <button @click="this.registerUser()">
+                    Inscription
+                </button>
+
+                <router-link :to="Routes.CONNEXION.path">Déjà un compte ?</router-link>
+            </div>
+
+            <Loading v-else/>
         </div>
 
-        <Loading v-else/>
+        <PopUp v-if="this.showPopup"
+               @dismiss="this.hideConfirmMessage()"
+               popup_class="success"
+               title="Votre compte a été créé !"
+               message="Vous pouvez l'utiliser en vous connectant."/>
     </div>
+
 </template>

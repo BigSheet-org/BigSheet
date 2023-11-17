@@ -1,15 +1,11 @@
 <script>
-import Routes from "../../assets/static/Routes.js";
+import routes from "../../assets/static/Routes.js";
 import User from "../../scripts/DAO/User.js";
 
 export default {
     computed: {
-        Routes() {
-            return Routes
-        },
-        CheckAuthentication() {
-            return User.isUserConnected();
-        }
+        Routes() { return routes },
+        CheckAuthentication() { return User.isUserConnected(); }
     },
     components:{},
     props:{},
@@ -24,7 +20,7 @@ export default {
 <template>
     <div class="navbar_container">
         <div class="title">
-            <router-link :to="Routes.HOME.path">
+            <router-link :to="Routes['home'].path">
                 <img src="../../assets/pictures/Logo_webpage.png" alt="BigSheet logo">
             </router-link>
             <h1>BigSheet</h1>
@@ -32,16 +28,16 @@ export default {
         </div>
 
         <div class="buttons" v-if="!this.CheckAuthentication">
-            <router-link :to="Routes.INSCRIPTION.path">
+            <router-link :to="Routes['inscription'].path">
                 <button>Inscription</button>
             </router-link>
-            <router-link :to="Routes.CONNEXION.path">
+            <router-link :to="Routes['connexion'].path">
                 <button>Connexion</button>
             </router-link>
         </div>
 
         <div class="buttons" v-else>
-            <router-link :to="Routes.COMPTE.path">
+            <router-link :to="Routes['compte'].path">
                 <button>Mon compte</button>
             </router-link>
             <button @click="this.logout()">

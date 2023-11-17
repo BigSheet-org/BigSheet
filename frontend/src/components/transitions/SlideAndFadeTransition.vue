@@ -2,9 +2,9 @@
 export default {
 	// Allows us to tell VueJS when it needs to apply entering transitions or not
 	data() {
-		return { show: false }
+		return { show: false };
 	},
-	mounted() { this.show = true },
+	mounted() { this.show = true; },
 }
 </script>
 

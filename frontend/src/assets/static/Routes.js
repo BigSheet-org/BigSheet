@@ -11,38 +11,36 @@ class Routes {
         name: "home",
         path: "/",
         component: HomePageView
-    }
+    };
 
     // Connexion route
     static CONNEXION = {
         name: "connexion",
         path:"/connexion",
         component: ConnexionView
-    }
+    };
 
     // Inscription route
     static INSCRIPTION =  {
         name: "inscription",
         path: "/inscription",
         component: InscriptionView
-    }
+    };
 
     // Compte route
     static COMPTE = {
         name: "compte",
         path: "/compte",
         component: CompteView
-    }
+    };
 
     // Not found route
     static NOT_FOUND = {
         name: "404",
         path: "/:pathMatch(.*)*",
         component: NotFoundView
-    }
-
-
+    };
 
 }
 
-export default Routes
+export default Routes;

@@ -6,12 +6,8 @@ import Loading from "../common/Loading.vue";
 
 export default {
     computed: {
-        Routes() {
-            return Routes
-        },
-        Data() {
-            return Data
-        }
+        Routes() { return Routes; },
+        Data() { return Data; }
     },
     components: {Loading, Input},
     methods: {

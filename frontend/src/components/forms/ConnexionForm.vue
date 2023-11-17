@@ -42,7 +42,7 @@
                 let proceed = this.checkFields();
 
                 if(proceed) {
-                    let result = await User.connectUser(this.login, this.password)
+                    let result = await User.connectUser(this.login, this.password);
                     if(result instanceof ErrorForDisplay) {
                         this.error = true;
                         this.error_message = result.error_message;
@@ -65,7 +65,7 @@
                 error: false,
                 error_message: "",
                 loginStatus: false,
-            }
+            };
         }
     }
 </script>

@@ -2,7 +2,7 @@
  * @description API class. Contains all methods required to talk to the API, no matter which env you are running on (dev or prod)
  * It is a singleton class ! Use it wisely
  */
-import ErrorForDisplay from "../ErrorForDisplay.js"
+import ErrorForDisplay from "../ErrorForDisplay.js";
 import User from "./User.js";
 import Data from "../../assets/static/Data.js";
 

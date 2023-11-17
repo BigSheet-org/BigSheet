@@ -51,11 +51,11 @@
             }
         },
         emits: {
-            changeField(){ return true }
+            changeField(){ return true; }
         },
         computed: {
-            Data() { return Data },
-            id(){ return 'id_'+this.name }
+            Data() { return Data; },
+            id(){ return 'id_'+this.name; }
         },
 		data(){
 			return{
@@ -66,22 +66,22 @@
 		methods:{
             sendData(){
                 // If the input type is a phone number, we format it before sending.
-                if(this.inputType === Data.INPUT_TYPES.PHONE_NUMBER) { this.$emit('changeField', Formatters.unformatPhone(this.model)) }
+                if(this.inputType === Data.INPUT_TYPES.PHONE_NUMBER) { this.$emit('changeField', Formatters.unformatPhone(this.model)); }
                 // Otherwise, we just emit the model value.
-                else { this.$emit('changeField', this.model) }
+                else { this.$emit('changeField', this.model); }
             },
-            formatPhone(){ this.model = Formatters.formatPhone(this.model) },
+            formatPhone(){ this.model = Formatters.formatPhone(this.model); },
         },
         beforeMount() {
             // Setting up default values for the fields
-            if(this.inputType === Data.INPUT_TYPES.select) { this.model = 0 }
+            if(this.inputType === Data.INPUT_TYPES.select) { this.model = 0; }
 
             // If prefill elements are given, we setup the default values.
             if(this.prefill !== undefined) {
-                this.model = this.prefill
+                this.model = this.prefill;
 
                 if(this.inputType === Data.INPUT_TYPES.PHONE_NUMBER) {
-                    this.formatPhone()
+                    this.formatPhone();
                 }
             }
         }

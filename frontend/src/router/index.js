@@ -3,9 +3,9 @@ import {createRouter, createWebHistory} from "vue-router";
 import Routes from "../assets/static/Routes.js"
 
 // Init our Router Class
-const routesArray = []
+const routesArray = [];
 for (let attributes in Routes) {
-    routesArray.push(Routes[attributes])
+    routesArray.push(Routes[attributes]);
 }
 
 const router = new createRouter({
@@ -21,19 +21,18 @@ router.beforeEach((to) => {
     // Redirections from pages that needs an authentication.
     if (!User.isUserConnected() &&
         (to.path === Routes.COMPTE.path)) {
-        return Routes.CONNEXION.path
+        return Routes.CONNEXION.path;
     }
 
     // Redirections for pages that are not accessible if the user is connected.
     if (User.isUserConnected() &&
         (to.path === Routes.INSCRIPTION.path
             || to.path === Routes.CONNEXION.path
-            || to.path === Routes.COMPTE.path 
         )) {
-        return Routes.HOME.path
+        return Routes.HOME.path;
     }
 
-    return true
+    return true;
 })
 
-export default router
+export default router;

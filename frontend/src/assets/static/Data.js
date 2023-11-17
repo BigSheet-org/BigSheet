@@ -3,11 +3,11 @@ class Data {
         TIMEOUT_BEFORE_REQUEST_FAILURE: 6000,                  // Timeout for requests in ms.
         TIMEOUT_BEFORE_REDIRECT: 1000,  // Timeout for redirections in ms.
         PHONE_SEPARATION_CHAR: '.',     // Character used to make phone number separators.
-    }
+    };
 
     static COMPARISON_DATA = {
         ERROR_INVALID_CREDENTIALS: "L'identifiant ou le mot de passe est incorrect.",
-    }
+    };
 
     // Qualifiers for the Input component.
     static INPUT_TYPES = {
@@ -17,7 +17,7 @@ class Data {
         PASSWORD: "password",
         TEXTAREA: "textarea",
         TEXT: "text",
-    }
+    };
 
     static MESSAGES = {
         PASSWORD_DONT_MATCH: "Les mots de passe ne correspondent pas.",
@@ -31,7 +31,7 @@ class Data {
             LOGIN_ALREADY_USED: "Provided login was already used.",
             MAIL_ALREADY_USED: "Provided mail was already used."
         },
-    }
+    };
 }
 
-export default Data
+export default Data;

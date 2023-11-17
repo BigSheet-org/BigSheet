@@ -1,6 +1,6 @@
 <script>
-import Routes from "../assets/static/Routes.js";
 import User from "../scripts/DAO/User.js";
+import Routes from "../assets/static/Routes.js";
 
 export default {
     data() {
@@ -9,12 +9,8 @@ export default {
         }
     },
     computed: {
-        Routes() {
-            return Routes
-        },
-        CheckAuthentication() {
-            return User.isUserConnected();
-        }
+        Routes() { return Routes; },
+        CheckAuthentication() { return User.isUserConnected(); }
     },
     methods: {
         async fetchUserData() {

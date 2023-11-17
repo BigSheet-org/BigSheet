@@ -10,12 +10,8 @@ import PopUp from "../common/PopUp.vue";
 
 export default {
     computed: {
-        Routes() {
-            return Routes
-        },
-        Data() {
-            return Data
-        }
+        Routes() { return Routes; },
+        Data() { return Data; }
     },
     components: {PopUp, Loading, Input},
     methods: {

@@ -4,12 +4,8 @@ import User from "../../scripts/DAO/User.js";
 
 export default {
     computed: {
-        Routes() {
-            return Routes
-        },
-        CheckAuthentication() {
-            return User.isUserConnected();
-        }
+        Routes() { return Routes; },
+        CheckAuthentication() { return User.isUserConnected(); }
     },
     components:{},
     props:{},

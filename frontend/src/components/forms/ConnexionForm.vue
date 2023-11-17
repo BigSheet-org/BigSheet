@@ -1,7 +1,7 @@
 <script>
     import Input from "./Input.vue";
     import Data from "../../assets/static/Data.js";
-    import routes from "../../assets/static/Routes.js";
+    import Routes from "../../assets/static/Routes.js";
     import Loading from "../common/Loading.vue";
     import User from "../../scripts/DAO/User.js";
     import ErrorForDisplay from "../../scripts/ErrorForDisplay.js";
@@ -9,7 +9,7 @@
 
     export default {
         computed: {
-            Routes() { return routes },
+            Routes() { return Routes },
             Data() {
                 return Data
             },
@@ -106,7 +106,7 @@
                 Connexion
             </button>
 
-            <router-link :to="Routes['inscription'].path">Pas encore de compte ?</router-link>
+            <router-link :to="Routes.INSCRIPTION.path">Pas encore de compte ?</router-link>
         </div>
 
         <Loading v-else/>

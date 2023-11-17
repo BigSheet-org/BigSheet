@@ -1,11 +1,11 @@
 import User from "../scripts/DAO/User.js";
 import {createRouter, createWebHistory} from "vue-router";
-import routes from "../assets/static/Routes.js";
+import Routes from "../assets/static/Routes.js"
 
 // Init our Router Class
 const routesArray = []
-for (let attributes in routes) {
-    routesArray.push(routes[attributes])
+for (let attributes in Routes) {
+    routesArray.push(Routes[attributes])
 }
 
 const router = new createRouter({
@@ -20,16 +20,16 @@ const router = new createRouter({
 router.beforeEach((to) => {
     // Redirections from pages that needs an authentication.
     if (!User.isUserConnected() &&
-        (to.path === routes["compte"].path)) {
-        return routes["connexion"].path
+        (to.path === Routes.COMPTE.path)) {
+        return Routes.CONNEXION.path
     }
 
     // Redirections for pages that are not accessible if the user is connected.
     if (User.isUserConnected() &&
-        (to.path === routes["inscription"].path
-            || to.path === routes["connexion"].path
+        (to.path === Routes.INSCRIPTION.path
+            || to.path === Routes.COMPTE.path
         )) {
-        return routes["home"].path
+        return Routes.HOME.path
     }
 
     return true

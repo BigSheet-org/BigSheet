@@ -1,13 +1,13 @@
 <script>
 import Input from "./Input.vue";
 import Data from "../../assets/static/Data.js";
-import routes from "../../assets/static/Routes.js";
+import Routes from "../../assets/static/Routes.js";
 import Loading from "../common/Loading.vue";
 
 export default {
     computed: {
         Routes() {
-            return routes
+            return Routes
         },
         Data() {
             return Data
@@ -88,7 +88,7 @@ export default {
                 Inscription
             </button>
 
-            <router-link :to="Routes['connexion'].path">Déjà un compte ?</router-link>
+            <router-link :to="Routes.CONNEXION.path">Déjà un compte ?</router-link>
         </div>
 
         <Loading v-else/>

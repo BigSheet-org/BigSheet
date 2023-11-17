@@ -1,6 +1,6 @@
 <script>
 import User from "../scripts/DAO/User.js";
-import routes from "../assets/static/Routes.js";
+import Routes from "../assets/static/Routes.js";
 
 export default {
     data() {
@@ -9,7 +9,7 @@ export default {
         }
     },
     computed: {
-        Routes() { return routes },
+        Routes() { return Routes },
         CheckAuthentication() { return User.isUserConnected(); }
     },
     methods: {
@@ -29,10 +29,10 @@ export default {
 <template>
     <div v-if="!this.CheckAuthentication">
         <h1>Veuillez vous authentifier pour continuer.</h1>
-        <router-link :to="Routes['connexion'].path">
+        <router-link :to="Routes.CONNEXION.path">
             <button>Connexion</button>
         </router-link>
-        <router-link :to="Routes['inscription'].path">
+        <router-link :to="Routes.INSCRIPTION.path">
             <button>Inscription</button>
         </router-link>
     </div>

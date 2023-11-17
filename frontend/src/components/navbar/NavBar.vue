@@ -20,7 +20,7 @@ export default {
 <template>
     <div class="navbar_container">
         <div class="title">
-            <router-link :to="Routes['home'].path">
+            <router-link :to="Routes.HOME.path">
                 <img src="../../assets/pictures/Logo_webpage.png" alt="BigSheet logo">
             </router-link>
             <h1>BigSheet</h1>
@@ -28,10 +28,10 @@ export default {
         </div>
 
         <div class="buttons" v-if="!this.CheckAuthentication">
-            <router-link :to="Routes['inscription'].path">
+            <router-link :to="Routes.INSCRIPTION.path">
                 <button>Inscription</button>
             </router-link>
-            <router-link :to="Routes['connexion'].path">
+            <router-link :to="Routes.CONNEXION.path">
                 <button>Connexion</button>
             </router-link>
         </div>

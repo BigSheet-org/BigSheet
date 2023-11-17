@@ -1,40 +1,48 @@
+import NotFoundView from "../../views/NotFoundView.vue";
+import CompteView from "../../views/CompteView.vue";
+import InscriptionView from "../../views/InscriptionView.vue";
 import ConnexionView from "../../views/ConnexionView.vue";
 import HomePageView from "../../views/HomePageView.vue";
-import InscriptionView from "../../views/InscriptionView.vue";
-import CompteView from "../../views/CompteView.vue";
-import NotFoundView from "../../views/NotFoundView.vue";
 
-const routes = {
+class Routes {
+
     // Home route
-    home: {
+    static HOME = {
         name: "home",
         path: "/",
         component: HomePageView
-    },
+    }
+
     // Connexion route
-    connexion: {
+    static CONNEXION = {
         name: "connexion",
         path:"/connexion",
         component: ConnexionView
-    },
+    }
+
     // Inscription route
-    inscription: {
+    static INSCRIPTION =  {
         name: "inscription",
         path: "/inscription",
         component: InscriptionView
-    },
+    }
+
     // Compte route
-    compte: {
+    static COMPTE = {
         name: "compte",
         path: "/compte",
         component: CompteView
-    },
+    }
+
     // Not found route
-    notFound: {
+    static NOT_FOUND = {
         name: "404",
         path: "/:pathMatch(.*)*",
         component: NotFoundView
     }
-};
 
-export default routes;
+
+
+}
+
+export default Routes

@@ -5,9 +5,8 @@ FROM node:18.18.2
 WORKDIR /usr/src/app
 
 # Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package*.json ./
+COPY package.json .
+COPY package-lock.json .
 
 RUN npm install
 # If you are building your code for production
@@ -15,7 +14,8 @@ RUN npm install
 
 # Bundle app source
 COPY . /usr/src/app
-# We expose the 8080 port.
-EXPOSE 8080
+# We expose the 8000 port.
+EXPOSE 8000
+
 # We add the available commands.
-CMD ["node", "."]
+CMD ["npm", "run", "dev"]

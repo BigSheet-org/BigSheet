@@ -37,12 +37,23 @@ services:
 
   web:
     build: .
-    command: node .
+    command: npm run dev
     volumes:
-      - .:/usr/src/app/
-      - /usr/src/app/node_modules
+      - node_data:/usr/src/app/
+      - node_modules:/usr/src/app/node_modules
     environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_HOST=postgres    # We need to force the host value here.
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_HOST=redis          # We need to force the host value here.
       - NODE_SERVER_PORT=${NODE_SERVER_PORT}
+      - JWT_AUTH_SECRET_KEY=${JWT_AUTH_SECRET_KEY}
+      - JWT_REFRESH_SECRET_KEY=${JWT_REFRESH_SECRET_KEY}
+      - AUTH_TOKEN_EXPIRE=${AUTH_TOKEN_EXPIRE}
+      - REFRESH_TOKEN_EXPIRE=${REFRESH_TOKEN_EXPIRE}
     ports:
       - "8000:8000"
     restart: always
@@ -54,3 +65,5 @@ volumes:
   postgres_data:
   static:
   redis_data:
+  node_data:
+  node_modules:

@@ -6,13 +6,13 @@ import dotenv from "dotenv";
 import cors from "cors";
 
 // -- Routes import -- //
-import tests from "./src/routes/tests.js";
-import main from "./src/routes/main.js";
-import auth from "./src/routes/auth.js";
-import user from "./src/routes/user.js";
+import tests from "./routes/tests.js";
+import main from "./routes/main.js";
+import auth from "./routes/auth.js";
+import user from "./routes/user.js";
 
 // -- Models import -- //
-import UserModel from "./src/model/UserModel.js";
+import UserModel from "./model/UserModel.js";
 
 dotenv.config();
 
@@ -29,7 +29,7 @@ const corsMiddleware = cors(
         origin: origins,
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
         preflightContinue: false,
-        optionsSuccessStatus: 200,
+        optionsSuccessStatus: 200
     });
 
 // -- Server configuration -- //

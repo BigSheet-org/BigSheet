@@ -1,8 +1,8 @@
 {
   "name": "bigsheet_backend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "NodeJS server for the BigSheet web app.",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "dev": "node .",
     "checkstyle": "npx eslint ./src/*/*",

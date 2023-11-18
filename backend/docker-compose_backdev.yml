@@ -29,7 +29,6 @@ services:
       - PGTZ=Europe/Paris
     restart: always
 
-
   adminer:
     image: adminer
     restart: always

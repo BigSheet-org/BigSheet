@@ -10,9 +10,11 @@ import tests from "./routes/tests.js";
 import main from "./routes/main.js";
 import auth from "./routes/auth.js";
 import user from "./routes/user.js";
+import sheet from "./routes/sheet.js";
 
 // -- Models import -- //
 import UserModel from "./model/UserModel.js";
+import SheetModel from "./model/SheetModel.js";
 
 dotenv.config();
 
@@ -45,10 +47,13 @@ app.use('/', main);
 app.use('/tests', tests);
 app.use('/auth', auth);
 app.use('/users', user);
+app.use("/sheets", sheet);
 console.log(`[INFO] - Done mounting paths.`);
 
 // -- Models import -- //
 await UserModel.sync({ alter: true });           // We allow the insertion of new columns.
+await SheetModel.sync({ alter: true });           // We allow the insertion of new columns.
+
 console.log(`[INFO] - Done Initializing models.`);
 
 // -- Starting Server listener -- //

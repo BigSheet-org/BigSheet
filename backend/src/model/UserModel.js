@@ -1,5 +1,6 @@
 import sequelize from "../common/tools/postgres.js";
 import {DataTypes, Model} from "sequelize";
+import SheetModel from "./SheetModel.js";
 
 class UserModel extends Model {
 
@@ -88,4 +89,13 @@ UserModel.init(
     }
 );
 
-export default UserModel
+// Association
+UserModel.hasMany(SheetModel, {
+    as: 'owned',
+    foreignKey: 'ownerId'
+});
+SheetModel.belongsTo(UserModel, {
+    as: 'owner',
+    foreignKey: 'ownerId'
+});
+export default UserModel;

@@ -1,9 +1,8 @@
 import SheetModel from "../model/SheetModel.js";
-import Data from "../common/data/Data.js";
 import UserModel from "../model/UserModel.js";
 import Tokens from "../common/tools/Tokens.js";
 
-class UserController {
+class SheetController {
     /**
      * This method will ask the model to get all sheets owned by connected user.
      *
@@ -45,13 +44,6 @@ class UserController {
         await sheet.save();
         return res.send(sheet);
     }
-
-    static async deleteUser(req, res){
-        let userToDelete = await UserModel.getById(req.params.id)
-        await userToDelete.destroy()
-        await userToDelete.save()
-        return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER)
-    }
 }
 
-export default UserController
+export default SheetController;

@@ -83,7 +83,7 @@ class UserController {
     static async modifyUser(req, res) {
         let body = req.body;
         let userToChange = await UserModel.getById(
-            await Tokens.getUserIdFromToken(await Tokens.getAuthTokenFromHeader(req))
+            await Tokens.getUserIdFromToken(Tokens.getAuthTokenFromHeader(req))
         );
 
         // We check the fields of the body, and we apply the necessary modifications.

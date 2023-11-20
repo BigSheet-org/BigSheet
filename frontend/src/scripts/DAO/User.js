@@ -1,5 +1,6 @@
 import {api} from './API.js'
 import Formatters from "../Utility/Formatters.js";
+import LocalStorage from "./LocalStorage.js";
 
 class User {
 
@@ -52,13 +53,11 @@ class User {
         return (LocalStorage.getAccessToken() !== null && LocalStorage.getRefreshToken() !== null);
     }
 
-
-
     static registerUser(user) {
         const body = JSON.stringify(user);
         return api.request(
             api.METHODS.POST,
-            "/users/register",
+            User.BASE_PATH + "/register",
             body
         );
     }
@@ -66,7 +65,7 @@ class User {
     static fetchUserData() {
         return api.request_logged(
             api.METHODS.GET,
-            "/users/me"
+            User.BASE_PATH + "/me"
         );
     }
 
@@ -90,14 +89,13 @@ class User {
         });
     }
 
-    static async modifyUser() {
+    static async modifyUser(user) {
+        console.log(user)
+
         return api.request(
             api.METHODS.PATCH,
-            '/users/',
-            JSON.stringify({
-                access_token: LocalStorage.getAccessToken(),
-                refresh_token: LocalStorage.getRefreshToken()
-            }),
+            User.BASE_PATH +'/modify',
+            JSON.stringify(body),
             api.CONTENT_TYPE.JSON
         );
     }

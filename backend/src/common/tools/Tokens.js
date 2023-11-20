@@ -53,7 +53,7 @@ class Tokens {
     /**
      * Returns the auth token present inside the header of the request.
      */
-    static async getAuthTokenFromHeader(req) {
+    static getAuthTokenFromHeader(req) {
         return req.headers.authorization.replace(
             'Bearer ',
             ''

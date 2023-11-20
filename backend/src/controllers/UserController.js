@@ -59,11 +59,42 @@ class UserController {
         return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);
     }
 
+    /**
+     * This method deletes the user with the id provided.
+     *
+     * @param req Request provided. Contains the parameters required in its body.
+     * @param res Response to provide.
+     * @returns {Promise<void>}
+     */
     static async deleteUser(req, res){
         let userToDelete = await UserModel.getById(req.params.id)
         await userToDelete.destroy()
         await userToDelete.save()
         return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER)
+    }
+
+    /**
+     * This method will modify the user with the id present in the token.
+     *
+     * @param req Request provided. Contains the parameters required in its body.
+     * @param res Response to provide.
+     * @returns {Promise<void>}
+     */
+    static async modifyUser(req, res) {
+        let body = req.body;
+        let userToChange = await UserModel.getById(
+            await Tokens.getUserIdFromToken(Tokens.getAuthTokenFromHeader(req))
+        );
+
+        // We check the fields of the body, and we apply the necessary modifications.
+        if (body.password)  { userToChange.hash = AuthMiddleware.hashPassword(body.password); }
+        if (body.login)     { userToChange.login = body.login; }
+        if (body.mail)      { userToChange.mail = body.mail; }
+        if (body.firstname) { userToChange.firstname = body.firstname; }
+        if (body.lastname)  { userToChange.lastname = body.lastname; }
+
+        await userToChange.save();
+        return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);
     }
 }
 

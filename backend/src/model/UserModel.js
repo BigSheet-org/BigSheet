@@ -84,7 +84,7 @@ UserModel.init(
     }
 );
 
-// Association
+// Association (to see to in an other file because must be load after all models)
 UserModel.hasMany(SheetModel, {
     as: 'owned',
     foreignKey: 'ownerId'

@@ -1,5 +1,5 @@
 import SheetModel from "../model/SheetModel.js";
-import UserModel from "../model/UserModel.js";
+import Data from "../common/data/Data.js";
 import Tokens from "../common/tools/Tokens.js";
 
 class SheetController {
@@ -39,10 +39,23 @@ class SheetController {
     static async createSheet(req, res) {
         // get user connected
         let userID = await Tokens.getUserIdFromToken(await Tokens.getAuthTokenFromHeader(req));
-        let user = await UserModel.getById(userID);
         let sheet = await SheetModel.create({ownerId: userID});
         await sheet.save();
         return res.send(sheet);
+    }
+
+    /**
+     * This method will remove a sheet.
+     *
+     * @param req Request provided. Contains the parameters required in its body.
+     * @param res Response to provide.
+     * @returns {Promise<void>}
+     */
+    static async deleteSheet(req, res) {
+        let sheet = await SheetModel.getById(req.params.id);        
+        await sheet.destroy();
+        await sheet.save();
+        return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);
     }
 }
 

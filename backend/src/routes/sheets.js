@@ -17,11 +17,11 @@ sheetRouter
         AuthMiddleware.checkAuthToken,
         SheetController.createSheet
     ])
-    /*.delete('/delete/:id', [
+    .delete('/delete/:id', [
         AuthMiddleware.checkAuthToken,
         SheetMiddleware.hasPermissionToDelete,
         SheetController.deleteSheet
-    ])*/;
+    ]);
 
 
 export default sheetRouter;

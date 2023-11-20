@@ -27,6 +27,7 @@ userRouter
     ])
     .delete('/delete/:id', [
         AuthMiddleware.checkAuthToken,
+        UserMiddleware.hasValidDeletionParams,
         UserMiddleware.hasPermissionToDelete,
         UserController.deleteUser
     ])

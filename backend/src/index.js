@@ -37,17 +37,17 @@ app.use(express.urlencoded({ extended: true }));
 // -- Routes Import -- //
 // Import the routes into the different paths.
 // It searches all default module exports in the routes directory.
-const files = fs.readdirSync('./src/routes/')
+const files = fs.readdirSync('./src/routes/');
 for (let i = 0; i < files.length; i++) {
     let file = files[i];
-    const module = await import('./routes/' + file)
+    const module = await import('./routes/' + file);
     app.use("/" + file.split('.')[0], module.default);
 }
 console.log(`[INFO] - Done mounting paths.`);
 
 
 // -- Models import -- //
-const models = fs.readdirSync('./src/model/')
+const models = fs.readdirSync('./src/model/');
 for (let i = 0; i < models.length; i++) {
     let file = models[i];
     const module = await import('./model/' + file);

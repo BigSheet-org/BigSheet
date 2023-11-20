@@ -47,6 +47,14 @@ class UserMiddleware {
         return next();
 
     }
+
+    static async userExist(req, res, next) {
+        let user=UserModel.getById(req.params.id);
+        if (user == null) {
+            return res.status(404).send(Data.ANSWERS.ERRORS_404.NOT_EXIST);
+        }
+        return next();
+    }
 }
 
 

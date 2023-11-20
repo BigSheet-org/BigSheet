@@ -37,6 +37,7 @@ SheetModel.init(
         },
         title: {
             type: DataTypes.STRING,
+            allowNull: false,
             defaultValue: 'Sans-Nom'
         }
     },

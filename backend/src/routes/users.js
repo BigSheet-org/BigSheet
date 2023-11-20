@@ -14,6 +14,7 @@ userRouter
     ])
     .get('/:id', [
         AuthMiddleware.checkAuthToken,
+        UserMiddleware.userExist,
         UserController.getById
     ])
     .post('/register', [

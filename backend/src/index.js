@@ -7,10 +7,6 @@ import cors from "cors";
 
 import fs from "fs";
 
-// -- Models import -- //
-import UserModel from "./model/UserModel.js";
-import SheetModel from "./model/SheetModel.js";
-
 dotenv.config();
 
 // A list of accepted origins.

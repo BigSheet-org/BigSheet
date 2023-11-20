@@ -2,6 +2,7 @@ import express from "express";
 import SheetController from "../controllers/SheetController.js"
 import AuthMiddleware from "../middleware/AuthMiddleware.js";
 import SheetMiddleware from "../middleware/SheetMiddleware.js";
+import UserMiddleware from "../middleware/UserMiddleware.js";
 
 const sheetRouter = express.Router()
 sheetRouter
@@ -11,6 +12,7 @@ sheetRouter
     ])
     .get('/getOwned/:id', [
         AuthMiddleware.checkAuthToken,
+        UserMiddleware.userExist,
         SheetController.getOwnedByUserId
     ])
     .post('/create', [

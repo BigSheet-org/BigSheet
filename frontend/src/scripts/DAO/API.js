@@ -5,6 +5,7 @@
 import ErrorForDisplay from "../ErrorForDisplay.js";
 import User from "./User.js";
 import Data from "../../assets/static/Data.js";
+import LocalStorage from "./LocalStorage.js";
 
 class API {
 
@@ -115,7 +116,7 @@ class API {
 
         let response
         if (!this.isRefreshing){
-            response = await this.request(method, url, body, content_type, {['Authorization'] : `Bearer ${User.getAccessToken()}`})
+            response = await this.request(method, url, body, content_type, {['Authorization'] : `Bearer ${ LocalStorage.getAccessToken()}`})
         }
 
         // If we get an Unauthorized response
@@ -133,7 +134,7 @@ class API {
 
             // Wait for the current refresh to complete before continuing
             await this.refreshLock;
-            response = await this.request(method, url, body, content_type, {['Authorization'] : `Bearer ${User.getAccessToken()}`})
+            response = await this.request(method, url, body, content_type, {['Authorization'] : `Bearer ${ LocalStorage.getAccessToken()}`})
         }
         return response
     }

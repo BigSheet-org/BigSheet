@@ -2,10 +2,12 @@ import {api} from './API.js'
 
 class User {
 
+    static BASE_PATH = "/users"
+
     static loginUser(login, password) {
         return api.request(
             api.METHODS.POST,
-            '/auth/login',
+            api.AUTH_BASE_PATH + '/login',
             `login=${login}&password=${password}`,
             api.CONTENT_TYPE.URL_ENCODED
         )
@@ -14,7 +16,7 @@ class User {
     static logoutUser() {
         return api.request(
             api.METHODS.POST,
-            '/auth/logout',
+            api.AUTH_BASE_PATH + '/logout',
             JSON.stringify({
                 access_token: User.getAccessToken(),
                 refresh_token: User.getRefreshToken()
@@ -30,11 +32,6 @@ class User {
 
     static cleanLocalStorage(){
         window.localStorage.clear()
-    }
-
-
-    static convertPlusToEncoded(string) {
-        return string.replace(/\+/g, '%2B');
     }
 
     static async connectUser(login, password){
@@ -59,18 +56,8 @@ class User {
         window.location.reload()
     }
 
-    static registerUser(user) {
-        const body = JSON.stringify(user)
-        return api.request(api.METHODS.POST, "/users/register", body)
-    }
-
     static isUserConnected() {
-        return (window.localStorage.getItem("access_token") !== null
-            && window.localStorage.getItem("refresh_token") !== null)
-    }
-
-    static fetchUserData() {
-        return api.request_logged(api.METHODS.GET, "/users/me")
+        return (User.getAccessToken() !== null && User.getRefreshToken() !== null)
     }
 
     static getAccessToken() {
@@ -81,10 +68,19 @@ class User {
         return window.localStorage.getItem("refresh_token")
     }
 
+    static registerUser(user) {
+        const body = JSON.stringify(user)
+        return api.request(api.METHODS.POST, "/users/register", body)
+    }
+
+    static fetchUserData() {
+        return api.request_logged(api.METHODS.GET, "/users/me")
+    }
+
     static async refreshTokens() {
         // Trying to log in user
         return api.request(api.METHODS.POST,
-            "/auth/refresh",
+            api.AUTH_BASE_PATH + "/refresh",
             JSON.stringify({"refresh_token": User.getRefreshToken()})
         ).then((response) => {
             // If the refresh was unsuccessful, we disconnect the user.
@@ -99,6 +95,18 @@ class User {
                 )
             }
         })
+    }
+
+    static async modifyUser() {
+        return api.request(
+            api.METHODS.PATCH,
+            '/users/',
+            JSON.stringify({
+                access_token: User.getAccessToken(),
+                refresh_token: User.getRefreshToken()
+            }),
+            api.CONTENT_TYPE.JSON
+        )
     }
 }
 

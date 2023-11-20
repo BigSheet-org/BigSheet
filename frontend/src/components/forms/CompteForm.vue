@@ -82,10 +82,11 @@
                     }
                 }
             },
-            submitChanges() {
+            async submitChanges() {
                 this.loading = true;
 
                 // Detecting and trying to submit changes.
+                await User.modifyUser()
 
                 this.loading = false;
             },

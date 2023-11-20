@@ -15,6 +15,12 @@ class API {
     API_URL = 'http://localhost:8000';
 
     /**
+     * @description Path for the auth requests.
+     * @type {string}
+     */
+    AUTH_BASE_PATH = "/auth"
+
+    /**
      * @enum {CONTENT_TYPE}
      * @description Enum of HTTP methods. Please use them instead of Strings.
      * It will be useful to properly build HTTP requests.
@@ -48,7 +54,8 @@ class API {
     }
 
     /**
-     * @description Method that needs to be used to communicate with the API.
+     * Method that needs to be used to communicate with the API.
+     *
      * @param method HTTP method that needs to be used to fetch.
      * @param url Path for the route that we need to fetch.
      * @param body Body send with the request (data that needs to be sent).

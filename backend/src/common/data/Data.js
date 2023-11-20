@@ -12,6 +12,7 @@ class Data {
         },
         ERRORS_400: {
             MISSING_FIELDS: {"message": "Mandatory fields are missing."},
+            NO_FIELDS: {"message": "No fields were provided."},
             PASSWORD_DONT_MATCH: {"message": "Passwords do not match."},
             LOGIN_ALREADY_USED: {"message": "Provided login was already used."},
             MAIL_ALREADY_USED: {"message": "Provided mail was already used."}

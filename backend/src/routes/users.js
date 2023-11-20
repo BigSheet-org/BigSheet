@@ -21,8 +21,14 @@ userRouter
         UserMiddleware.hasValidRegisterFields,
         UserController.createUser
     ])
+    .patch('/modify', [
+        AuthMiddleware.checkAuthToken,
+        UserMiddleware.hasValidModificationFields,
+        UserController.modifyUser
+    ])
     .delete('/delete/:id', [
         AuthMiddleware.checkAuthToken,
+        UserMiddleware.hasValidDeletionParams,
         UserMiddleware.hasPermissionToDelete,
         UserController.deleteUser
     ])

@@ -11,14 +11,11 @@ class UserModel extends Model {
      * @returns {Promise<UserModel>} It returns null if no user were found. Returns the user otherwise.
      */
     static async getById(id) {
-        let users = await UserModel.findAll({
-            where: { id: id },
+        return await UserModel.findByPk(id, {
             attributes: {
                 exclude: ['hash']       // We don't return the hash of the user on the net !
             },
         });
-        users.length === 0 ? users = null : users = users[0];
-        return users;
     }
 
     /**
@@ -30,25 +27,23 @@ class UserModel extends Model {
      * @returns {Promise<UserModel>} It returns null if no user were found. Returns the user otherwise.
      */
     static async getUserByLogin(login) {
-        let users = await UserModel.findAll({
-            where: { login: login },
+        return await UserModel.findOne({
+            where: {login: login},
         });
-        users.length === 0 ? users = null : users = users[0];
-        return users;
     }
 
     /**
      * Returns the user corresponding to the mail provided.
+     * WARNING : This method also returns the hash of the user.
+     * It should only be used by methods inside the server.
      *
      * @param mail Mail to find.
      * @returns {Promise<UserModel>} It returns null if no user were found. Returns the user otherwise.
      */
     static async getUserByMail(mail) {
-        let users = await UserModel.findAll({
-            where: { mail: mail },
+        return await UserModel.findOne({
+            where: {mail: mail},
         });
-        users.length === 0 ? users = null : users = users[0];
-        return users;
     }
 }
 

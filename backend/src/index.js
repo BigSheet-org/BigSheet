@@ -47,7 +47,12 @@ console.log(`[INFO] - Done mounting paths.`);
 
 
 // -- Models import -- //
-await UserModel.sync({ alter: true });           // We allow the insertion of new columns.
+const models = fs.readdirSync('./src/model/')
+for (let i = 0; i < models.length; i++) {
+    let file = models[i];
+    const module = await import('./model/' + file);
+    await module.default.sync({ alter: true });
+}
 console.log(`[INFO] - Done Initializing models.`);
 
 // -- Starting Server listener -- //

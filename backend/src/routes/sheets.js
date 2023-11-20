@@ -6,7 +6,7 @@ import UserMiddleware from "../middleware/UserMiddleware.js";
 
 const sheetRouter = express.Router()
 sheetRouter
-    .get('/me', [
+    .get('/all', [
         AuthMiddleware.checkAuthToken,
         SheetController.getOwnedByCurrentUser
     ])

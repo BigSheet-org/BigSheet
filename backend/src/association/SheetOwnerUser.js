@@ -11,7 +11,10 @@ import SheetModel from "../model/SheetModel.js";
 export default async function() {
     UserModel.hasMany(SheetModel, {
         as: 'owned',
-        foreignKey: 'ownerId'
+        foreignKey: {
+            name: 'ownerId',
+            allowNull: false
+        }
     });
     SheetModel.belongsTo(UserModel, {
         as: 'owner',

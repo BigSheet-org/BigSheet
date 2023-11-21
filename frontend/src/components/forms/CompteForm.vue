@@ -5,6 +5,7 @@
     import Utils from "../../scripts/Utility/Utils.js";
     import Loading from "../common/Loading.vue";
     import ErrorForDisplay from "../../scripts/ErrorForDisplay.js";
+    import PopUp from "../common/PopUp.vue";
 
     export default {
         computed: {
@@ -12,7 +13,7 @@
                 return Data
             }
         },
-        components: {Loading, Input},
+        components: {PopUp, Loading, Input},
         data(){
             return {
                 oldUser: undefined,
@@ -50,6 +51,8 @@
                 },
                 loading: false,
                 showPopup: true,
+                askDeletionConfirm: false,
+                confirmChangesApplied: false,
             }
         },
         methods: {
@@ -119,6 +122,8 @@
                             default:
                                 break;
                         }
+                    } else {
+                        this.confirmChangesApplied = true;
                     }
                 }
 
@@ -127,7 +132,8 @@
             async cancel() {
                 Utils.resetErrorAndCorrectValues(this.error, this.error_message, this.correct)
                 await this.fetchUserData();
-            }
+            },
+            hideConfirmChangesMessage() { this.confirmChangesApplied = false; }
         },
         async beforeMount() {
             await this.fetchUserData()
@@ -192,13 +198,23 @@
                     @click="this.submitChanges()">
                 Enregistrer
             </button>
-            <button class="right"
+            <button class="is_right"
                     @click="this.cancel()">
                 Annuler
             </button>
         </div>
 
         <Loading v-else/>
+
+        <PopUp v-if="this.askDeletionConfirm"
+               title="Attention"
+               message="Cette action supprimera votre compte. Cette action est irréversible."/>
+
+        <PopUp v-if="this.confirmChangesApplied"
+               @dismiss="this.hideConfirmChangesMessage()"
+               popup-class="success"
+               title="Information"
+               message="Vos données ont bien été modifiées."/>
     </div>
 
 </template>

@@ -19,7 +19,7 @@ sheetRouter
         AuthMiddleware.checkAuthToken,
         SheetController.createSheet
     ])
-    .delete('/delete/:id', [
+    .delete('/:id', [
         AuthMiddleware.checkAuthToken,
         SheetMiddleware.sheetExists,
         SheetMiddleware.hasPermission,

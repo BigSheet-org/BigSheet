@@ -40,7 +40,7 @@ class SheetController {
      * @returns {Promise<void>}
      */
     static async deleteSheet(req, res) {
-        let sheet = await SheetModel.getById(req.params.id);        
+        let sheet = req.body.additionnalParameters.sheet;        
         await sheet.destroy();
         await sheet.save();
         return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);

@@ -57,6 +57,17 @@ class SheetController {
         await sheet.save();
         return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);
     }
+
+    /**
+     * This method will ask the model to get sheet with the good id.
+     * Require Middleware sheetExists.
+     * @param req Request provided. Contains the parameter required in its body.
+     * @param res Response to provide.
+     * @returns {Promise<void>}
+     */
+    static async getById(req, res) {
+        return res.send(req.body.additionnalParameters.sheet);
+    }
 }
 
 export default SheetController;

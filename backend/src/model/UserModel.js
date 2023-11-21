@@ -84,13 +84,4 @@ UserModel.init(
     }
 );
 
-// Association (to see to in an other file because must be load after all models)
-UserModel.hasMany(SheetModel, {
-    as: 'owned',
-    foreignKey: 'ownerId'
-});
-SheetModel.belongsTo(UserModel, {
-    as: 'owner',
-    foreignKey: 'ownerId'
-});
 export default UserModel;

@@ -1,6 +1,5 @@
 import sequelize from "../common/tools/postgres.js";
 import {DataTypes, Model} from "sequelize";
-import SheetModel from "./SheetModel.js";
 
 class UserModel extends Model {
 

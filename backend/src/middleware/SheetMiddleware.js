@@ -28,7 +28,7 @@ class SheetMiddleware {
         if (sheet == null) {
             return res.status(404).send(Data.ANSWERS.ERRORS_404.NOT_EXIST);
         }
-        requestAddParams(req, {sheet: sheet});
+        requestAddParams(req, { sheet: sheet });
         return next();
     }
 }

@@ -17,18 +17,6 @@ class SheetController {
         return res.send(sheets);
     }
 
-     /**
-     * This method will ask the model to get all sheets owned by user with the good id.
-     *
-     * @param req Request provided. Contains the parameter required in its body.
-     * @param res Response to provide.
-     * @returns {Promise<void>}
-     */
-     static async getOwnedByUserId(req, res) {
-        let sheets = await SheetModel.getAllSheetsByOwner(req.params.id);
-        return res.send(sheets);
-    }
-
     /**
      * This method will create a sheet.
      *
@@ -46,7 +34,7 @@ class SheetController {
 
     /**
      * This method will remove a sheet.
-     *
+     * Require Middleware sheetExists.
      * @param req Request provided. Contains the parameters required in its body.
      * @param res Response to provide.
      * @returns {Promise<void>}

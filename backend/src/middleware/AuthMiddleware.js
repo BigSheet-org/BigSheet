@@ -108,7 +108,6 @@ class AuthMiddleware {
         let token;
         if (req.headers.authorization) {        // If it was found in the header.
             token = Tokens.getAuthTokenFromHeader(req)
-            console.log(token)
         } else {                                // We try to find it in the body.
             token = req.body.access_token
         }

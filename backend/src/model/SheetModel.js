@@ -1,6 +1,5 @@
 import sequelize from "../common/tools/postgres.js";
 import {DataTypes, Model} from "sequelize";
-import UserModel from "./UserModel.js";
 
 class SheetModel extends Model {
     /**
@@ -9,10 +8,9 @@ class SheetModel extends Model {
      * @returns {Promise<SheetModel>} Return sheets
      */
     static async getAllSheetsByOwner(userId) {
-        let user = await UserModel.findByPk(userId, {
-            include: 'owned'
+        let sheets = await SheetModel.findAll({
+            where: { ownerId: userId }
         });
-        let sheets = user.getOwned();
         return sheets
     }
 

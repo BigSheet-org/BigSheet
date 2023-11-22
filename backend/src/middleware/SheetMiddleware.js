@@ -13,7 +13,7 @@ class SheetMiddleware {
      * @returns 
      */
     static async hasPermission(req, res, next) {
-        let userID = Number(await Tokens.getUserIdFromToken(await Tokens.getAuthTokenFromHeader(req)));
+        let userID = Number(await Tokens.getUserIdFromToken(req.body.additionnalParameters.authToken));
         let sheet = req.body.additionnalParameters.sheet;
         let ownerIDSheetToDelete = Number(sheet.ownerId);
         if(userID != ownerIDSheetToDelete) {

@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import UserModel from "../model/UserModel.js";
 import Tokens from "../common/tools/Tokens.js";
 import Data from "../common/data/Data.js";
-
+import requestAddParams from "../common/tools/requestAddParams.js";
 class AuthMiddleware {
 
     /**
@@ -111,6 +111,7 @@ class AuthMiddleware {
         } else {                                // We try to find it in the body.
             token = req.body.access_token
         }
+        requestAddParams(req, {authToken: token});
         let data = await Tokens.verifyAuthToken(token)
         // Don't worry, if no token ere found, the validate next method will send a 401 error.
         return AuthMiddleware.validateNext(data, res, next)

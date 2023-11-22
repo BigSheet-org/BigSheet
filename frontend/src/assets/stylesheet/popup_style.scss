@@ -41,12 +41,11 @@
                 &:active { scale: 95%; }
             }
 
-            .dialog {
-                text-align: center;
-
-                button{
-                    justify-items: center;
-                }
+            .choice {
+                display: inline-grid;
+                grid-template-columns: auto auto;
+                column-gap: 1em;
+                width: 30%;
             }
         }
     }

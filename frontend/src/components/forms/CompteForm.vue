@@ -50,7 +50,6 @@
                     confirmPassword: false,
                 },
                 loading: false,
-                showPopup: true,
                 askDeletionConfirm: false,
                 confirmChangesApplied: false,
             }
@@ -133,7 +132,13 @@
                 Utils.resetErrorAndCorrectValues(this.error, this.error_message, this.correct)
                 await this.fetchUserData();
             },
-            hideConfirmChangesMessage() { this.confirmChangesApplied = false; }
+            hideConfirmChangesMessage() { this.confirmChangesApplied = false; },
+            async hideConfirmDeletion(confirms) {
+                if (confirms) {
+                    await User.deleteUser(this.oldUser.id);
+                }
+                this.askDeletionConfirm = false;
+            }
         },
         async beforeMount() {
             await this.fetchUserData()
@@ -203,12 +208,21 @@
                 Annuler
             </button>
         </div>
+        <button v-if="!this.loading"
+                class="is_centered important_action"
+                @click="this.askDeletionConfirm = true;">
+            Supprimer mon compte
+        </button>
 
         <Loading v-else/>
 
         <PopUp v-if="this.askDeletionConfirm"
-               title="Attention"
-               message="Cette action supprimera votre compte. Cette action est irréversible."/>
+               popup-class="error"
+               :choice="true"
+               @dismiss="this.hideConfirmDeletion(false)"
+               @confirm="this.hideConfirmDeletion(true)"
+               title="Suppression du compte."
+               message="Cette action est irréversible. Souhaitez vous continuer ?"/>
 
         <PopUp v-if="this.confirmChangesApplied"
                @dismiss="this.hideConfirmChangesMessage()"
@@ -216,5 +230,4 @@
                title="Information"
                message="Vos données ont bien été modifiées."/>
     </div>
-
 </template>

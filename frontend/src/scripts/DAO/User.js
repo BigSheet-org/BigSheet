@@ -165,6 +165,21 @@ class User {
             api.CONTENT_TYPE.JSON
         );
     }
+
+    /**
+     * This deletes the user currently connected.
+     * It also clears Tokens and reloads the page.
+     *
+     * @param userID Id of the user to delete.
+     * @returns {Promise}
+     */
+    static async deleteUser(userID) {
+        await api.request_logged(
+            api.METHODS.DELETE,
+            User.BASE_PATH +'/delete/' + userID,
+        );
+        return await User.logout();
+    }
 }
 
 export default User

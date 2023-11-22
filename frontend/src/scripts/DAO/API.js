@@ -19,7 +19,7 @@ class API {
      * @description Path for the auth requests.
      * @type {string}
      */
-    AUTH_BASE_PATH = "/auth"
+    AUTH_BASE_PATH = "/auth";
 
     /**
      * @enum {CONTENT_TYPE}
@@ -71,12 +71,12 @@ class API {
                 "Access-Control-Allow-Origin": this.API_URL,
                 "Accept": "application/json",                           // <- Indicates what data the application accepts
                 "Origin": window.location.origin,
-            }
+            };
             // Checking if content-type needs to be specified.
-            if (supplied_content_type !== this.CONTENT_TYPE.FORM_DATA ) { header["Content-Type"] = supplied_content_type }
+            if (supplied_content_type !== this.CONTENT_TYPE.FORM_DATA ) { header["Content-Type"] = supplied_content_type; }
             // Adding eventual headers.
             // Mainly used for adding identification headers.
-            for (const key in headers) { header[key] = headers[key] }
+            for (const key in headers) { header[key] = headers[key]; }
 
             // Setting up the timeout mechanism :
             setTimeout(
@@ -86,7 +86,7 @@ class API {
                         + Data.PROGRAM_VALUES.TIMEOUT_BEFORE_REQUEST_FAILURE + " ms"))
                 },
                 Data.PROGRAM_VALUES.TIMEOUT_BEFORE_REQUEST_FAILURE
-            )
+            );
 
             // Fetching data from the server
             const response = await fetch(
@@ -99,24 +99,25 @@ class API {
                 });
 
             // When we got our response, we check the status code.
-            let data = await response.json()
+            let data = await response.json();
             switch (response.status){
                 // Successful response
                 case 200:
-                    resolve(data)
-                    break;// Unsuccessful response
+                    resolve(data);
+                    break;
+                // Unsuccessful response
                 default :
-                    resolve(new ErrorForDisplay(response.status, data.message))
+                    resolve(new ErrorForDisplay(response.status, data.message));
                     break;
                 }
-        })
+        });
     }
 
     async request_logged(method, url, body, content_type) {
 
-        let response
+        let response;
         if (!this.isRefreshing){
-            response = await this.request(method, url, body, content_type, {['Authorization'] : `Bearer ${ LocalStorage.getAccessToken()}`})
+            response = await this.request(method, url, body, content_type, {['Authorization'] : `Bearer ${ LocalStorage.getAccessToken()}`});
         }
 
         // If we get an Unauthorized response
@@ -129,14 +130,14 @@ class API {
                 // If we were not able to refresh the tokens :
                 // Logout the user, redirect to login page, etc... are handled by the refresh tokens method
                 this.refreshLock = User.refreshTokens()
-                    .then(() => { this.isRefreshing = false })
+                    .then(() => { this.isRefreshing = false });
             }
 
             // Wait for the current refresh to complete before continuing
             await this.refreshLock;
-            response = await this.request(method, url, body, content_type, {['Authorization'] : `Bearer ${ LocalStorage.getAccessToken()}`})
+            response = await this.request(method, url, body, content_type, {['Authorization'] : `Bearer ${ LocalStorage.getAccessToken()}`});
         }
-        return response
+        return response;
     }
 }
 export const api = new API();

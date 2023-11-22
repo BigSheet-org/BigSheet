@@ -90,11 +90,11 @@ class User {
                 LocalStorage.cleanLocalStorage();
                 window.location.reload();
             } else {
-                LocalStorage.cleanLocalStorage()
+                LocalStorage.cleanLocalStorage();
                 LocalStorage.saveToLocalStorage(
                     response['access_token'],
                     response['refresh_token']
-                )
+                );
             }
         });
     }

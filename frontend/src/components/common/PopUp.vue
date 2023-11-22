@@ -21,13 +21,20 @@
                 type: String,
                 required: false,
                 default: "success"
+            },
+            choice: {
+                type: Boolean,
+                required: false,
+                default: false
             }
         },
         emits: {
-            dismiss(){ return true; }
+            dismiss() { return true; },
+            confirm() { return true; }
         },
         methods: {
-            dismiss() { this.$emit("dismiss"); }
+            dismiss() { this.$emit("dismiss"); },
+            confirm() { this.$emit("confirm"); }
         }
     }
 </script>
@@ -39,7 +46,18 @@
                 <div class="container">
                     <h1 :class="this.popupClass">{{this.title}}</h1>
                     <h2>{{this.message}}</h2>
-                    <button @click="this.dismiss()">Ok</button>
+                    <div v-if="this.choice" class="choice">
+                        <button @click="this.confirm()">
+                            Oui
+                        </button>
+                        <button @click="this.dismiss()">
+                            Non
+                        </button>
+                    </div>
+                    <button v-else
+                            @click="this.dismiss()">
+                        Ok
+                    </button>
                 </div>
             </div>
         </div>

@@ -191,11 +191,15 @@ export default {
 
             <div v-if="!this.loading"
                  class="submit">
-                <button @click="this.registerUser()">
+                <button class="is_left"
+                        @click="this.registerUser()">
                     Inscription
                 </button>
 
-                <router-link :to="Routes.CONNEXION.path">Déjà un compte ?</router-link>
+                <router-link class="is_right"
+                             :to="Routes.CONNEXION.path">
+                    Déjà un compte ?
+                </router-link>
             </div>
 
             <Loading v-else/>

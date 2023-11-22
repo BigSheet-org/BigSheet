@@ -58,14 +58,17 @@ button {
     background-color: #1a1a1a;
     cursor: pointer;
     transition: border-color 0.25s;
+    &:hover {
+        border-color: #646cff;
+    }
+    &:focus, &:focus-visible {
+        outline: 4px auto -webkit-focus-ring-color;
+    }
+    &.important_action {
+        background-color: variables.$wrong_highlight;
+    }
 }
-button:hover {
-    border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-    outline: 4px auto -webkit-focus-ring-color;
-}
+
 
 #app {
     text-align: center;

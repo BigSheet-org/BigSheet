@@ -95,14 +95,19 @@
         button {
             margin-top: 1em;
             margin-bottom: 1em;
-            width: 120px;
-            justify-self: right;
+            width: 50%;
         }
         a {
-            justify-self: left;
             width: 130px;
             align-self: center;
         }
+        .is_right { justify-self: left; }
+        .is_left { justify-self: right; }
+    }
+
+    .is_centered {
+        width: 80%;
+        justify-self: center;
     }
 }
 

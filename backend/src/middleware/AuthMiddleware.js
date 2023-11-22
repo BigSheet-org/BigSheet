@@ -16,9 +16,9 @@ class AuthMiddleware {
     static hasValidLoginFields(req, res, next){
         if (!req.body.login || !req.body.password) {
             return res.status(400)
-                      .send(Data.ANSWERS.ERRORS_400.MISSING_FIELDS)
+                      .send(Data.ANSWERS.ERRORS_400.MISSING_FIELDS);
         }
-        return next()
+        return next();
     }
 
     /**
@@ -32,9 +32,9 @@ class AuthMiddleware {
     static hasValidLogoutFields(req, res, next){
         if (!req.body.refresh_token || !req.body.access_token) {
             return res.status(400)
-                .send(Data.ANSWERS.ERRORS_400.MISSING_FIELDS)
+                .send(Data.ANSWERS.ERRORS_400.MISSING_FIELDS);
         }
-        return next()
+        return next();
     }
 
     /**
@@ -48,9 +48,9 @@ class AuthMiddleware {
     static hasValidRefreshFields(req, res, next){
         if (!req.body.refresh_token) {
             return res.status(400)
-                .send(Data.ANSWERS.ERRORS_400.MISSING_FIELDS)
+                .send(Data.ANSWERS.ERRORS_400.MISSING_FIELDS);
         }
-        return next()
+        return next();
     }
 
     /**
@@ -84,14 +84,14 @@ class AuthMiddleware {
      */
     static async authenticate(login, password) {
         // We find the user that has the login provided.
-        let userConcerned = await UserModel.getUserByLogin(login)
+        let userConcerned = await UserModel.getUserByLogin(login);
 
         // If no user with this login exists.
         if(userConcerned === null) {
-            return false
+            return false;
         }
         // We return the result of password matching.
-        return await AuthMiddleware.comparePassword(password, userConcerned.hash)
+        return await AuthMiddleware.comparePassword(password, userConcerned.hash);
     }
 
     /**
@@ -107,14 +107,14 @@ class AuthMiddleware {
         // We try to find the auth token.
         let token;
         if (req.headers.authorization) {        // If it was found in the header.
-            token = await Tokens.getAuthTokenFromHeader(req)
+            token = Tokens.getAuthTokenFromHeader(req);
         } else {                                // We try to find it in the body.
-            token = req.body.access_token
+            token = req.body.access_token;
         }
         requestAddParams(req, {authToken: token});
         let data = await Tokens.verifyAuthToken(token)
         // Don't worry, if no token ere found, the validate next method will send a 401 error.
-        return AuthMiddleware.validateNext(data, res, next)
+        return AuthMiddleware.validateNext(data, res, next);
     }
 
     /**
@@ -127,8 +127,8 @@ class AuthMiddleware {
      * @returns {*}
      */
     static async checkRefreshToken(req, res, next) {
-        let data = await Tokens.verifyRefreshTokens(req.body.refresh_token)
-        return AuthMiddleware.validateNext(data, res, next)
+        let data = await Tokens.verifyRefreshTokens(req.body.refresh_token);
+        return AuthMiddleware.validateNext(data, res, next);
     }
 
     /**
@@ -145,13 +145,13 @@ class AuthMiddleware {
             // If the token was expired or invalid.
             if(data.error === Data.SERVER_COMPARISON_DATA.TOKENS.EXPIRED) {
                 return res.status(401)
-                    .send(Data.ANSWERS.ERRORS_401.EXPIRED_TOKEN)
+                    .send(Data.ANSWERS.ERRORS_401.EXPIRED_TOKEN);
             } else {
                 return res.status(401)
-                    .send(Data.ANSWERS.ERRORS_401.INVALID_TOKEN)
+                    .send(Data.ANSWERS.ERRORS_401.INVALID_TOKEN);
             }
         } else {
-            return next()
+            return next();
         }
     }
 }

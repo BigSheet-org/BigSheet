@@ -4,6 +4,8 @@
     import Data from "../../assets/static/Data.js";
     import Utils from "../../scripts/Utility/Utils.js";
     import Loading from "../common/Loading.vue";
+    import ErrorForDisplay from "../../scripts/ErrorForDisplay.js";
+    import PopUp from "../common/PopUp.vue";
 
     export default {
         computed: {
@@ -11,9 +13,10 @@
                 return Data
             }
         },
-        components: {Loading, Input},
+        components: {PopUp, Loading, Input},
         data(){
             return {
+                oldUser: undefined,
                 user: {
                     firstname: undefined,
                     lastname: undefined,
@@ -47,19 +50,21 @@
                     confirmPassword: false,
                 },
                 loading: false,
-                showPopup: true,
+                askDeletionConfirm: false,
+                confirmChangesApplied: false,
             }
         },
         methods: {
             async fetchUserData(){
                 this.loading = true;
                 this.user = await User.fetchUserData();
+                this.oldUser = { ...this.user };        // We make a copy of the values. CAREFUL : it's not a deep copy.
                 this.loading = false;
             },
             changeField(payload, field) {
                 this.user[field] = payload;
                 // We check the field's validity.
-                // -> Mail formatting
+                // -> Mail formatting.
                 if (field === "mail" && payload !== "") {
                     if (!Utils.validateEmail(this.user.mail)) {
                         this.error[field] = true;
@@ -70,7 +75,7 @@
                         this.error_message[field] = "";
                     }
                 }
-                // -> Password
+                // -> Password.
                 if (field === "password" && payload !== "") {
                     if (!Utils.validatePassword(this.user.password)) {
                         this.error[field] = true;
@@ -81,17 +86,58 @@
                         this.error_message[field] = "";
                     }
                 }
+                // -> Confirm password.
+                if (field === "confirmPassword" && payload !== "") {
+                    if (this.user.password !== payload) {
+                        this.error[field] = true;
+                        this.error_message[field] = Data.MESSAGES.PASSWORD_DONT_MATCH;
+                    } else {
+                        this.correct[field] = true;
+                        this.error[field] = false;
+                        this.error_message[field] = "";
+                    }
+                }
             },
-            submitChanges() {
+            async submitChanges() {
                 this.loading = true;
-
                 // Detecting and trying to submit changes.
+                if (this.oldUser.login !== this.user.login
+                    || this.oldUser.mail !== this.user.mail
+                    || this.oldUser.firstname !== this.user.firstname
+                    || this.oldUser.lastname !== this.user.lastname
+                    || this.user.password && this.user.confirmPassword
+                    ) {
+                    let result = await User.modifyUser(this.oldUser, this.user);
+                    if (result instanceof ErrorForDisplay) {
+                        switch (result.error_message) {
+                            case Data.MESSAGES.API_ANSWERS.MAIL_ALREADY_USED :
+                                this.error['mail'] = true;
+                                this.error_message['mail'] = Data.MESSAGES.MAIL_ALREADY_USED;
+                                break;
+                            case Data.MESSAGES.API_ANSWERS.LOGIN_ALREADY_USED :
+                                this.error['login'] = true;
+                                this.error_message['login'] = Data.MESSAGES.LOGIN_ALREADY_USED;
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        this.confirmChangesApplied = true;
+                    }
+                }
 
                 this.loading = false;
             },
             async cancel() {
                 Utils.resetErrorAndCorrectValues(this.error, this.error_message, this.correct)
                 await this.fetchUserData();
+            },
+            hideConfirmChangesMessage() { this.confirmChangesApplied = false; },
+            async hideConfirmDeletion(confirms) {
+                if (confirms) {
+                    await User.deleteUser(this.oldUser.id);
+                }
+                this.askDeletionConfirm = false;
             }
         },
         async beforeMount() {
@@ -153,11 +199,35 @@
 
         <div v-if="!this.loading"
              class="submit">
-            <button @click="this.submitChanges()">Enregistrer</button>
-            <button @click="this.cancel()">Annuler</button>
+            <button class="is_left"
+                    @click="this.submitChanges()">
+                Enregistrer
+            </button>
+            <button class="is_right"
+                    @click="this.cancel()">
+                Annuler
+            </button>
         </div>
+        <button v-if="!this.loading"
+                class="is_centered important_action"
+                @click="this.askDeletionConfirm = true;">
+            Supprimer mon compte
+        </button>
 
         <Loading v-else/>
-    </div>
 
+        <PopUp v-if="this.askDeletionConfirm"
+               popup-class="error"
+               :choice="true"
+               @dismiss="this.hideConfirmDeletion(false)"
+               @confirm="this.hideConfirmDeletion(true)"
+               title="Suppression du compte."
+               message="Cette action est irréversible. Souhaitez vous continuer ?"/>
+
+        <PopUp v-if="this.confirmChangesApplied"
+               @dismiss="this.hideConfirmChangesMessage()"
+               popup-class="success"
+               title="Information"
+               message="Vos données ont bien été modifiées."/>
+    </div>
 </template>

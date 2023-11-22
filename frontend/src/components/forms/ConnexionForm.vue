@@ -98,11 +98,15 @@
 
         <div v-if="!this.loading"
              class="submit">
-            <button @click="this.loginUser()">
+            <button class="is_left"
+                    @click="this.loginUser()">
                 Connexion
             </button>
 
-            <router-link :to="Routes.INSCRIPTION.path">Pas encore de compte ?</router-link>
+            <router-link class="is_right"
+                         :to="Routes.INSCRIPTION.path">
+                Pas encore de compte ?
+            </router-link>
         </div>
 
         <Loading v-else/>

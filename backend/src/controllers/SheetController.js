@@ -75,7 +75,7 @@ class SheetController {
     }
 
     /**
-     * This method will ask the model to get sheet with the good id.
+     * This method grant access to a user.
      * Require Middleware sheetExists userExists.
      * @param req Request provided. Contains the parameter required in its body.
      * @param res Response to provide.
@@ -93,6 +93,21 @@ class SheetController {
                 accessRight
             }
         });
+        sheet.save();
+        return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);
+    }
+
+    /**
+     * This method remove access to a user.
+     * Require Middleware sheetExists userExists.
+     * @param req Request provided. Contains the parameter required in its body.
+     * @param res Response to provide.
+     * @returns {Promise<void>}
+     */
+    static async deleteUser(req, res) {
+        let user = req.body.additionnalParameters.user;
+        let sheet = req.body.additionnalParameters.sheet;
+        await sheet.removeUser(user);
         sheet.save();
         return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);
     }

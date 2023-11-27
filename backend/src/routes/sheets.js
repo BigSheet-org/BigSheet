@@ -38,6 +38,14 @@ sheetRouter
         UserMiddleware.userExists,
         SheetMiddleware.hasValidAccess,
         SheetController.addUser
+    ])
+    .delete('/deleteUser/:sheetId/:userId', [
+        AuthMiddleware.checkAuthToken,
+        SheetMiddleware.isOtherUser,
+        SheetMiddleware.sheetExists,
+        SheetMiddleware.hasOwnerPermission,
+        UserMiddleware.userExists,
+        SheetController.deleteUser
     ]);
 
 

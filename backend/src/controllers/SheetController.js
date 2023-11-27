@@ -5,28 +5,42 @@ import Tokens from "../common/tools/Tokens.js";
 class SheetController {
     /**
      * This method will ask the model to get all sheets owned by connected user.
-     *
+     * Require checkAuthToken
      * @param req Request provided. Contains the parameter required in its body.
      * @param res Response to provide.
      * @returns {Promise<void>}
      */
     static async getOwnedByCurrentUser(req, res) {
         // We extract the current user ID from the token.
-        let userID = await Tokens.getUserIdFromToken(await Tokens.getAuthTokenFromHeader(req));
-        let sheets = await SheetModel.getAllSheetsByOwner(userID);
+        let userID = await Tokens.getUserIdFromToken(req.body.additionnalParameters.authToken);
+        let sheets = await SheetModel.getAllByOwner(userID);
+        return res.send(sheets);
+    }
+
+    /**
+     * This method will ask the model to get all sheets accessible by connected user.
+     * Require checkAuthToken
+     * @param req Request provided. Contains the parameter required in its body.
+     * @param res Response to provide.
+     * @returns {Promise<void>}
+     */
+    static async getAccessibleByCurrentUser(req, res) {
+        // We extract the current user ID from the token.
+        let userID = await Tokens.getUserIdFromToken(req.body.additionnalParameters.authToken);
+        let sheets = await SheetModel.getAccessibleByUser(userID);
         return res.send(sheets);
     }
 
     /**
      * This method will create a sheet.
-     *
+     * Require checkAuthToken
      * @param req Request provided. Contains the parameters required in its body.
      * @param res Response to provide.
      * @returns {Promise<void>}
      */
     static async createSheet(req, res) {
         // get user connected
-        let userID = await Tokens.getUserIdFromToken(await Tokens.getAuthTokenFromHeader(req));
+        let userID = await Tokens.getUserIdFromToken(req.body.additionnalParameters.authToken);
         let sheet = await SheetModel.create({ownerId: userID});
         await sheet.save();
         return res.send(sheet);

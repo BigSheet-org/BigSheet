@@ -7,12 +7,12 @@ const sheetRouter = express.Router()
 sheetRouter
     .get('/all', [
         AuthMiddleware.checkAuthToken,
-        SheetController.getOwnedByCurrentUser
+        SheetController.getAccessibleByCurrentUser
     ])
-    .get('/owned'), [
+    .get('/owned', [
         AuthMiddleware.checkAuthToken,
         SheetController.getOwnedByCurrentUser
-    ]
+    ])
     .get('/:id', [
         AuthMiddleware.checkAuthToken,
         SheetMiddleware.sheetExists,

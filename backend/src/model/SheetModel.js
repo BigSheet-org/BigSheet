@@ -8,18 +8,38 @@ class SheetModel extends Model {
      * @param userId Id off the user
      * @returns {Promise<SheetModel>} Return sheets
      */
-    static async getAllSheetsByOwner(userId) {
+    static async getAllByOwner(userId) {
         let sheets = await SheetModel.findAll({
             attributes: ['title', 'createdAt'], // get title and creation date
             include: { // we include UserModel to do inner join
                 model: UserModel,
                 as: 'users',
-                //attributes: [], // but we not want Users who have access on sheet
+                attributes: [], // but we not want Users who have access on sheet
                 through: {
                     where: {
                         accessRight: 'owner'
                     }
                 },
+                where: {
+                    id: userId,
+                }
+            }
+        });
+        return sheets
+    }
+
+    /**
+     * This method return all sheets owned by the user. 
+     * @param userId Id off the user
+     * @returns {Promise<SheetModel>} Return sheets
+     */
+    static async getAccessibleByUser(userId) {
+        let sheets = await SheetModel.findAll({
+            attributes: ['title', 'createdAt'], // get title and creation date
+            include: { // we include UserModel to do inner join
+                model: UserModel,
+                as: 'users',
+                attributes: [], // but we not want Users who have access on sheet
                 where: {
                     id: userId,
                 }

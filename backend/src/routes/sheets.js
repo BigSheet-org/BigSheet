@@ -26,7 +26,7 @@ sheetRouter
     .delete('/:id', [
         AuthMiddleware.checkAuthToken,
         SheetMiddleware.sheetExists,
-        SheetMiddleware.hasPermissionToAccess,
+        SheetMiddleware.hasPermissionToDelete,
         SheetController.deleteSheet
     ]);
 

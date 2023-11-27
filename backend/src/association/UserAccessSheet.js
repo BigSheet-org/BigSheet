@@ -25,7 +25,7 @@ UserAccesSheet.init(
             }
         },
         accessRight: {
-            type: DataTypes.ENUM('owner', 'reader', 'write'),
+            type: DataTypes.ENUM('owner', 'reader', 'writer'),
             allowNull: false,
             defaultValue: 'owner'
         }

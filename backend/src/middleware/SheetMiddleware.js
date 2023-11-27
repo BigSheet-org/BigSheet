@@ -15,14 +15,41 @@ class SheetMiddleware {
     static async hasPermissionToAccess(req, res, next) {
         let userID = Number(await Tokens.getUserIdFromToken(req.body.additionnalParameters.authToken));
         let sheet = req.body.additionnalParameters.sheet;
-        let usersAccess = sheet.users.map((x) => Number(x.id));
-        if(!usersAccess.includes(userID)) {
+        // if userId not in users who has access at this sheet
+        if(!sheet.users.some((x) => Number(x.id)===userID)) {
             return res.status(401)
                     .send(Data.ANSWERS.ERRORS_401.INSUFFICIENT_PERMS);
         }
         return next();
     }
 
+    /**
+     * To verify if connected user has permission to delete a sheet.
+     * Require Middleware sheetExists.
+     * @param {*} req 
+     * @param {*} res 
+     * @param {*} next 
+     * @returns 
+     */
+    static async hasPermissionToDelete(req, res, next) {
+        let userID = Number(await Tokens.getUserIdFromToken(req.body.additionnalParameters.authToken));
+        let sheet = req.body.additionnalParameters.sheet;
+        // if userId not in users who has access with owner permission at this sheet
+        if(!sheet.users.some((x) => Number(x.id)===userID && x.userAccessSheet.accessRight=='owner')) {
+            return res.status(401)
+                    .send(Data.ANSWERS.ERRORS_401.INSUFFICIENT_PERMS);
+        }
+        return next();
+    }
+
+    /**
+     * To verify if a sheet exists.
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     * @param {*} next 
+     * @returns 
+     */
     static async sheetExists(req, res, next) {
         let sheet=await SheetModel.getById(req.params.id);
         if (sheet == null) {

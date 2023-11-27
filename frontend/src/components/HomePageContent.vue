@@ -43,8 +43,5 @@ export default {
     <div v-else>
         <h1>Bienvenue {{this.user.firstname}}</h1>
         <SheetList/>
-        <router-link :to="Routes.NOT_FOUND.path">
-            <img src="../assets/pictures/icons/Ajouter.png" alt="Créer un nouveau tableau">
-        </router-link>
     </div>
 </template>

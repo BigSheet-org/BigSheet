@@ -1,3 +1,5 @@
+@use "variables";
+
 .sheet_list {
 
     .item_container {
@@ -10,16 +12,18 @@
         .sheet_item {
             cursor: pointer;
             padding: 10px;
-            border-bottom: 1px solid #878585;
+            border-bottom: 1px solid variables.$dark_input_border_color;
             transition: background-color 0.3s;
 
             &:hover {
-                background-color: #878585;
+                background-color: variables.$dark_list_hover_color;
             }
 
             .sheet_info {
                 display: flex;
                 justify-content: space-between;
+                margin-right: 1em;
+                margin-left: 1em;
             }
         }
     }

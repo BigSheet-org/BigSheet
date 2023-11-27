@@ -12,9 +12,9 @@ userRouter
         AuthMiddleware.checkAuthToken,
         UserController.getCurrentUser
     ])
-    .get('/:id', [
+    .get('/:userId', [
         AuthMiddleware.checkAuthToken,
-        UserMiddleware.userExist,
+        UserMiddleware.userExists,
         UserController.getById
     ])
     .post('/register', [
@@ -26,7 +26,7 @@ userRouter
         UserMiddleware.hasValidModificationFields,
         UserController.modifyUser
     ])
-    .delete('/delete/:id', [
+    .delete('/delete/:userId', [
         AuthMiddleware.checkAuthToken,
         UserMiddleware.hasValidDeletionParams,
         UserMiddleware.hasPermissionToDelete,

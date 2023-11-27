@@ -2,6 +2,7 @@ import express from "express";
 import SheetController from "../controllers/SheetController.js"
 import AuthMiddleware from "../middleware/AuthMiddleware.js";
 import SheetMiddleware from "../middleware/SheetMiddleware.js";
+import UserMiddleware from "../middleware/UserMiddleware.js";
 
 const sheetRouter = express.Router()
 sheetRouter
@@ -13,7 +14,7 @@ sheetRouter
         AuthMiddleware.checkAuthToken,
         SheetController.getOwnedByCurrentUser
     ])
-    .get('/:id', [
+    .get('/:sheetId', [
         AuthMiddleware.checkAuthToken,
         SheetMiddleware.sheetExists,
         SheetMiddleware.hasPermissionToAccess,
@@ -23,11 +24,20 @@ sheetRouter
         AuthMiddleware.checkAuthToken,
         SheetController.createSheet
     ])
-    .delete('/:id', [
+    .delete('/:sheetId', [
         AuthMiddleware.checkAuthToken,
         SheetMiddleware.sheetExists,
-        SheetMiddleware.hasPermissionToDelete,
+        SheetMiddleware.hasOwnerPermission,
         SheetController.deleteSheet
+    ])
+    .put('/addUser/:sheetId/:userId/:access?', [
+        AuthMiddleware.checkAuthToken,
+        SheetMiddleware.isOtherUser,
+        SheetMiddleware.sheetExists,
+        SheetMiddleware.hasOwnerPermission,
+        UserMiddleware.userExists,
+        SheetMiddleware.hasValidAccess,
+        SheetController.addUser
     ]);
 
 

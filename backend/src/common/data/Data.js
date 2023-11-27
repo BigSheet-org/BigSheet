@@ -15,7 +15,8 @@ class Data {
             NO_FIELDS: {"message": "No fields were provided."},
             PASSWORD_DONT_MATCH: {"message": "Passwords do not match."},
             LOGIN_ALREADY_USED: {"message": "Provided login was already used."},
-            MAIL_ALREADY_USED: {"message": "Provided mail was already used."}
+            MAIL_ALREADY_USED: {"message": "Provided mail was already used."},
+            ACCESS_SHEET_INVALID: {"message": "Provided access not exist."}
         },
         ERRORS_404: {
             NOT_EXIST: {"message": "The requested resource does not exist."}

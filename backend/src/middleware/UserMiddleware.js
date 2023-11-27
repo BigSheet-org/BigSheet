@@ -1,6 +1,7 @@
 import Data from "../common/data/Data.js";
 import Tokens from "../common/tools/Tokens.js";
 import UserModel from "../model/UserModel.js";
+import requestAddParams from "../common/tools/requestAddParams.js";
 
 class UserMiddleware {
 
@@ -58,7 +59,7 @@ class UserMiddleware {
      */
     static async hasPermissionToDelete(req, res, next) {
         let userID = Number(await Tokens.getUserIdFromToken(await Tokens.getAuthTokenFromHeader(req)));
-        let userIDToDelete = Number(req.params.id);
+        let userIDToDelete = Number(req.params.userId);
 
         if(userID !== userIDToDelete) {
             return res.status(401)
@@ -76,7 +77,7 @@ class UserMiddleware {
      * @returns {Promise<*>}
      */
     static async hasValidDeletionParams(req, res, next) {
-        if (!req.params.id) {
+        if (!req.params.userId) {
             return res.status(400)
                       .send(Data.ANSWERS.ERRORS_400.MISSING_FIELDS);
         }
@@ -136,11 +137,12 @@ class UserMiddleware {
         return next();
     }
 
-    static async userExist(req, res, next) {
-        let user=UserModel.getById(req.params.id);
+    static async userExists(req, res, next) {
+        let user=await UserModel.getById(req.params.userId);
         if (user == null) {
             return res.status(404).send(Data.ANSWERS.ERRORS_404.NOT_EXIST);
         }
+        requestAddParams(req, { user: user });
         return next();
     }
 }

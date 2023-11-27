@@ -1,5 +1,6 @@
 import sequelize from "../common/tools/postgres.js";
 import {DataTypes, Model} from "sequelize";
+import UserModel from "./UserModel.js";
 
 class SheetModel extends Model {
     /**
@@ -9,7 +10,20 @@ class SheetModel extends Model {
      */
     static async getAllSheetsByOwner(userId) {
         let sheets = await SheetModel.findAll({
-            where: { ownerId: userId }
+            attributes: ['title', 'createdAt'], // get title and creation date
+            include: { // we include UserModel to do inner join
+                model: UserModel,
+                as: 'users',
+                //attributes: [], // but we not want Users who have access on sheet
+                through: {
+                    where: {
+                        accessRight: 'owner'
+                    }
+                },
+                where: {
+                    id: userId,
+                }
+            }
         });
         return sheets
     }

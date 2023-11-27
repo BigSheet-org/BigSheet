@@ -9,6 +9,10 @@ sheetRouter
         AuthMiddleware.checkAuthToken,
         SheetController.getOwnedByCurrentUser
     ])
+    .get('/owned'), [
+        AuthMiddleware.checkAuthToken,
+        SheetController.getOwnedByCurrentUser
+    ]
     .get('/:id', [
         AuthMiddleware.checkAuthToken,
         SheetMiddleware.sheetExists,

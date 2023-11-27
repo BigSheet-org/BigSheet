@@ -5,18 +5,18 @@ import requestAddParams from "../common/tools/requestAddParams.js";
 
 class SheetMiddleware {
     /**
-     * To verify if connected user has permission to delete a sheet.
+     * To verify if connected user has permission to access a sheet.
      * Require Middleware sheetExists.
      * @param {*} req 
      * @param {*} res 
      * @param {*} next 
      * @returns 
      */
-    static async hasPermission(req, res, next) {
+    static async hasPermissionToAccess(req, res, next) {
         let userID = Number(await Tokens.getUserIdFromToken(req.body.additionnalParameters.authToken));
         let sheet = req.body.additionnalParameters.sheet;
-        let ownerIDSheetToDelete = Number(sheet.ownerId);
-        if(userID != ownerIDSheetToDelete) {
+        let usersAccess = sheet.users.map((x) => Number(x.id));
+        if(!usersAccess.includes(userID)) {
             return res.status(401)
                     .send(Data.ANSWERS.ERRORS_401.INSUFFICIENT_PERMS);
         }

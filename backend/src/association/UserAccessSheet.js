@@ -32,7 +32,8 @@ UserAccesSheet.init(
     },
     {
         sequelize,
-        tableName: 'UserAccessSheet'
+        tableName: 'UserAccessSheet',
+        modelName: 'userAccessSheet'
     }
 );
 

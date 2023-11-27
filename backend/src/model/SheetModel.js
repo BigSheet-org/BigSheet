@@ -54,7 +54,16 @@ class SheetModel extends Model {
      * @returns {Promise<SheetModel>} Return sheet or null if not exist
      */
     static async getById(id) {
-        let sheet = await SheetModel.findByPk(id);
+        let sheet = await SheetModel.findByPk(id, {
+            include: {
+                model: UserModel,
+                as: 'users',
+                attributes: ['id'],
+                through: {
+                    attributes: ['accessRight']
+                }
+            }
+        });
         return sheet;
     }
 }

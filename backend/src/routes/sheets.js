@@ -16,7 +16,7 @@ sheetRouter
     .get('/:id', [
         AuthMiddleware.checkAuthToken,
         SheetMiddleware.sheetExists,
-        SheetMiddleware.hasPermission,
+        SheetMiddleware.hasPermissionToAccess,
         SheetController.getById
     ])
     .post('/create', [
@@ -26,7 +26,7 @@ sheetRouter
     .delete('/:id', [
         AuthMiddleware.checkAuthToken,
         SheetMiddleware.sheetExists,
-        SheetMiddleware.hasPermission,
+        SheetMiddleware.hasPermissionToAccess,
         SheetController.deleteSheet
     ]);
 

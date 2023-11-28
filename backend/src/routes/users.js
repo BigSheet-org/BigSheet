@@ -26,7 +26,7 @@ userRouter
         UserMiddleware.hasValidModificationFields,
         UserController.modifyUser
     ])
-    .delete('/delete/:userId', [
+    .delete('/:userId', [
         AuthMiddleware.checkAuthToken,
         UserMiddleware.hasValidDeletionParams,
         UserMiddleware.hasPermissionToDelete,

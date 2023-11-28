@@ -111,7 +111,8 @@ class AuthMiddleware {
         } else {                                // We try to find it in the body.
             token = req.body.access_token;
         }
-        requestAddParams(req, {authToken: token});
+        let userIdConnected=await Tokens.getUserIdFromToken(token);
+        requestAddParams(req, {userIdConnected});
         let data = await Tokens.verifyAuthToken(token)
         // Don't worry, if no token ere found, the validate next method will send a 401 error.
         return AuthMiddleware.validateNext(data, res, next);

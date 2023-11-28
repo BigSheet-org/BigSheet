@@ -58,8 +58,8 @@ class UserMiddleware {
      * @returns {Promise<*>}
      */
     static async hasPermissionToDelete(req, res, next) {
-        let userID = Number(await Tokens.getUserIdFromToken(await Tokens.getAuthTokenFromHeader(req)));
-        let userIDToDelete = Number(req.params.userId);
+        let userID = req.body.additionnalParameters.userIdConnected;
+        let userIDToDelete = req.params.userId;
 
         if(userID !== userIDToDelete) {
             return res.status(401)

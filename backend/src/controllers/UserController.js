@@ -1,5 +1,4 @@
 import UserModel from "../model/UserModel.js";
-import Tokens from "../common/tools/Tokens.js";
 import AuthMiddleware from "../middleware/AuthMiddleware.js";
 import Data from "../common/data/Data.js";
 
@@ -30,8 +29,7 @@ class UserController {
      */
     static async getCurrentUser(req, res) {
         // We extract the current user ID from the token.
-        let userID = await Tokens.getUserIdFromToken(await Tokens.getAuthTokenFromHeader(req));
-        //
+        let userID = req.body.additionnalParameters.userIdConnected;
         let user = await UserModel.getById(userID);
         if (user === null) {
             return res.status(404)
@@ -82,9 +80,7 @@ class UserController {
      */
     static async modifyUser(req, res) {
         let body = req.body;
-        let userToChange = await UserModel.getById(
-            await Tokens.getUserIdFromToken(Tokens.getAuthTokenFromHeader(req))
-        );
+        let userToChange = await UserModel.getById(req.body.additionnalParameters.userIdConnected);
 
         // We check the fields of the body, and we apply the necessary modifications.
         if (body.password)  { userToChange.hash = AuthMiddleware.hashPassword(body.password); }

@@ -75,7 +75,7 @@ docker-compose -f docker-compose_backdev.yml up -d
 
 - En cas de développement sur l'application VueJS : 
 ```bash
-docker-compose up -d
+docker-compose up -d --force-recreate --no-deps --build
 ```
 
 Si vous développez l'application backend, vous pouvez lancer le serveur Node avec les commandes suivantes : 

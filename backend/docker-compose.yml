@@ -36,10 +36,10 @@ services:
       - "8080:8080"
 
   web:
-    build: .
+    build:
+      dockerfile: Dockerfile
     command: npm run dev
     volumes:
-      - node_data:/usr/src/app/
       - node_modules:/usr/src/app/node_modules
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
@@ -65,5 +65,4 @@ volumes:
   postgres_data:
   static:
   redis_data:
-  node_data:
   node_modules:

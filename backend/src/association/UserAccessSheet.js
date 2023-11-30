@@ -4,9 +4,9 @@ import SheetModel from "../model/SheetModel.js";
 import sequelize from "../common/tools/postgres.js";
 import {DataTypes, Model} from "sequelize";
 
-class UserAccesSheet extends Model {}
+class UserAccessSheet extends Model {}
 
-UserAccesSheet.init(
+UserAccessSheet.init(
     {
         userId: {
             type: DataTypes.INTEGER,
@@ -33,25 +33,25 @@ UserAccesSheet.init(
     {
         sequelize,
         tableName: 'UserAccessSheet',
-        modelName: 'userAccessSheet'
+        modelName: 'UserAccessSheet'
     }
 );
 
 
 /**
  * Function to load association Access between User and Sheet.
- * Must be executed after models initialization.
- * Use UserAccesSheet table to associate User and Sheet models.
- * Relation Manu-to-Many.
+ * Must be executed after the model's initialization.
+ * Uses UserAccesSheet table to associate User and Sheet models.
+ * Relation Many-to-Many.
  */
 export default async function() {
     UserModel.belongsToMany(SheetModel, { 
-        through: UserAccesSheet, 
+        through: UserAccessSheet,
         foreignKey: 'userId',
         as: 'sheets'
      });
     SheetModel.belongsToMany(UserModel, {
-        through: UserAccesSheet, 
+        through: UserAccessSheet,
         foreignKey: 'sheetId',
         as: 'users'
     });

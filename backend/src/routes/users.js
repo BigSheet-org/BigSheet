@@ -31,7 +31,7 @@ userRouter
         UserMiddleware.hasValidDeletionParams,
         UserMiddleware.hasPermissionToDelete,
         UserController.deleteUser
-    ])
+    ]);
 
 
-export default userRouter
+export default userRouter;

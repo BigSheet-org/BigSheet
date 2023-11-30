@@ -58,12 +58,12 @@ class UserMiddleware {
      * @returns {Promise<*>}
      */
     static async hasPermissionToDelete(req, res, next) {
-        let userID = req.body.additionnalParameters.userIdConnected;
+        let userID = req.body.additionnalParameters.connectedUserID;
         let userIDToDelete = req.params.userId;
 
         if(userID !== userIDToDelete) {
             return res.status(401)
-                      .send(Data.ANSWERS.ERRORS_401.INSUFFICIENT_PERMS)
+                      .send(Data.ANSWERS.ERRORS_401.INSUFFICIENT_PERMS);
         }
         return next();
     }
@@ -148,4 +148,4 @@ class UserMiddleware {
 }
 
 
-export default UserMiddleware
+export default UserMiddleware;

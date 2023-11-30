@@ -7,7 +7,7 @@ export default function requestAddParams(req, params) {
     if (req.body.additionnalParameters === undefined) {
         req.body.additionnalParameters = params;
     } else {
-        // Add elements who are in params in req.body.additionnalParameters.
+        // We add the params values into req.body.additionnalParameters.
         Object.assign(req.body.additionnalParameters, params);
     }
 }

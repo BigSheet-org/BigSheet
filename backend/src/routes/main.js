@@ -6,6 +6,6 @@ mainRouter.get('/', (req, res) => {
     res.send({
         "message": "[INFO] - Server is up ! You can make requests."
     })
-})
+});
 
-export default mainRouter
+export default mainRouter;

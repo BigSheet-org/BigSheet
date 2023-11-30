@@ -6,15 +6,15 @@ class SheetModel extends Model {
     /**
      * This method return all sheets owned by the user. 
      * @param userId Id off the user
-     * @returns {Promise<SheetModel>} Return sheets
+     * @returns {Promise<SheetModel[]>} Return sheets
      */
     static async getAllByOwner(userId) {
-        let sheets = await SheetModel.findAll({
+        return await SheetModel.findAll({
             attributes: ['title', 'createdAt'], // get title and creation date
             include: { // we include UserModel to do inner join
                 model: UserModel,
                 as: 'users',
-                attributes: [], // but we not want Users who have access on sheet
+                attributes: [], // but we do not want Users who have access on sheet
                 through: {
                     where: {
                         accessRight: 'owner'
@@ -25,16 +25,15 @@ class SheetModel extends Model {
                 }
             }
         });
-        return sheets
     }
 
     /**
      * This method return all sheets owned by the user. 
      * @param userId Id off the user
-     * @returns {Promise<SheetModel>} Return sheets
+     * @returns {Promise<SheetModel[]>} Return sheets
      */
     static async getAccessibleByUser(userId) {
-        let sheets = await SheetModel.findAll({
+        return await SheetModel.findAll({
             attributes: ['title', 'createdAt'], // get title and creation date
             include: { // we include UserModel to do inner join
                 model: UserModel,
@@ -45,7 +44,6 @@ class SheetModel extends Model {
                 }
             }
         });
-        return sheets
     }
 
     /**
@@ -54,7 +52,7 @@ class SheetModel extends Model {
      * @returns {Promise<SheetModel>} Return sheet or null if not exist
      */
     static async getById(id) {
-        let sheet = await SheetModel.findByPk(id, {
+        return await SheetModel.findByPk(id, {
             include: {
                 model: UserModel,
                 as: 'users',
@@ -64,7 +62,6 @@ class SheetModel extends Model {
                 }
             }
         });
-        return sheet;
     }
 }
 

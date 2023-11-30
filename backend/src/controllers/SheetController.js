@@ -45,7 +45,7 @@ class SheetController {
         let userID = req.body.additionnalParameters.userIdConnected;
         let sheet = await SheetModel.create();
         let user = await UserModel.getById(userID);
-        await sheet.addUser(user);
+        await sheet.addUser(user);      // TODO : Wrong number of args
         await sheet.save();
         return res.send(sheet);
     }
@@ -67,7 +67,7 @@ class SheetController {
 
     /**
      * This method will ask the model to get sheet with the good id.
-     * Require Middleware sheetExists.
+     * Requires Middleware sheetExists.
      * 
      * @param req Request provided. Contains the parameter required in its body.
      * @param res Response to provide.
@@ -79,7 +79,7 @@ class SheetController {
 
     /**
      * This method grant access to a user.
-     * Require Middleware sheetExists userExists.
+     * Requires Middleware sheetExists userExists.
      * 
      * @param req Request provided. Contains the parameter required in its body.
      * @param res Response to provide.
@@ -88,9 +88,9 @@ class SheetController {
     static async addUser(req, res) {
         let user = req.body.additionnalParameters.user;
         let sheet = req.body.additionnalParameters.sheet;
-        let accessRight=req.params.access;
-        if (accessRight===undefined) {
-            accessRight='reader';
+        let accessRight = req.params.access;
+        if (accessRight === undefined) {
+            accessRight = 'reader';
         }
         await sheet.addUser(user, {
             through: {
@@ -102,8 +102,8 @@ class SheetController {
     }
 
     /**
-     * This method remove access to a user.
-     * Require Middleware sheetExists userExists.
+     * This method removes access to a user.
+     * Requires Middleware sheetExists userExists.
      * 
      * @param req Request provided. Contains the parameter required in its body.
      * @param res Response to provide.
@@ -112,7 +112,7 @@ class SheetController {
     static async deleteUser(req, res) {
         let user = req.body.additionnalParameters.user;
         let sheet = req.body.additionnalParameters.sheet;
-        await sheet.removeUser(user);
+        await sheet.removeUser(user);       // TODO : function is undefined
         await sheet.save();
         return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);
     }

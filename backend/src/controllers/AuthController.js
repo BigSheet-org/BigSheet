@@ -14,13 +14,13 @@ class AuthController {
     static async login(req, res) {
         if (await AuthMiddleware.authenticate(req.body.login, req.body.password)) {
             // We find the user concerned by the login.
-            let userConcerned = await UserModel.getUserByLogin(req.body.login)
+            let userConcerned = await UserModel.getUserByLogin(req.body.login);
             // We generate and send the tokens.
-            return res.send(Tokens.generateTokens(userConcerned.id))
+            return res.send(Tokens.generateTokens(userConcerned.id));
         } else {
             // We send an 401 auth code.
             return res.status(401)
-                      .send(Data.ANSWERS.ERRORS_401.INVALID_CREDENTIALS)
+                      .send(Data.ANSWERS.ERRORS_401.INVALID_CREDENTIALS);
         }
     }
 
@@ -34,13 +34,13 @@ class AuthController {
     static async logout(req, res) {
         // We need to ban the auth and refresh tokens.
         // We extract the data from the two tokens.
-        let auth_check = await Tokens.verifyAuthToken(req.body.access_token)
-        let refresh_check = await Tokens.verifyRefreshTokens(req.body.refresh_token)
+        let auth_check = await Tokens.verifyAuthToken(req.body.access_token);
+        let refresh_check = await Tokens.verifyRefreshTokens(req.body.refresh_token);
         // We ban both tokens.
-        await Tokens.banToken(req.body.access_token, auth_check)
-        await Tokens.banToken(req.body.refresh_token, refresh_check)
+        await Tokens.banToken(req.body.access_token, auth_check);
+        await Tokens.banToken(req.body.refresh_token, refresh_check);
         // If both operations have completed successfully, we send a confirmation message.
-        return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER)
+        return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);
 
     }
 
@@ -53,14 +53,14 @@ class AuthController {
      */
     static async refreshTokens(req, res) {
         // We extract the data from the old token.
-        let data = await Tokens.verifyRefreshTokens(req.body.refresh_token)
+        let data = await Tokens.verifyRefreshTokens(req.body.refresh_token);
         // We generate a new pair.
-        let newTokens = Tokens.generateTokens(data.userID)
+        let newTokens = Tokens.generateTokens(data.userID);
         // We blacklist the older refresh token.
-        await Tokens.banToken(req.body.refresh_token, data)
+        await Tokens.banToken(req.body.refresh_token, data);
         // We send the new pair.
-        return res.send(newTokens)
+        return res.send(newTokens);
     }
 }
 
-export default AuthController
+export default AuthController;

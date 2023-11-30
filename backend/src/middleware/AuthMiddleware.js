@@ -111,11 +111,10 @@ class AuthMiddleware {
         } else {                                // We try to find it in the body.
             token = req.body.access_token;
         }
-        let userIdConnected=await Tokens.getUserIdFromToken(token);
-        requestAddParams(req, {userIdConnected});
-        let data = await Tokens.verifyAuthToken(token)
+        // We check if the token is valid.
+        let data = await Tokens.verifyAuthToken(token);
         // Don't worry, if no token ere found, the validate next method will send a 401 error.
-        return AuthMiddleware.validateNext(data, res, next);
+        return AuthMiddleware.validateNext(data, req, res, next);
     }
 
     /**
@@ -129,7 +128,7 @@ class AuthMiddleware {
      */
     static async checkRefreshToken(req, res, next) {
         let data = await Tokens.verifyRefreshTokens(req.body.refresh_token);
-        return AuthMiddleware.validateNext(data, res, next);
+        return AuthMiddleware.validateNext(data, req, res, next);
     }
 
     /**
@@ -137,11 +136,12 @@ class AuthMiddleware {
      * validity of the tokens are the same between auth and refresh tokens.
      *
      * @param data Data extracted from the token.
+     * @param req Request to analyze and fill with the user id if the token is valid.
      * @param res Response to send.
      * @param next Next handler to call.
      * @returns {*}
      */
-    static validateNext(data, res, next) {
+    static validateNext(data, req, res, next) {
         if (!data.status && data.error !== undefined) {
             // If the token was expired or invalid.
             if(data.error === Data.SERVER_COMPARISON_DATA.TOKENS.EXPIRED) {
@@ -152,6 +152,7 @@ class AuthMiddleware {
                     .send(Data.ANSWERS.ERRORS_401.INVALID_TOKEN);
             }
         } else {
+            requestAddParams(req, { connectedUserID: data.userID });
             return next();
         }
     }

@@ -19,7 +19,7 @@ testRouter
 
     .get('/server', (req, res) => {
         res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER)
-    })
+    });
 
 
-export default testRouter
+export default testRouter;

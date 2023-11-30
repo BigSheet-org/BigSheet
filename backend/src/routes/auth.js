@@ -21,6 +21,6 @@ authRouter
         AuthMiddleware.hasValidRefreshFields,
         AuthMiddleware.checkRefreshToken,
         AuthController.refreshTokens
-    ])
+    ]);
 
-export default authRouter
+export default authRouter;

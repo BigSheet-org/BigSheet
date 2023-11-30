@@ -12,7 +12,7 @@ class SheetController {
      */
     static async getOwnedByCurrentUser(req, res) {
         // We extract the current user ID from the token.
-        let userID = req.body.additionnalParameters.userIdConnected;
+        let userID = req.body.additionalParameters.connectedUserID;
         let sheets = await SheetModel.getAllByOwner(userID);
         return res.send(sheets);
     }
@@ -27,7 +27,7 @@ class SheetController {
      */
     static async getAccessibleByCurrentUser(req, res) {
         // We extract the current user ID from the token.
-        let userID = req.body.additionnalParameters.userIdConnected;
+        let userID = req.body.additionalParameters.connectedUserID;
         let sheets = await SheetModel.getAccessibleByUser(userID);
         return res.send(sheets);
     }
@@ -42,7 +42,7 @@ class SheetController {
      */
     static async createSheet(req, res) {
         // get user connected
-        let userID = req.body.additionnalParameters.userIdConnected;
+        let userID = req.body.additionalParameters.connectedUserID;
         let sheet = await SheetModel.create();
         let user = await UserModel.getById(userID);
         await sheet.addUser(user);      // TODO : Wrong number of args
@@ -59,7 +59,7 @@ class SheetController {
      * @returns {Promise<void>}
      */
     static async deleteSheet(req, res) {
-        let sheet = req.body.additionnalParameters.sheet;        
+        let sheet = req.body.additionalParameters.sheet;
         await sheet.destroy();
         await sheet.save();
         return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);
@@ -74,7 +74,7 @@ class SheetController {
      * @returns {Promise<void>}
      */
     static async getById(req, res) {
-        return res.send(req.body.additionnalParameters.sheet);
+        return res.send(req.body.additionalParameters.sheet);
     }
 
     /**
@@ -86,8 +86,8 @@ class SheetController {
      * @returns {Promise<void>}
      */
     static async addUser(req, res) {
-        let user = req.body.additionnalParameters.user;
-        let sheet = req.body.additionnalParameters.sheet;
+        let user = req.body.additionalParameters.user;
+        let sheet = req.body.additionalParameters.sheet;
         let accessRight = req.params.access;
         if (accessRight === undefined) {
             accessRight = 'reader';
@@ -110,8 +110,8 @@ class SheetController {
      * @returns {Promise<void>}
      */
     static async deleteUser(req, res) {
-        let user = req.body.additionnalParameters.user;
-        let sheet = req.body.additionnalParameters.sheet;
+        let user = req.body.additionalParameters.user;
+        let sheet = req.body.additionalParameters.sheet;
         await sheet.removeUser(user);       // TODO : function is undefined
         await sheet.save();
         return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);

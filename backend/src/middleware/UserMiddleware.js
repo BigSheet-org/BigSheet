@@ -1,5 +1,4 @@
 import Data from "../common/data/Data.js";
-import Tokens from "../common/tools/Tokens.js";
 import UserModel from "../model/UserModel.js";
 import requestAddParams from "../common/tools/requestAddParams.js";
 
@@ -58,7 +57,7 @@ class UserMiddleware {
      * @returns {Promise<*>}
      */
     static async hasPermissionToDelete(req, res, next) {
-        let userID = req.body.additionnalParameters.connectedUserID;
+        let userID = req.body.additionalParameters.connectedUserID;
         let userIDToDelete = req.params.userId;
 
         if(userID !== userIDToDelete) {

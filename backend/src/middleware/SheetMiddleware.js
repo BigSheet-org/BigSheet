@@ -13,8 +13,8 @@ class SheetMiddleware {
      * @returns 
      */
     static async hasPermissionToAccess(req, res, next) {
-        let userID = req.body.additionnalParameters.connectedUserID;
-        let sheet = req.body.additionnalParameters.sheet;
+        let userID = req.body.additionalParameters.connectedUserID;
+        let sheet = req.body.additionalParameters.sheet;
         // If userId not in users who have access at this sheet
         if(!sheet.users.some((x) => x.id===userID)) {
             return res.status(401)
@@ -33,8 +33,8 @@ class SheetMiddleware {
      * @returns 
      */
     static async hasOwnerPermission(req, res, next) {
-        let userID = req.body.additionnalParameters.connectedUserID;
-        let sheet = req.body.additionnalParameters.sheet;
+        let userID = req.body.additionalParameters.connectedUserID;
+        let sheet = req.body.additionalParameters.sheet;
         // If userId not in users who have access with owner permission at this sheet
         if(!sheet.users.some((x) => x.id === userID && x.userAccessSheet.accessRight === 'owner')) {
             return res.status(401)
@@ -87,7 +87,7 @@ class SheetMiddleware {
      * @returns 
      */
     static async isOtherUser(req, res, next) {
-        let connectedUserID= req.body.additionnalParameters.connectedUserID;
+        let connectedUserID= req.body.additionalParameters.connectedUserID;
         let userIDParam = req.params.userId;
         if (connectedUserID === userIDParam) {
             return res.status(401).send(Data.ANSWERS.ERRORS_401.INSUFFICIENT_PERMS);

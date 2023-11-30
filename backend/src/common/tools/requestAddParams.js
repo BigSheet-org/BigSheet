@@ -4,10 +4,10 @@
  * @param params Object who must be added.
  */
 export default function requestAddParams(req, params) {
-    if (req.body.additionnalParameters === undefined) {
-        req.body.additionnalParameters = params;
+    if (req.body.additionalParameters === undefined) {
+        req.body.additionalParameters = params;
     } else {
         // We add the params values into req.body.additionnalParameters.
-        Object.assign(req.body.additionnalParameters, params);
+        Object.assign(req.body.additionalParameters, params);
     }
 }

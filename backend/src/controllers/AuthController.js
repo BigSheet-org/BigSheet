@@ -34,8 +34,8 @@ class AuthController {
     static async logout(req, res) {
         // We need to ban the auth and refresh tokens.
         // We extract the data from the two tokens.
-        let auth_check = await Tokens.verifyAuthToken(req.body.access_token);
-        let refresh_check = await Tokens.verifyRefreshTokens(req.body.refresh_token);
+        let auth_check = req.body.additionalParameters.dataFromAuthToken;
+        let refresh_check = req.body.additionalParameters.dataFromRefreshToken;
         // We ban both tokens.
         await Tokens.banToken(req.body.access_token, auth_check);
         await Tokens.banToken(req.body.refresh_token, refresh_check);
@@ -53,7 +53,7 @@ class AuthController {
      */
     static async refreshTokens(req, res) {
         // We extract the data from the old token.
-        let data = await Tokens.verifyRefreshTokens(req.body.refresh_token);
+        let data = req.body.additionalParameters.dataFromRefreshToken;
         // We generate a new pair.
         let newTokens = Tokens.generateTokens(data.userID);
         // We blacklist the older refresh token.

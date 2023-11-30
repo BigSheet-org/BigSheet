@@ -29,7 +29,7 @@ class UserController {
      */
     static async getCurrentUser(req, res) {
         // We extract the current user ID from the token.
-        let userID = req.body.additionnalParameters.userIdConnected;
+        let userID = req.body.additionalParameters.connectedUserID;
         let user = await UserModel.getById(userID);
         if (user === null) {
             return res.status(404)
@@ -80,7 +80,7 @@ class UserController {
      */
     static async modifyUser(req, res) {
         let body = req.body;
-        let userToChange = await UserModel.getById(req.body.additionnalParameters.userIdConnected);
+        let userToChange = await UserModel.getById(req.body.additionalParameters.connectedUserID);
 
         // We check the fields of the body, and we apply the necessary modifications.
         if (body.password)  { userToChange.hash = AuthMiddleware.hashPassword(body.password); }

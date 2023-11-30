@@ -29,6 +29,10 @@ class Data {
             INVALID: "invalid",
             BANNED: "banned",
             EXPIRED_JWT_ERROR: "TokenExpiredError: jwt expired",
+            TYPES: {
+                AUTH: "auth",
+                REFRESH: "refresh"
+            }
         }
     }
 }

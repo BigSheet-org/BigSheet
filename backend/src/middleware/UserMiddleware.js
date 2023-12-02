@@ -1,6 +1,6 @@
 import Data from "../common/data/Data.js";
 import UserModel from "../model/UserModel.js";
-import requestAddParams from "../common/tools/requestAddParams.js";
+import Params from "../common/tools/Params.js";
 
 class UserMiddleware {
 
@@ -17,7 +17,7 @@ class UserMiddleware {
      * @returns {Promise<*>}
      */
     static async hasValidRegisterFields(req, res, next) {
-        let body = req.body
+        let body = Params.getRequestParams(res).body
         if ((!body.firstname
             || !body.lastname
             || !body.mail
@@ -57,8 +57,8 @@ class UserMiddleware {
      * @returns {Promise<*>}
      */
     static async hasPermissionToDelete(req, res, next) {
-        let userID = req.body.additionalParameters.connectedUserID;
-        let userIDToDelete = req.params.userId;
+        let userID = Params.getAddedParams(res).connectedUserID;
+        let userIDToDelete =  Params.getRequestParams(res).userId;
 
         if(userID !== userIDToDelete) {
             return res.status(401)
@@ -76,7 +76,7 @@ class UserMiddleware {
      * @returns {Promise<*>}
      */
     static async hasValidDeletionParams(req, res, next) {
-        if (!req.params.userId) {
+        if (!Params.getRequestParams(res).userId) {
             return res.status(400)
                       .send(Data.ANSWERS.ERRORS_400.MISSING_FIELDS);
         }
@@ -96,7 +96,7 @@ class UserMiddleware {
      * @returns {Promise<*>}
      */
     static async hasValidModificationFields(req, res, next) {
-        let body = req.body
+        let body =  Params.getRequestParams(res).body;
         // We check if there are at least some fields provided.
         if ((!body.firstname
             && !body.lastname
@@ -137,11 +137,11 @@ class UserMiddleware {
     }
 
     static async userExists(req, res, next) {
-        let user=await UserModel.getById(req.params.userId);
+        let user=await UserModel.getById(Params.getRequestParams(res).userId);
         if (user == null) {
             return res.status(404).send(Data.ANSWERS.ERRORS_404.NOT_EXIST);
         }
-        requestAddParams(req, { user: user });
+        Params.addMiddlewareParams(res, { user: user });
         return next();
     }
 }

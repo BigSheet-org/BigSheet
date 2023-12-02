@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import fs from "fs";
 import sequelize from "./common/tools/postgres.js";
+import Params from "./common/tools/Params.js";
 
 dotenv.config();
 
@@ -33,6 +34,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // -- Routes Import -- //
+app.use(Params.exportParamsToResLocale);                // For all routes we export the params to facilitate their processing.
+
 // Import the routes into the different paths.
 // It searches all default module exports in the routes directory.
 const files = fs.readdirSync('./src/routes/');

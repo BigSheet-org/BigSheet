@@ -1,6 +1,6 @@
 import Data from "../common/data/Data.js";
 import SheetModel from "../model/SheetModel.js";
-import requestAddParams from "../common/tools/requestAddParams.js";
+import Params from "../common/tools/Params.js";
 
 class SheetMiddleware {
     /**
@@ -13,8 +13,10 @@ class SheetMiddleware {
      * @returns 
      */
     static async hasPermissionToAccess(req, res, next) {
-        let userID = req.body.additionalParameters.connectedUserID;
-        let sheet = req.body.additionalParameters.sheet;
+
+        let addedParams = Params.getAddedParams(res);
+        let userID = addedParams.connectedUserID;
+        let sheet = addedParams.sheet;
         // If userId not in users who have access at this sheet
         if(!sheet.users.some((x) => x.id===userID)) {
             return res.status(401)
@@ -33,8 +35,10 @@ class SheetMiddleware {
      * @returns 
      */
     static async hasOwnerPermission(req, res, next) {
-        let userID = req.body.additionalParameters.connectedUserID;
-        let sheet = req.body.additionalParameters.sheet;
+
+        let addedParams = Params.getAddedParams(res);
+        let userID = addedParams.connectedUserID;
+        let sheet = addedParams.sheet;
         // If userId not in users who have access with owner permission at this sheet
         if(!sheet.users.some((x) => x.id === userID && x.userAccessSheet.accessRight === 'owner')) {
             return res.status(401)
@@ -52,11 +56,11 @@ class SheetMiddleware {
      * @returns 
      */
     static async sheetExists(req, res, next) {
-        let sheet = await SheetModel.getById(req.params.sheetId);
+        let sheet = await SheetModel.getById(Params.getRequestParams(res).sheetId);
         if (sheet === null) {
             return res.status(404).send(Data.ANSWERS.ERRORS_404.NOT_EXIST);
         }
-        requestAddParams(req, { sheet: sheet });
+        Params.addMiddlewareParams(res, { sheet: sheet });
         return next();
     }
 
@@ -87,7 +91,7 @@ class SheetMiddleware {
      * @returns 
      */
     static async isOtherUser(req, res, next) {
-        let connectedUserID= req.body.additionalParameters.connectedUserID;
+        let connectedUserID= Params.getAddedParams(res).connectedUserID;
         let userIDParam = req.params.userId;
         if (connectedUserID === userIDParam) {
             return res.status(401).send(Data.ANSWERS.ERRORS_401.INSUFFICIENT_PERMS);

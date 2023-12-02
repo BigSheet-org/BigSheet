@@ -2,7 +2,8 @@ import bcrypt from "bcrypt";
 import UserModel from "../model/UserModel.js";
 import Tokens from "../common/tools/Tokens.js";
 import Data from "../common/data/Data.js";
-import requestAddParams from "../common/tools/requestAddParams.js";
+import Params from "../common/tools/Params.js";
+
 class AuthMiddleware {
 
     /**
@@ -14,7 +15,7 @@ class AuthMiddleware {
      * @returns {*}
      */
     static hasValidLoginFields(req, res, next){
-        if (!req.body.login || !req.body.password) {
+        if (!Params.getRequestParams(res).body.login || ! Params.getRequestParams(res).body.password) {
             return res.status(400)
                       .send(Data.ANSWERS.ERRORS_400.MISSING_FIELDS);
         }
@@ -30,7 +31,8 @@ class AuthMiddleware {
      * @returns {*}
      */
     static hasValidLogoutFields(req, res, next){
-        if (!req.body.refresh_token || !req.body.access_token) {
+        if (! Params.getRequestParams(res).body.refresh_token
+            || ! Params.getRequestParams(res).body.access_token) {
             return res.status(400)
                 .send(Data.ANSWERS.ERRORS_400.MISSING_FIELDS);
         }
@@ -46,7 +48,7 @@ class AuthMiddleware {
      * @returns {*}
      */
     static hasValidRefreshFields(req, res, next){
-        if (!req.body.refresh_token) {
+        if (!Params.getRequestParams(res).body.refresh_token) {
             return res.status(400)
                 .send(Data.ANSWERS.ERRORS_400.MISSING_FIELDS);
         }
@@ -109,12 +111,12 @@ class AuthMiddleware {
         if (req.headers.authorization) {        // If it was found in the header.
             token = Tokens.getAuthTokenFromHeader(req);
         } else {                                // We try to find it in the body.
-            token = req.body.access_token;
+            token = Params.getRequestParams(res).body.access_token;
         }
         // We check if the token is valid.
         let data = await Tokens.verifyAuthToken(token);
         // Don't worry, if no token ere found, the validate next method will send a 401 error.
-        return AuthMiddleware.validateNext(data, req, res, next);
+        return AuthMiddleware.validateNext(data, req, res, next, Data.SERVER_COMPARISON_DATA.TOKENS.TYPES.AUTH);
     }
 
     /**
@@ -127,8 +129,8 @@ class AuthMiddleware {
      * @returns {*}
      */
     static async checkRefreshToken(req, res, next) {
-        let data = await Tokens.verifyRefreshTokens(req.body.refresh_token);
-        return AuthMiddleware.validateNext(data, req, res, next);
+        let data = await Tokens.verifyRefreshTokens(Params.getRequestParams(res).refresh_token);
+        return AuthMiddleware.validateNext(data, req, res, next, Data.SERVER_COMPARISON_DATA.TOKENS.TYPES.REFRESH);
     }
 
     /**
@@ -154,11 +156,11 @@ class AuthMiddleware {
             }
         } else {
             // We add some additional params in the request body.
-            requestAddParams(req, { connectedUserID: data.userID });
+            Params.addMiddlewareParams(res, { connectedUserID: data.userID });
             if (tokenType === Data.SERVER_COMPARISON_DATA.TOKENS.TYPES.AUTH) {
-                requestAddParams(req, { dataFromAuthToken: data });
+                Params.addMiddlewareParams(res, { dataFromAuthToken: data });
             } else if (tokenType === Data.SERVER_COMPARISON_DATA.TOKENS.TYPES.REFRESH){
-                requestAddParams(req, { dataFromRefreshToken: data });
+                Params.addMiddlewareParams(res, { dataFromRefreshToken: data });
             }
             return next();
         }

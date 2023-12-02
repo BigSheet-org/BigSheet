@@ -1,6 +1,7 @@
 import UserModel from "../model/UserModel.js";
 import AuthMiddleware from "../middleware/AuthMiddleware.js";
 import Data from "../common/data/Data.js";
+import Params from "../common/tools/Params.js";
 
 class UserController {
     /**
@@ -11,10 +12,10 @@ class UserController {
      * @returns {Promise<void>}
      */
     static async getById(req, res) {
-        let user = await UserModel.getById(req.params.id);
+        let user = await UserModel.getById(Params.getRequestParams(res).id);
         if (user === null) {
             return res.status(404)
-                .send({"message" : `User with id ${req.params.id} does not exists.`});
+                .send({"message" : `User with id ${Params.getRequestParams(res).id} does not exists.`});
         } else {
             return res.send(user);
         }
@@ -29,7 +30,7 @@ class UserController {
      */
     static async getCurrentUser(req, res) {
         // We extract the current user ID from the token.
-        let userID = req.body.additionalParameters.connectedUserID;
+        let userID = Params.getAddedParams(res).connectedUserID;
         let user = await UserModel.getById(userID);
         if (user === null) {
             return res.status(404)
@@ -47,7 +48,7 @@ class UserController {
      * @returns {Promise<void>}
      */
     static async createUser(req, res) {
-        let body = req.body;
+        let body = Params.getRequestParams(res).body;
         body.hash = await AuthMiddleware.hashPassword(body.password);
         body.password = undefined;
         body.confirmPassword = undefined;
@@ -65,7 +66,7 @@ class UserController {
      * @returns {Promise<void>}
      */
     static async deleteUser(req, res){
-        let userToDelete = await UserModel.getById(req.params.id);
+        let userToDelete = await UserModel.getById(Params.getRequestParams(res).id);
         await userToDelete.destroy();
         await userToDelete.save();
         return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);
@@ -79,8 +80,8 @@ class UserController {
      * @returns {Promise<void>}
      */
     static async modifyUser(req, res) {
-        let body = req.body;
-        let userToChange = await UserModel.getById(req.body.additionalParameters.connectedUserID);
+        let body = Params.getRequestParams(res).body;
+        let userToChange = await UserModel.getById(Params.getAddedParams(res).connectedUserID);
 
         // We check the fields of the body, and we apply the necessary modifications.
         if (body.password)  { userToChange.hash = AuthMiddleware.hashPassword(body.password); }

@@ -2,6 +2,7 @@ import AuthMiddleware from "../middleware/AuthMiddleware.js";
 import Tokens from "../common/tools/Tokens.js";
 import UserModel from "../model/UserModel.js";
 import Data from "../common/data/Data.js";
+import Params from "../common/tools/Params.js";
 
 class AuthController {
     /**
@@ -34,14 +35,16 @@ class AuthController {
     static async logout(req, res) {
         // We need to ban the auth and refresh tokens.
         // We extract the data from the two tokens.
-        let auth_check = req.body.additionalParameters.dataFromAuthToken;
-        let refresh_check = req.body.additionalParameters.dataFromRefreshToken;
+        let params = Params.getAddedParams(res);
+        let auth_check = params.dataFromAuthToken;
+        let refresh_check = params.dataFromRefreshToken;
+
         // We ban both tokens.
         await Tokens.banToken(req.body.access_token, auth_check);
         await Tokens.banToken(req.body.refresh_token, refresh_check);
+
         // If both operations have completed successfully, we send a confirmation message.
         return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);
-
     }
 
     /**
@@ -53,11 +56,12 @@ class AuthController {
      */
     static async refreshTokens(req, res) {
         // We extract the data from the old token.
-        let data = req.body.additionalParameters.dataFromRefreshToken;
+        let data = Params.getAddedParams(res).dataFromRefreshToken;
+
         // We generate a new pair.
-        let newTokens = Tokens.generateTokens(data.userID);
-        // We blacklist the older refresh token.
-        await Tokens.banToken(req.body.refresh_token, data);
+        let newTokens = Tokens.generateTokens(data.connectedUserID);
+        await Tokens.banToken(req.body.refresh_token, data);                // We blacklist the older refresh token.
+
         // We send the new pair.
         return res.send(newTokens);
     }

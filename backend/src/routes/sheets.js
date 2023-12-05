@@ -19,7 +19,7 @@ sheetRouter
     /** Getter for shared sheets. */
     .get('/shared', [
         AuthMiddleware.checkAuthToken,
-        SheetController.getOwnedByCurrentUser
+        SheetController.getSharedToCurrentUser
     ])
     /** Getter for a specific sheet. */
     .get('/:sheetId', [

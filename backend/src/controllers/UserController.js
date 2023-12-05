@@ -65,7 +65,7 @@ class UserController {
      * @param res Response to provide.
      * @returns {Promise<void>}
      */
-    static async deleteUser(req, res){
+    static async deleteUser(req, res) {
         let userToDelete = await UserModel.getById(Params.getRequestParams(res).id);
         await userToDelete.destroy();
         await userToDelete.save();

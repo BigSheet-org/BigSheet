@@ -46,24 +46,13 @@ for (let i = 0; i < files.length; i++) {
 }
 console.log(`[INFO] - Done mounting paths.`);
 
-// -- Models import -- //
-const models = fs.readdirSync('./src/model/');
-for (let i = 0; i < models.length; i++) {
-    let file = models[i];
-    import('./model/' + file);
-}
-
-// -- Associations between models -- //
-const associations = fs.readdirSync('./src/association/');
-for (let i = 0; i < associations.length; i++) {
-    let file = associations[i];
-    const module = await import('./association/' + file);
-    module.default();
-}
-
 // -- Create or modify all tables in database if it's necessary -- //
-await sequelize.sync({alter: true});
+await sequelize.sync({ alter: true });
 console.log(`[INFO] - Done Initializing models.`);
+
+// -- Association between the tables. -- //
+const module = await import("./association/Associations.js")
+await module.syncAssociations()
 
 // -- Starting Server listener -- //
 server.listen(port, () => console.log(`[INFO] - Server launched on port ${port}. Awaiting requests...`));

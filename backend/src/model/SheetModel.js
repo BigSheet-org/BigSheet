@@ -52,21 +52,14 @@ class SheetModel extends Model {
     }
 
     /**
-     * This method return sheet with the good id.
+     * This method return the sheet corresponding to the id provided.
      *
-     * @param id Id to search for
+     * @param id Sheet's id to search for.
      * @returns {Promise<SheetModel>} Return sheet or null if not exist
      */
     static async getById(id) {
         return await SheetModel.findByPk(id, {
-            include: {
-                model: UserModel,
-                as: 'users',
-                attributes: ['id'],
-                through: {
-                    attributes: ['accessRight']
-                }
-            }
+            include: UserModel
         });
     }
 }

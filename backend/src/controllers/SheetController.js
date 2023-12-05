@@ -92,7 +92,8 @@ class SheetController {
      * @returns {Promise<void>}
      */
     static async getById(req, res) {
-        return res.send(Params.getAddedParams(res).sheet);
+        console.log(Params.getRequestParams(res).sheetID)
+        return res.send(await SheetModel.getById(2));
     }
 
     /**

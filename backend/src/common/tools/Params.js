@@ -10,9 +10,10 @@ class Params {
      * @param next Next handler to call.
      */
     static exportParamsToResLocale(req, res, next) {
+        console.log(req.sheetID)
         // We check if params were provided inside the URL.
         if (Object.keys(req.params).length !== 0) {
-            Params.addLocalParam(res, req.body);
+            Params.addLocalParam(res, req.params);
         }
         // We check if params were provided inside the body.
         if (Object.keys(req.body).length !== 0) {

@@ -24,7 +24,6 @@ sheetRouter
     /** Getter for a specific sheet. */
     .get('/:sheetId', [
         AuthMiddleware.checkAuthToken,
-        SheetMiddleware.sheetExists,
         SheetMiddleware.hasPermissionToAccess,
         SheetController.getById
     ])

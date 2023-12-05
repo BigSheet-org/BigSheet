@@ -1,7 +1,7 @@
 import SheetModel from "../model/SheetModel.js";
 import Data from "../common/data/Data.js";
 import UserModel from "../model/UserModel.js";
-import Params from "../common/tools/Params.js";
+import Params from "../middleware/Params.js";
 
 class SheetController {
 

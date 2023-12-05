@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import UserModel from "../model/UserModel.js";
 import Tokens from "../common/tools/Tokens.js";
 import Data from "../common/data/Data.js";
-import Params from "../common/tools/Params.js";
+import Params from "./Params.js";
 
 class AuthMiddleware {
 

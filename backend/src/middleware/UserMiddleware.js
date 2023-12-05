@@ -1,6 +1,6 @@
 import Data from "../common/data/Data.js";
 import UserModel from "../model/UserModel.js";
-import Params from "../common/tools/Params.js";
+import Params from "./Params.js";
 
 class UserMiddleware {
 

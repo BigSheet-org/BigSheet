@@ -6,7 +6,6 @@ import dotenv from "dotenv";
 import cors from "cors";
 import fs from "fs";
 import sequelize from "./common/tools/postgres.js";
-import Params from "./common/tools/Params.js";
 
 dotenv.config();
 
@@ -34,8 +33,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // -- Routes Import -- //
-app.use(Params.exportParamsToResLocale);                // For all routes we export the params to facilitate their processing.
-
 // Import the routes into the different paths.
 // It searches all default module exports in the routes directory.
 const files = fs.readdirSync('./src/routes/');
@@ -51,8 +48,8 @@ await sequelize.sync({ alter: true });
 console.log(`[INFO] - Done Initializing models.`);
 
 // -- Association between the tables. -- //
-const module = await import("./association/Associations.js")
-await module.syncAssociations()
+const module = await import("./association/Associations.js");
+await module.syncAssociations();
 
 // -- Starting Server listener -- //
 server.listen(port, () => console.log(`[INFO] - Server launched on port ${port}. Awaiting requests...`));

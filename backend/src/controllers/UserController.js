@@ -1,7 +1,7 @@
 import UserModel from "../model/UserModel.js";
 import AuthMiddleware from "../middleware/AuthMiddleware.js";
 import Data from "../common/data/Data.js";
-import Params from "../common/tools/Params.js";
+import Params from "../middleware/Params.js";
 
 class UserController {
     /**

@@ -1,6 +1,6 @@
 import Data from "../common/data/Data.js";
 import SheetModel from "../model/SheetModel.js";
-import Params from "../common/tools/Params.js";
+import Params from "./Params.js";
 
 class SheetMiddleware {
     /**

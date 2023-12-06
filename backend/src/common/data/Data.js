@@ -33,6 +33,11 @@ class Data {
                 AUTH: "auth",
                 REFRESH: "refresh"
             }
+        },
+        PERMISSIONS: {
+            OWNER: "owner",
+            READ: "read",
+            WRITE: "write",
         }
     }
 }

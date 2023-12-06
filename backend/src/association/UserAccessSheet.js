@@ -3,6 +3,7 @@ import SheetModel from "../model/SheetModel.js";
 
 import sequelize from "../common/tools/postgres.js";
 import {DataTypes, Model} from "sequelize";
+import Data from "../common/data/Data.js";
 
 class UserAccessSheet extends Model {}
 
@@ -25,9 +26,13 @@ UserAccessSheet.init(
             }
         },
         accessRight: {
-            type: DataTypes.ENUM('owner', 'reader', 'writer'),
+            type: DataTypes.ENUM(
+                Data.SERVER_COMPARISON_DATA.PERMISSIONS.OWNER,
+                Data.SERVER_COMPARISON_DATA.PERMISSIONS.READ,
+                Data.SERVER_COMPARISON_DATA.PERMISSIONS.WRITE
+            ),
             allowNull: false,
-            defaultValue: 'owner'
+            defaultValue: Data.SERVER_COMPARISON_DATA.PERMISSIONS.OWNER
         }
     },
     {

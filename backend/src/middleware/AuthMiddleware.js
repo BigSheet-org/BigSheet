@@ -129,8 +129,7 @@ class AuthMiddleware {
      * @returns {*}
      */
     static async checkRefreshToken(req, res, next) {
-        // TODO : Need to work this out. Got 401 on disconnect
-        let data = await Tokens.verifyRefreshTokens(Params.getRequestParams(res).refresh_token);
+        let data = await Tokens.verifyRefreshTokens(Params.getRequestParams(res).body.refresh_token);
         return AuthMiddleware.validateNext(data, req, res, next, Data.SERVER_COMPARISON_DATA.TOKENS.TYPES.REFRESH);
     }
 

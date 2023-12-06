@@ -1,6 +1,7 @@
 import sequelize from "../common/tools/postgres.js";
-import {DataTypes, Model} from "sequelize";
+import {DataTypes, Model, Op} from "sequelize";
 import UserModel from "./UserModel.js";
+import Data from "../common/data/Data.js";
 
 class SheetModel extends Model {
 
@@ -19,7 +20,7 @@ class SheetModel extends Model {
                 attributes: [], // but we do not want Users who have access on sheet
                 through: {
                     where: {
-                        accessRight: 'owner'
+                        accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.OWNER
                     }
                 },
                 where: {
@@ -44,6 +45,30 @@ class SheetModel extends Model {
                 attributes: [], // but we not want Users who have access on sheet
                 where: {
                     id: userId,
+                }
+            }
+        });
+    }
+
+    /**
+     * This method returns the sheets that can be accessed by the user, but that are not owned by him.
+     *
+     * @param userID Id to search for.
+     * @returns {Promise<SheetModel[]>} Return sheet or null if not exist
+     */
+    static async getSharedToUser(userID) {
+        return await SheetModel.findAll({
+            attributes: ['title', 'createdAt'], // get title and creation date
+            include: { // we include UserModel to do inner join
+                model: UserModel,
+                as: 'users',
+                attributes: [], // but we not want Users who have access on sheet
+                where: {
+                    id: userID,
+                    [Op.or]: [
+                        {accessRight: 'read'},
+                        {accessRight: 'write'}
+                    ]
                 }
             }
         });

@@ -33,7 +33,8 @@ class SheetMiddleware {
         let userID = addedParams.connectedUserID;
         let sheet = addedParams.sheet;
         // If userId not in users who have access with owner permission at this sheet
-        if(!sheet.users.some((x) => x.id === userID && x.userAccessSheet.accessRight === 'owner')) {
+        if(!sheet.users.some((x) => x.id === userID
+            && x.userAccessSheet.accessRight === Data.SERVER_COMPARISON_DATA.PERMISSIONS.OWNER)) {
             return res.status(401)
                     .send(Data.ANSWERS.ERRORS_401.INSUFFICIENT_PERMS);
         }

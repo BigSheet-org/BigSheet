@@ -13,11 +13,11 @@ class Params {
         console.log(req.sheetID)
         // We check if params were provided inside the URL.
         if (Object.keys(req.params).length !== 0) {
-            Params.addLocalParam(res, req.body);
+            Params.addLocalParam(res, req.body)
         }
         // We check if params were provided inside the body.
         if (Object.keys(req.body).length !== 0) {
-            Params.addLocalParam(res, {body: req.body});
+            Params.addLocalParam(res, {body: req.body})
         }
 
         return next();

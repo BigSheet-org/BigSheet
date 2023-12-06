@@ -17,7 +17,7 @@ userRouter
         UserController.getById
     ])
     /** Getter used to search a user by its login. */
-    .get('/search/:query', [
+    .get('/search', [
         AuthMiddleware.checkAuthToken,
     ])
 

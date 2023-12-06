@@ -3,10 +3,10 @@ import {DataTypes, Model} from "sequelize";
 import UserModel from "./UserModel.js";
 
 class SheetModel extends Model {
+
     /**
      * This method return all sheets owned by the user.
-     *
-     * @param userId Id of the user
+     * @param userId Id off the user
      * @returns {Promise<SheetModel[]>} Return sheets
      */
     static async getAllByOwner(userId) {
@@ -30,7 +30,8 @@ class SheetModel extends Model {
 
     /**
      * This method return all sheets owned by the user.
-     * @param userId Id off the user
+     *
+     * @param userId Id of the user
      * @returns {Promise<SheetModel[]>} Return sheets
      */
     static async getAccessibleByUser(userId) {
@@ -49,6 +50,26 @@ class SheetModel extends Model {
 
     /**
      * This method return sheet with the good id.
+     *
+     * @param userID Id to search for.
+     * @returns {Promise<SheetModel>} Return sheet or null if not exist
+     */
+    static async getSharedToUser(userID) {
+        return await this.findByPk(userID, {
+            include: {
+                model: UserModel,
+                as: 'users',
+                attributes: ['id'],
+                through: {
+                    attributes: ['accessRight']
+                }
+            }
+        })
+    }
+
+    /**
+     * This method return sheet with the good id.
+     *
      * @param id Id to search for
      * @returns {Promise<SheetModel>} Return sheet or null if not exist
      */

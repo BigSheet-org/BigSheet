@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import fs from "fs";
 import sequelize from "./common/tools/postgres.js";
-import Params from "./common/tools/Params.js";
+import Params from "./middleware/Params.js";
 
 dotenv.config();
 
@@ -58,7 +58,7 @@ const associations = fs.readdirSync('./src/association/');
 for (let i = 0; i < associations.length; i++) {
     let file = associations[i];
     const module = await import('./association/' + file);
-    module.relations();
+    module.initRelations();
 }
 
 // -- Create or modify all tables in database if it's necessary -- //

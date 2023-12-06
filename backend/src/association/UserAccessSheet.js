@@ -44,7 +44,7 @@ UserAccessSheet.init(
  * Uses UserAccesSheet table to associate User and Sheet models.
  * Relation Many-to-Many.
  */
-export const relations = async () => {
+export const initRelations = async () => {
     UserModel.belongsToMany(SheetModel, { 
         through: UserAccessSheet,
         foreignKey: 'userId',

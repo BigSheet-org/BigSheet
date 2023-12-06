@@ -52,7 +52,7 @@ class SheetModel extends Model {
     /**
      * This method return sheet with the good id.
      *
-     * @param userID Id to search for.
+     * @param id Id to search for.
      * @returns {Promise<SheetModel>} Return sheet or null if not exist
      */
     static async getById(id) {
@@ -81,6 +81,10 @@ SheetModel.init(
             type: DataTypes.STRING,
             allowNull: false,
             defaultValue: 'Sans-Nom'
+        },
+        detail: {
+            type: DataTypes.STRING,
+            allowNull: true,
         }
     },
     {

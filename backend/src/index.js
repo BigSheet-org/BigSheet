@@ -58,7 +58,7 @@ const associations = fs.readdirSync('./src/association/');
 for (let i = 0; i < associations.length; i++) {
     let file = associations[i];
     const module = await import('./association/' + file);
-    module.default();
+    module.relations();
 }
 
 // -- Create or modify all tables in database if it's necessary -- //

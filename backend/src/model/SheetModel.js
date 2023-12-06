@@ -4,8 +4,9 @@ import UserModel from "./UserModel.js";
 
 class SheetModel extends Model {
     /**
-     * This method return all sheets owned by the user. 
-     * @param userId Id off the user
+     * This method return all sheets owned by the user.
+     *
+     * @param userId Id of the user
      * @returns {Promise<SheetModel[]>} Return sheets
      */
     static async getAllByOwner(userId) {
@@ -28,7 +29,7 @@ class SheetModel extends Model {
     }
 
     /**
-     * This method return all sheets owned by the user. 
+     * This method return all sheets owned by the user.
      * @param userId Id off the user
      * @returns {Promise<SheetModel[]>} Return sheets
      */

@@ -1,7 +1,7 @@
 import UserModel from "../model/UserModel.js";
 import AuthMiddleware from "../middleware/AuthMiddleware.js";
 import Data from "../common/data/Data.js";
-import Params from "../common/tools/Params.js";
+import Params from "../middleware/Params.js";
 
 class UserController {
     /**
@@ -65,7 +65,7 @@ class UserController {
      * @param res Response to provide.
      * @returns {Promise<void>}
      */
-    static async deleteUser(req, res){
+    static async deleteUser(req, res) {
         let userToDelete = await UserModel.getById(Params.getRequestParams(res).id);
         await userToDelete.destroy();
         await userToDelete.save();

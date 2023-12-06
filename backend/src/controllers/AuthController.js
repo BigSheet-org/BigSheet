@@ -2,7 +2,7 @@ import AuthMiddleware from "../middleware/AuthMiddleware.js";
 import Tokens from "../common/tools/Tokens.js";
 import UserModel from "../model/UserModel.js";
 import Data from "../common/data/Data.js";
-import Params from "../common/tools/Params.js";
+import Params from "../middleware/Params.js";
 
 class AuthController {
     /**

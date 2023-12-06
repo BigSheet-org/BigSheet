@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import UserModel from "../model/UserModel.js";
 import Tokens from "../common/tools/Tokens.js";
 import Data from "../common/data/Data.js";
-import Params from "../common/tools/Params.js";
+import Params from "./Params.js";
 
 class AuthMiddleware {
 
@@ -129,6 +129,7 @@ class AuthMiddleware {
      * @returns {*}
      */
     static async checkRefreshToken(req, res, next) {
+        // TODO : Need to work this out. Got 401 on disconnect
         let data = await Tokens.verifyRefreshTokens(Params.getRequestParams(res).refresh_token);
         return AuthMiddleware.validateNext(data, req, res, next, Data.SERVER_COMPARISON_DATA.TOKENS.TYPES.REFRESH);
     }

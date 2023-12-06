@@ -1,9 +1,10 @@
 import SheetModel from "../model/SheetModel.js";
 import Data from "../common/data/Data.js";
 import UserModel from "../model/UserModel.js";
-import Params from "../common/tools/Params.js";
+import Params from "../middleware/Params.js";
 
 class SheetController {
+
     /**
      * This method will ask the model to get all sheets owned by connected user.
      * Requires checkAuthToken
@@ -16,6 +17,21 @@ class SheetController {
         // We extract the current user ID from the token.
         let userID = Params.getAddedParams(res).connectedUserID;
         let sheets = await SheetModel.getAllByOwner(userID);
+        return res.send(sheets);
+    }
+
+    /**
+     * This method returns heets shared with the current user.
+     * Requires checkAuthToken.
+     *
+     * @param req Request provided. Contains the parameter required in its body.
+     * @param res Response to provide.
+     * @returns {Promise<void>}
+     */
+    static async getSharedToCurrentUser(res, req) {
+        // We extract the current user ID from the token.
+        let userID = Params.getAddedParams(res).connectedUserID;
+        let sheets = await SheetModel.getSharedToUser(userID);
         return res.send(sheets);
     }
 
@@ -76,7 +92,8 @@ class SheetController {
      * @returns {Promise<void>}
      */
     static async getById(req, res) {
-        return res.send(Params.getAddedParams(res).sheet);
+        console.log(Params.getRequestParams(res).sheetID)
+        return res.send(await SheetModel.getById(2));
     }
 
     /**

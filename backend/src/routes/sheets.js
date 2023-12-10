@@ -29,6 +29,7 @@ sheetRouter
     .get('/:sheetId', [
         Params.exportParamsToResLocale,
         AuthMiddleware.checkAuthToken,
+        SheetMiddleware.sheetExists,
         SheetMiddleware.hasPermissionToAccess,
         SheetController.getById
     ])

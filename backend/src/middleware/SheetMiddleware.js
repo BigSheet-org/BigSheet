@@ -13,7 +13,14 @@ class SheetMiddleware {
      * @returns 
      */
     static async hasPermissionToAccess(req, res, next) {
-
+        let addedParams = Params.getAddedParams(res);
+        let userID = addedParams.connectedUserID;
+        let sheet = addedParams.sheet;
+        // If userId not in users who have access at this sheet
+        if(!sheet.users.some((x) => x.id===userID)) {
+            return res.status(401)
+                      .send(Data.ANSWERS.ERRORS_401.INSUFFICIENT_PERMS);
+        }
 
         return next();
     }
@@ -52,7 +59,8 @@ class SheetMiddleware {
     static async sheetExists(req, res, next) {
         let sheet = await SheetModel.getById(Params.getRequestParams(res).sheetId);
         if (sheet === null) {
-            return res.status(404).send(Data.ANSWERS.ERRORS_404.NOT_EXIST);
+            return res.status(404)
+                      .send(Data.ANSWERS.ERRORS_404.NOT_EXIST);
         }
         Params.addMiddlewareParams(res, { sheet: sheet });
         return next();

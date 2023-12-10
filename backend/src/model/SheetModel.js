@@ -38,7 +38,7 @@ class SheetModel extends Model {
      */
     static async getAccessibleByUser(userId) {
         return await SheetModel.findAll({
-            attributes: ['title', 'createdAt'], // get title and creation date
+            attributes: ['sheetID', 'title', 'createdAt'], // get title and creation date
             include: { // we include UserModel to do inner join
                 model: UserModel,
                 as: 'users',
@@ -58,22 +58,20 @@ class SheetModel extends Model {
      */
     static async getSharedToUser(userID) {
         return await SheetModel.findAll({
-            attributes: ['title', 'createdAt'], // get title and creation date
-            include: { // we include UserModel to do inner join
+            attributes: ['id', 'title', 'createdAt'],   // Get title and creation date
+            include: {                                  // We include UserModel to do inner join
                 model: UserModel,
                 as: 'users',
-                attributes: [], // but we not want Users who have access on sheet
-                where: {
-                    id: userID
-                },
+                attributes: [],                         // But we do not want Users who have access on sheet
                 through: {
                     where: {
                         [Op.or]: [
-                            {accessRight: 'read'},
-                            {accessRight: 'write'}
+                            {accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.READ},
+                            {accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.WRITE}
                         ]
                     }
-                }
+                },
+                where: { id: userID }
             }
         });
     }

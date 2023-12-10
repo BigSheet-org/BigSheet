@@ -17,7 +17,7 @@ class UserMiddleware {
      * @returns {Promise<*>}
      */
     static async hasValidRegisterFields(req, res, next) {
-        let body = Params.getRequestParams(res).body
+        let body = Params.getRequestParams(res);
         if ((!body.firstname
             || !body.lastname
             || !body.mail
@@ -96,7 +96,7 @@ class UserMiddleware {
      * @returns {Promise<*>}
      */
     static async hasValidModificationFields(req, res, next) {
-        let body =  Params.getRequestParams(res).body;
+        let body =  Params.getRequestParams(res);
         // We check if there are at least some fields provided.
         if ((!body.firstname
             && !body.lastname

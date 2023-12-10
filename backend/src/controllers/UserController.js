@@ -48,7 +48,7 @@ class UserController {
      * @returns {Promise<void>}
      */
     static async createUser(req, res) {
-        let body = Params.getRequestParams(res).body;
+        let body = Params.getRequestParams(res);
         body.hash = await AuthMiddleware.hashPassword(body.password);
         body.password = undefined;
         body.confirmPassword = undefined;
@@ -80,7 +80,7 @@ class UserController {
      * @returns {Promise<void>}
      */
     static async modifyUser(req, res) {
-        let body = Params.getRequestParams(res).body;
+        let body = Params.getRequestParams(res);
         let userToChange = await UserModel.getById(Params.getAddedParams(res).connectedUserID);
 
         // We check the fields of the body, and we apply the necessary modifications.

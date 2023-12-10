@@ -13,9 +13,9 @@ class AuthController {
      * @returns {Promise<void>}
      */
     static async login(req, res) {
-        if (await AuthMiddleware.authenticate(req.body.login, req.body.password)) {
+        if (await AuthMiddleware.authenticate(Params.getRequestParams(res).login, Params.getRequestParams(res).password)) {
             // We find the user concerned by the login.
-            let userConcerned = await UserModel.getUserByLogin(req.body.login);
+            let userConcerned = await UserModel.getUserByLogin(Params.getRequestParams(res).login);
             // We generate and send the tokens.
             return res.send(Tokens.generateTokens(userConcerned.id));
         } else {
@@ -40,8 +40,8 @@ class AuthController {
         let refresh_check = params.dataFromRefreshToken;
 
         // We ban both tokens.
-        await Tokens.banToken(req.body.access_token, auth_check);
-        await Tokens.banToken(req.body.refresh_token, refresh_check);
+        await Tokens.banToken(Params.getRequestParams(res).access_token, auth_check);
+        await Tokens.banToken(Params.getRequestParams(res).refresh_token, refresh_check);
 
         // If both operations have completed successfully, we send a confirmation message.
         return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);
@@ -60,7 +60,7 @@ class AuthController {
 
         // We generate a new pair.
         let newTokens = Tokens.generateTokens(data.connectedUserID);
-        await Tokens.banToken(req.body.refresh_token, data);                // We blacklist the older refresh token.
+        await Tokens.banToken(Params.getRequestParams(res).refresh_token, data);                // We blacklist the older refresh token.
 
         // We send the new pair.
         return res.send(newTokens);

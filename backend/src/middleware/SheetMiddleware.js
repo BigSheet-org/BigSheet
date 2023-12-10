@@ -76,8 +76,8 @@ class SheetMiddleware {
      * @returns 
      */
     static async hasValidAccess(req, res, next) {
-        if (req.params.access !== undefined &&
-            (req.params.access !== 'reader' && req.params.access !== 'writer')) {
+        if (Params.getRequestParams(res).access !== undefined &&
+            (Params.getRequestParams(res).access !== 'reader' &&Params.getRequestParams(res).access !== 'writer')) {
             return res.status(400)
                       .send(Data.ANSWERS.ERRORS_400.ACCESS_SHEET_INVALID);
         }
@@ -94,7 +94,7 @@ class SheetMiddleware {
      */
     static async isOtherUser(req, res, next) {
         let connectedUserID= Params.getAddedParams(res).connectedUserID;
-        let userIDParam = req.params.userId;
+        let userIDParam = Params.getRequestParams(res).userId;
         if (connectedUserID === userIDParam) {
             return res.status(401).send(Data.ANSWERS.ERRORS_401.INSUFFICIENT_PERMS);
         }

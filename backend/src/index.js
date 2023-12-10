@@ -6,7 +6,6 @@ import dotenv from "dotenv";
 import cors from "cors";
 import fs from "fs";
 import sequelize from "./common/tools/postgres.js";
-import Params from "./middleware/Params.js";
 
 dotenv.config();
 

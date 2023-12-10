@@ -64,11 +64,15 @@ class SheetModel extends Model {
                 as: 'users',
                 attributes: [], // but we not want Users who have access on sheet
                 where: {
-                    id: userID,
-                    [Op.or]: [
-                        {accessRight: 'read'},
-                        {accessRight: 'write'}
-                    ]
+                    id: userID
+                },
+                through: {
+                    where: {
+                        [Op.or]: [
+                            {accessRight: 'read'},
+                            {accessRight: 'write'}
+                        ]
+                    }
                 }
             }
         });

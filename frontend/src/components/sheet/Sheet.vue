@@ -28,13 +28,16 @@ export default {
                 if(number < 26){
                     this.columnsNames.push(String.fromCharCode(number + 97))
                 } else {    //If there is more 26 columns we use two letter as a header
-                    this.columnsNames.push(String.fromCharCode(Math.floor((number / 26)  +96))+String.fromCharCode((number%26)+97));
+                    this.columnsNames.push(
+                        String.fromCharCode(Math.floor((number / 26) + 96))
+                        + String.fromCharCode((number % 26) + 97)
+                    );
                 }
             }
         },
         //Generate the headers for the rows
         setRowNames(nb){
-            for(let number = 1; number < nb; number++){
+            for (let number = 1; number <= nb; number++){
                 this.rowsNames.push(number);
             }
         },
@@ -60,11 +63,12 @@ export default {
             <th></th>
             <th v-for="name in this.columnsNames">{{name}}</th>
         </thead>
-            <tr v-for="(row, index) in this.sheet">
-                <th class="row-header">{{index+1}}</th>
-                <td v-for="cell in row">
-                    <input v-model="this.cells[cell+index]" type="text">
-                </td>
-            </tr>
+        <tr v-for="(row, index) in this.sheet">
+            <th class="row-header">{{(index + 1)}}</th>
+            <td v-for="cell in row">
+                <Cell :id="cell + (index + 1)"
+                      :prefill="this.cells[cell + (index + 1)]"/>
+            </td>
+        </tr>
     </table>
 </template>

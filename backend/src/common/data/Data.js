@@ -37,7 +37,7 @@ class Data {
         PERMISSIONS: {
             OWNER: "owner",
             READ: "read",
-            WRITE: "write",
+            WRITE: "write"
         }
     }
 }

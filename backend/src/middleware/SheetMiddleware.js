@@ -1,7 +1,6 @@
 import Data from "../common/data/Data.js";
-import Tokens from "../common/tools/Tokens.js";
 import SheetModel from "../model/SheetModel.js";
-import requestAddParams from "../common/tools/requestAddParams.js";
+import Params from "./Params.js";
 
 class SheetMiddleware {
     /**
@@ -14,13 +13,15 @@ class SheetMiddleware {
      * @returns 
      */
     static async hasPermissionToAccess(req, res, next) {
-        let userID = req.body.additionnalParameters.userIdConnected;
-        let sheet = req.body.additionnalParameters.sheet;
-        // if userId not in users who has access at this sheet
+        let addedParams = Params.getAddedParams(res);
+        let userID = addedParams.connectedUserID;
+        let sheet = addedParams.sheet;
+        // If userId not in users who have access at this sheet
         if(!sheet.users.some((x) => x.id===userID)) {
             return res.status(401)
-                    .send(Data.ANSWERS.ERRORS_401.INSUFFICIENT_PERMS);
+                      .send(Data.ANSWERS.ERRORS_401.INSUFFICIENT_PERMS);
         }
+
         return next();
     }
 
@@ -34,10 +35,13 @@ class SheetMiddleware {
      * @returns 
      */
     static async hasOwnerPermission(req, res, next) {
-        let userID = req.body.additionnalParameters.userIdConnected;
-        let sheet = req.body.additionnalParameters.sheet;
-        // if userId not in users who has access with owner permission at this sheet
-        if(!sheet.users.some((x) => x.id===userID && x.userAccessSheet.accessRight=='owner')) {
+
+        let addedParams = Params.getAddedParams(res);
+        let userID = addedParams.connectedUserID;
+        let sheet = addedParams.sheet;
+        // If userId not in users who have access with owner permission at this sheet
+        if(!sheet.users.some((x) => x.id === userID
+            && x.UserAccessSheet.accessRight === Data.SERVER_COMPARISON_DATA.PERMISSIONS.OWNER)) {
             return res.status(401)
                     .send(Data.ANSWERS.ERRORS_401.INSUFFICIENT_PERMS);
         }
@@ -53,11 +57,12 @@ class SheetMiddleware {
      * @returns 
      */
     static async sheetExists(req, res, next) {
-        let sheet=await SheetModel.getById(req.params.sheetId);
-        if (sheet == null) {
-            return res.status(404).send(Data.ANSWERS.ERRORS_404.NOT_EXIST);
+        let sheet = await SheetModel.getById(Params.getRequestParams(res).sheetId);
+        if (sheet === null) {
+            return res.status(404)
+                      .send(Data.ANSWERS.ERRORS_404.NOT_EXIST);
         }
-        requestAddParams(req, { sheet: sheet });
+        Params.addMiddlewareParams(res, { sheet: sheet });
         return next();
     }
 
@@ -71,8 +76,8 @@ class SheetMiddleware {
      * @returns 
      */
     static async hasValidAccess(req, res, next) {
-        if (req.params.access!==undefined && 
-            (req.params.access != 'reader' && req.params.access != 'writer')) {
+        if (Params.getRequestParams(res).access !== undefined &&
+            (Params.getRequestParams(res).access !== 'reader' &&Params.getRequestParams(res).access !== 'writer')) {
             return res.status(400)
                       .send(Data.ANSWERS.ERRORS_400.ACCESS_SHEET_INVALID);
         }
@@ -88,9 +93,9 @@ class SheetMiddleware {
      * @returns 
      */
     static async isOtherUser(req, res, next) {
-        let userIDConnected = req.body.additionnalParameters.userIdConnected;
-        let userIDParam = req.params.userId;
-        if (userIDConnected == userIDParam) {
+        let connectedUserID= Params.getAddedParams(res).connectedUserID;
+        let userIDParam = Params.getRequestParams(res).userId;
+        if (connectedUserID === userIDParam) {
             return res.status(401).send(Data.ANSWERS.ERRORS_401.INSUFFICIENT_PERMS);
         }
         return next();
@@ -98,4 +103,4 @@ class SheetMiddleware {
 }
 
 
-export default SheetMiddleware
+export default SheetMiddleware;

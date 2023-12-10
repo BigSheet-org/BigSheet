@@ -1,23 +1,26 @@
 import sequelize from "../common/tools/postgres.js";
-import {DataTypes, Model} from "sequelize";
+import {DataTypes, Model, Op} from "sequelize";
 import UserModel from "./UserModel.js";
+import Data from "../common/data/Data.js";
 
 class SheetModel extends Model {
+
     /**
-     * This method return all sheets owned by the user. 
-     * @param userId Id off the user
-     * @returns {Promise<SheetModel>} Return sheets
+     * This method return all sheets owned by the user.
+     *
+     * @param userId Id of the user
+     * @returns {Promise<SheetModel[]>} Return sheets
      */
     static async getAllByOwner(userId) {
-        let sheets = await SheetModel.findAll({
+        return await SheetModel.findAll({
             attributes: ['title', 'createdAt'], // get title and creation date
             include: { // we include UserModel to do inner join
                 model: UserModel,
                 as: 'users',
-                attributes: [], // but we not want Users who have access on sheet
+                attributes: [], // but we do not want Users who have access on sheet
                 through: {
                     where: {
-                        accessRight: 'owner'
+                        accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.OWNER
                     }
                 },
                 where: {
@@ -25,17 +28,17 @@ class SheetModel extends Model {
                 }
             }
         });
-        return sheets
     }
 
     /**
-     * This method return all sheets owned by the user. 
-     * @param userId Id off the user
-     * @returns {Promise<SheetModel>} Return sheets
+     * This method return all sheets owned by the user.
+     *
+     * @param userId Id of the user
+     * @returns {Promise<SheetModel[]>} Return sheets
      */
     static async getAccessibleByUser(userId) {
-        let sheets = await SheetModel.findAll({
-            attributes: ['title', 'createdAt'], // get title and creation date
+        return await SheetModel.findAll({
+            attributes: ['sheetID', 'title', 'createdAt'], // get title and creation date
             include: { // we include UserModel to do inner join
                 model: UserModel,
                 as: 'users',
@@ -45,16 +48,42 @@ class SheetModel extends Model {
                 }
             }
         });
-        return sheets
+    }
+
+    /**
+     * This method returns the sheets that can be accessed by the user, but that are not owned by him.
+     *
+     * @param userID Id to search for.
+     * @returns {Promise<SheetModel[]>} Return sheet or null if not exist
+     */
+    static async getSharedToUser(userID) {
+        return await SheetModel.findAll({
+            attributes: ['id', 'title', 'createdAt'],   // Get title and creation date
+            include: {                                  // We include UserModel to do inner join
+                model: UserModel,
+                as: 'users',
+                attributes: [],                         // But we do not want Users who have access on sheet
+                through: {
+                    where: {
+                        [Op.or]: [
+                            {accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.READ},
+                            {accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.WRITE}
+                        ]
+                    }
+                },
+                where: { id: userID }
+            }
+        });
     }
 
     /**
      * This method return sheet with the good id.
-     * @param id Id to search for
+     *
+     * @param id Id to search for.
      * @returns {Promise<SheetModel>} Return sheet or null if not exist
      */
     static async getById(id) {
-        let sheet = await SheetModel.findByPk(id, {
+        return await SheetModel.findByPk(id, {
             include: {
                 model: UserModel,
                 as: 'users',
@@ -64,7 +93,6 @@ class SheetModel extends Model {
                 }
             }
         });
-        return sheet;
     }
 }
 
@@ -80,6 +108,10 @@ SheetModel.init(
             type: DataTypes.STRING,
             allowNull: false,
             defaultValue: 'Sans-Nom'
+        },
+        detail: {
+            type: DataTypes.STRING,
+            allowNull: true,
         }
     },
     {

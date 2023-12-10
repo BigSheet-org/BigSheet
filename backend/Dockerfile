@@ -5,15 +5,12 @@ FROM node:18.18.2
 WORKDIR /usr/src/app
 
 # Install app dependencies
-COPY package.json .
-COPY package-lock.json .
-
+COPY package*.json ./
 RUN npm install
-# If you are building your code for production
-# RUN npm ci --omit=dev
 
 # Bundle app source
 COPY . /usr/src/app
+
 # We expose the 8000 port.
 EXPOSE 8000
 

@@ -14,7 +14,7 @@ class Tokens {
         AUTH_SECRET: process.env.JWT_AUTH_SECRET_KEY,
         REFRESH_SECRET: process.env.JWT_REFRESH_SECRET_KEY,
         AUTH_EXP_TIME: process.env.AUTH_TOKEN_EXPIRE,
-        REFRESH_EXP_TIME: process.env.REFRESH_TOKEN_EXPIRE,
+        REFRESH_EXP_TIME: process.env.REFRESH_TOKEN_EXPIRE
     }
 
     /**
@@ -57,7 +57,7 @@ class Tokens {
         return req.headers.authorization.replace(
             'Bearer ',
             ''
-        )
+        );
     }
 
     /**
@@ -87,15 +87,15 @@ class Tokens {
     static async verifyToken(token, secret) {
         try {
             if(await Tokens.isBanned(token)) {
-                return {error: Data.SERVER_COMPARISON_DATA.TOKENS.BANNED}
+                return {error: Data.SERVER_COMPARISON_DATA.TOKENS.BANNED};
             } else {
-                return jwt.verify(token, secret)
+                return jwt.verify(token, secret);
             }
         } catch (e) {
             if (e.toString() === Data.SERVER_COMPARISON_DATA.TOKENS.EXPIRED_JWT_ERROR) {
-                return {error: Data.SERVER_COMPARISON_DATA.TOKENS.EXPIRED}
+                return {error: Data.SERVER_COMPARISON_DATA.TOKENS.EXPIRED};
             } else {
-                return {error: Data.SERVER_COMPARISON_DATA.TOKENS.INVALID}
+                return {error: Data.SERVER_COMPARISON_DATA.TOKENS.INVALID};
             }
         }
     }
@@ -109,8 +109,8 @@ class Tokens {
      * @returns {Promise<void>}
      */
     static async banToken(token, dataInToken) {
-        await RedisClient.set(token, dataInToken.userID)
-        await RedisClient.expireAt(token, dataInToken.exp)
+        await RedisClient.set(token, dataInToken.userID);
+        await RedisClient.expireAt(token, dataInToken.exp);
     }
 
     /**
@@ -121,17 +121,6 @@ class Tokens {
      */
     static async isBanned(token) {
         return await RedisClient.get(token) !== null;
-    }
-
-    /**
-     * This method uses the token to return the userID encoded within.
-     *
-     * @param token token to extract data from.
-     * @returns {Promise<*>}
-     */
-    static async getUserIdFromToken(token) {
-        let data = await Tokens.verifyAuthToken(token)
-        return data.userID;
     }
 }
 

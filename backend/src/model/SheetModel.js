@@ -13,7 +13,7 @@ class SheetModel extends Model {
      */
     static async getAllByOwner(userId) {
         return await SheetModel.findAll({
-            attributes: ['title', 'createdAt'], // get title and creation date
+            attributes: ['id', 'title', 'createdAt'], // get title and creation date
             include: { // we include UserModel to do inner join
                 model: UserModel,
                 as: 'users',
@@ -56,22 +56,24 @@ class SheetModel extends Model {
      * @param userID Id to search for.
      * @returns {Promise<SheetModel[]>} Return sheet or null if not exist
      */
-    static async getSharedToUser(userID) {
+    static async getSharedToUser(userId) {
         return await SheetModel.findAll({
-            attributes: ['id', 'title', 'createdAt'],   // Get title and creation date
-            include: {                                  // We include UserModel to do inner join
+            attributes: ['id', 'title', 'createdAt'], // get title and creation date
+            include: { // we include UserModel to do inner join
                 model: UserModel,
                 as: 'users',
-                attributes: [],                         // But we do not want Users who have access on sheet
+                attributes: [], // but we do not want Users who have access on sheet
                 through: {
                     where: {
                         [Op.or]: [
-                            {accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.READ},
-                            {accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.WRITE}
+                            { accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.READ },
+                            { accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.WRITE}
                         ]
                     }
                 },
-                where: { id: userID }
+                where: {
+                    id: userId,
+                }
             }
         });
     }

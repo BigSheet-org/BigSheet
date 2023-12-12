@@ -41,7 +41,7 @@ export default {
     </div>
 
     <div v-else>
-        <h1>Bienvenue {{this.user.firstname}}</h1>
+        <h1>Bienvenue {{user !== null ? user.firstname : "" }} !</h1>
         <SheetList/>
     </div>
 </template>

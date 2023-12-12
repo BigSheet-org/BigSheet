@@ -18,7 +18,7 @@ export default {
     <div class="sheet_item"
          @click="this.handleItemClick()">
         <div class="sheet_info">
-            <h3>{{ sheet.name }}</h3>
+            <h3>{{ sheet.title }}</h3>
             <p>Détails: {{ sheet.details }}</p>
             <p>Propriétaire: {{ sheet.owner }}</p>
         </div>

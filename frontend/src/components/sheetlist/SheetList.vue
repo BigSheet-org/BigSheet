@@ -7,14 +7,12 @@ import Routes from "../../assets/static/Routes.js";
 
 export default {
     computed: {
-        Routes() {
-            return Routes
-        }
+        Routes() { return Routes; }
     },
     data() {
         return {
             sheets: [],
-            loading: false,
+            loading: false
         }
     },
     components: {SlideAndFadeTransition, Loading, SheetItem },

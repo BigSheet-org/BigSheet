@@ -15,9 +15,7 @@
             border-bottom: 1px solid variables.$dark_input_border_color;
             transition: background-color 0.3s;
 
-            &:hover {
-                background-color: variables.$dark_list_hover_color;
-            }
+            &:hover { background-color: variables.$dark_list_hover_color;}
 
             .sheet_info {
                 display: flex;
@@ -38,8 +36,6 @@
         width: 50px;
         height: 50px;
 
-        &:hover {
-            scale: 125%;
-        }
+        &:hover { scale: 125%; }
     }
 }

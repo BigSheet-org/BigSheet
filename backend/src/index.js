@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import fs from "fs";
 import sequelize from "./common/tools/postgres.js";
-import Functions from "./common/tools/Functions.js";
+import SocketGestionnary from "./common/tools/SocketGestionnary.js";
 
 dotenv.config();
 
@@ -65,3 +65,5 @@ console.log(`[INFO] - Done Initializing models.`);
 
 // -- Starting Server listener -- //
 server.listen(port, () => console.log(`[INFO] - Server launched on port ${port}. Awaiting requests...`));
+
+const sock=new SocketGestionnary(server);

@@ -70,12 +70,12 @@ Lancez les containers Docker :
 
 - En cas de développement sur le serveur Node : 
 ```bash
-docker-compose -f docker-compose_backdev.yml up -d
+docker-compose -f docker-compose_backdev.yml up -d --force-recreate --no-deps --build
 ```
 
 - En cas de développement sur l'application VueJS : 
 ```bash
-docker-compose up -d
+docker-compose up -d --force-recreate --no-deps --build
 ```
 
 Si vous développez l'application backend, vous pouvez lancer le serveur Node avec les commandes suivantes : 

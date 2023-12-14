@@ -3,10 +3,11 @@ import SheetModel from "../model/SheetModel.js";
 
 import sequelize from "../common/tools/postgres.js";
 import {DataTypes, Model} from "sequelize";
+import Data from "../common/data/Data.js";
 
-class UserAccesSheet extends Model {}
+class UserAccessSheet extends Model {}
 
-UserAccesSheet.init(
+UserAccessSheet.init(
     {
         userId: {
             type: DataTypes.INTEGER,
@@ -25,33 +26,37 @@ UserAccesSheet.init(
             }
         },
         accessRight: {
-            type: DataTypes.ENUM('owner', 'reader', 'writer'),
+            type: DataTypes.ENUM(
+                Data.SERVER_COMPARISON_DATA.PERMISSIONS.OWNER,
+                Data.SERVER_COMPARISON_DATA.PERMISSIONS.READ,
+                Data.SERVER_COMPARISON_DATA.PERMISSIONS.WRITE
+            ),
             allowNull: false,
-            defaultValue: 'owner'
+            defaultValue: Data.SERVER_COMPARISON_DATA.PERMISSIONS.OWNER
         }
     },
     {
         sequelize,
         tableName: 'UserAccessSheet',
-        modelName: 'userAccessSheet'
+        modelName: 'UserAccessSheet'
     }
 );
 
 
 /**
  * Function to load association Access between User and Sheet.
- * Must be executed after models initialization.
- * Use UserAccesSheet table to associate User and Sheet models.
- * Relation Manu-to-Many.
+ * Must be executed after the model's initialization.
+ * Uses UserAccesSheet table to associate User and Sheet models.
+ * Relation Many-to-Many.
  */
-export default async function() {
+export const initRelations = async () => {
     UserModel.belongsToMany(SheetModel, { 
-        through: UserAccesSheet, 
+        through: UserAccessSheet,
         foreignKey: 'userId',
         as: 'sheets'
      });
     SheetModel.belongsToMany(UserModel, {
-        through: UserAccesSheet, 
+        through: UserAccessSheet,
         foreignKey: 'sheetId',
         as: 'users'
     });

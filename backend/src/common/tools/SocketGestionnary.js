@@ -3,19 +3,35 @@ import { Server } from "socket.io";
 import SOCKET_PROTOCOL from "./SocketProtocol.js";
 
 class SocketGestionnary {
+    static #instance = null;
+
     constructor(httpServ) {
-        this.io=new Server(httpServ);
-        this.io.on('connection', (sock) => {
-            SocketGestionnary.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REQUIRED);
-        });
+        if (SocketGestionnary.#instance == null) {
+            SocketGestionnary.#instance = this;
+            this.io=new Server(httpServ);
+            this.io.on('connection', (sock) => {
+                this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REQUIRED);
+                for (const message in SOCKET_PROTOCOL.MESSAGE_TYPE.FROM_CLIENT) {
+                    sock.on(message.name, (arg) => {
+                        if (message.checkerArg(arg)) {
+                            message.event();
+                        }
+                    });
+                }
+            });
+        }
+        return SocketGestionnary.#instance;
     }
 
+    static getInstance() {
+        return SocketGestionnary.#instance;
+    }
     /**
      * Send message to user with the socket
      * @param sock User's socket
      * @param message Message defined in SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT
      */
-    static emit(sock, message, arg) {
+    emit(sock, message, arg) {
         if (arg === undefined) {
             arg = '';
         }
@@ -25,7 +41,19 @@ class SocketGestionnary {
         } else {
             sock.emit(message.name, arg);
         }
-   }
+    }
+
+    emitToRoom(sock, message, arg) {
+        if (arg === undefined) {
+            arg = '';
+        }
+        sock.to(this.getRoom(sock)).emit(message.name, arg);
+    }
+
+    getRoom(sock) {
+        return [...sock.rooms][1];
+    }
+   
 }
 
 export default SocketGestionnary;

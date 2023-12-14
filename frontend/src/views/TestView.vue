@@ -1,6 +1,7 @@
 <script>
 import NavBar from "../components/navbar/NavBar.vue";
 import { io } from "https://cdn.socket.io/4.7.2/socket.io.esm.min.js";
+import LocalStorage from "../scripts/DAO/LocalStorage.js";
 
 export default {
     components: {NavBar},
@@ -11,8 +12,8 @@ export default {
             });
             socket.on("authReq", (arg, callback) => {
                 callback({
-                    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0aW1lIjoiVGh1IERlYyAxNCAyMDIzIDE4OjE0OjQ2IEdNVCswMTAwIChoZXVyZSBub3JtYWxlIGTigJlFdXJvcGUgY2VudHJhbGUpIiwidXNlcklEIjoxLCJpYXQiOjE3MDI1NzQwODYsImV4cCI6MTcwMjYxMDA4Nn0.eVEPbW13fgJ3Qynkxe9pmZySjzghtMituCDYPFsHDXc",
-                    sheetId: 3
+                    token: LocalStorage.getAccessToken(),
+                    sheetId: 2
                 });
             });
             socket.on("authFail", (arg) => {
@@ -21,6 +22,12 @@ export default {
             socket.on("authOk", (arg) => {
                 console.log("youhou");
             });
+            socket.on("modifyCells", (arg) => {
+                console.log(arg);
+            });
+        },
+        sendRoom() {
+            socket.emit("modifyCell", {a: 1, b: "yo"});
         }
     }
 }
@@ -31,4 +38,5 @@ export default {
     <NavBar/>
     <h1>TestSocket</h1>
     <button @click="this.sock()">Test</button>
+    <button @click="this.sendRoom()">Send</button>
 </template>

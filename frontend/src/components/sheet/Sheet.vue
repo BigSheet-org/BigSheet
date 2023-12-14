@@ -2,9 +2,10 @@
 
 import Cell from "./Cell.vue"
 import {createWebHashHistory} from "vue-router";
+import SlideAndFadeTransition from "../transitions/SlideAndFadeTransition.vue";
 
 export default {
-    components :{Cell},
+    components :{SlideAndFadeTransition, Cell},
 
     data(){
         return {
@@ -52,23 +53,31 @@ export default {
                 });
                 this.sheet.push(row);
             });
+        },
+
+        changeValue(index, value) {
+            console.log("[INFO] - Cell with id " + index + " has changed value to " + value);
+            this.cells[index] = value;
         }
     }
 }
 </script>
 
 <template>
-    <table>
-        <thead class="column-header">
-            <th></th>
-            <th v-for="name in this.columnsNames">{{name}}</th>
-        </thead>
-        <tr v-for="(row, index) in this.sheet">
-            <th class="row-header">{{(index + 1)}}</th>
-            <td v-for="cell in row">
-                <Cell :id="cell + (index + 1)"
-                      :prefill="this.cells[cell + (index + 1)]"/>
-            </td>
-        </tr>
-    </table>
+    <SlideAndFadeTransition>
+        <table>
+            <thead class="column-header">
+                <th></th>
+                <th v-for="name in this.columnsNames">{{name}}</th>
+            </thead>
+            <tr v-for="(row, index) in this.sheet">
+                <th class="row-header">{{(index + 1)}}</th>
+                <td v-for="cell in row">
+                    <Cell :id="cell + (index + 1)"
+                          :prefill="this.cells[cell + (index + 1)]"
+                          @valueChange="(index, payload) => { this.changeValue(index, payload); }"/>
+                </td>
+            </tr>
+        </table>
+    </SlideAndFadeTransition>
 </template>

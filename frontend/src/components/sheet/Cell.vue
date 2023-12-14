@@ -16,17 +16,18 @@
                 default: '',
             }
         },
+        emits: {
+            valueChange() { return true; }
+        },
         methods: {
-            sendChange() {
-                console.log("[INFO] - Cell with id " + this.id + " has changed value !")
-            }
-        }
+            sendChange() { this.$emit('valueChange', this.id, this.model); }
+        },
+        mounted() {}
     }
 </script>
 
 <template>
   <input type="text"
          v-model="this.model"
-         @change="this.sendChange"
-  />
+         @change="this.sendChange"/>
 </template>

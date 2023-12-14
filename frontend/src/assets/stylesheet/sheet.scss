@@ -1,3 +1,6 @@
+@use "variables";
+@use "transitions";
+
 body {
     margin: 0
 }
@@ -8,6 +11,7 @@ body {
 
 table {
     border-spacing: 0;
+    color: variables.$dark_font_main;
 
     td, th {
         padding: 0.25em;
@@ -15,15 +19,13 @@ table {
         border-bottom: 1px solid rgb(125, 125, 125);
         min-width: 80px;
         min-height: 50px;
-        color: #1a1a1a;
+        background-color: variables.$dark_background_color;
     }
 
-    th {
-        background-color: rgb(250, 250, 250);
-    }
+    th { background-color: variables.$dark_wrapper_background; }
 
     td {
-        background-color: white;
+        background-color: variables.$dark_wrapper_background;
         text-align: center;
         position: relative;
         padding: 1em;
@@ -35,16 +37,34 @@ table {
             display: flex;
             align-items: center;
             justify-content: center;
-            border-width: 0;
             width: 100%;
             height: 100%;
+            border: none;
 
-            &:focus{
-                border: 2px solid #1A73E8;
-            }
+            &:focus{ border: 2px solid variables.$dark_input_border_color; }
         }
     }
 }
 
+
+@media (prefers-color-scheme: light) {
+    table {
+        color: variables.$light_font_main;
+
+        td, th {
+            background-color: variables.$light_background_color;
+        }
+
+        th { background-color: variables.$light_wrapper_background; }
+
+        td {
+            background-color: variables.$light_wrapper_background;
+
+            input {
+                &:focus{ border: 2px solid variables.$light_input_border_color; }
+            }
+        }
+    }
+}
 
 

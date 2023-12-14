@@ -1,8 +1,12 @@
 <script>
 import User from "../scripts/DAO/User.js";
 import Routes from "../assets/static/Routes.js";
+import SheetList from "./sheetlist/SheetList.vue";
 
 export default {
+    components: {
+        SheetList
+    },
     data() {
         return {
             user: null,
@@ -15,14 +19,13 @@ export default {
     methods: {
         async fetchUserData() {
             this.user = await User.fetchUserData();
-        }
+        },
     },
-    beforeMount() {
+    async beforeMount() {
         if (this.CheckAuthentication) {
-            this.fetchUserData();
+            await this.fetchUserData();
         }
     }
-
 }
 </script>
 
@@ -39,5 +42,6 @@ export default {
 
     <div v-else>
         <h1>Bienvenue {{user !== null ? user.firstname : "" }} !</h1>
+        <SheetList/>
     </div>
 </template>

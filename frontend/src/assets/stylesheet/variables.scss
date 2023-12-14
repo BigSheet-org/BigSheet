@@ -26,6 +26,7 @@ $light_font_main: rgba(255, 255, 255, 0.87);
 /* Borders */
 /* -> Dark theme */
 $dark_input_border_color: #c4c4c4;
+$dark_classic_border_color: #878585;
 $dark_input_lighter_border_color: #e0e0e0;
 
 /* -> Light theme */
@@ -36,8 +37,11 @@ $light_input_darker_border_color: #363636;
 $right_highlight: #159f15;
 $wrong_highlight: #ad1313;
 
+/* Hovering */
+/* -> Dark theme */
+$dark_list_hover_color: #878585;
 
-
+/* -> Light theme */
 
 
 /* ################################# */

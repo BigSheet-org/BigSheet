@@ -1,7 +1,6 @@
 <script>
 
 import Cell from "./Cell.vue"
-import {createWebHashHistory} from "vue-router";
 import SlideAndFadeTransition from "../transitions/SlideAndFadeTransition.vue";
 
 export default {
@@ -27,11 +26,11 @@ export default {
         setColumnsNames(nb){
             for(let number = 0; number < nb; number++){
                 if(number < 26){
-                    this.columnsNames.push(String.fromCharCode(number + 97))
+                    this.columnsNames.push(String.fromCharCode(number + 65))
                 } else {    //If there is more 26 columns we use two letter as a header
                     this.columnsNames.push(
-                        String.fromCharCode(Math.floor((number / 26) + 96))
-                        + String.fromCharCode((number % 26) + 97)
+                        String.fromCharCode(Math.floor((number / 26) + 64))
+                        + String.fromCharCode((number % 26) + 65)
                     );
                 }
             }

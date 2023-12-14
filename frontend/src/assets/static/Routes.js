@@ -3,6 +3,7 @@ import CompteView from "../../views/CompteView.vue";
 import InscriptionView from "../../views/InscriptionView.vue";
 import ConnexionView from "../../views/ConnexionView.vue";
 import HomePageView from "../../views/HomePageView.vue";
+import TestView from "../../views/TestView.vue";
 
 class Routes {
 
@@ -12,7 +13,7 @@ class Routes {
         path: "/",
         component: HomePageView
     };
-
+    
     // Connexion route
     static CONNEXION = {
         name: "connexion",
@@ -34,6 +35,13 @@ class Routes {
         component: CompteView
     };
 
+    
+    static TEST = {
+        name: "test",
+        path:"/test",
+        component: TestView
+    };
+    
     // Not found route
     static NOT_FOUND = {
         name: "404",

@@ -1,40 +1,30 @@
 import { Server } from "socket.io";
-import Tokens from "./Tokens.js";
-import { UserAccessSheet } from "../../association/UserAccessSheet.js";
+
+import SOCKET_PROTOCOL from "./SocketProtocol.js";
 
 class SocketGestionnary {
-   constructor(httpServ) {
-       this.io=new Server(httpServ);
-       this.io.on('connection', (sock) => {
-            sock.timeout(5000).emit('auth', '', async (err, response) => {
-                // if an error (access not autorized...) disconnect socket
-                if (err) {
-                    sock.disconnect();
-                    console.log("err1");
-                } else {
-                    if (response.token !== undefined && response.sheetId !== undefined) {
-                        let data = await Tokens.verifyAuthToken(response.token);
-                        if (data.error !== undefined) {
-                            sock.disconnect();
-                            console.log("err2");
-                        } else {
-                            let access = await UserAccessSheet.getAccessByPk(data.userID, response.sheetId);
-                            // if user has access to sheet, he joins the room corresponding to corresponding to sheet
-                            if (access != null) {
-                                sock.join('sheet'+response.sheetId);
-                                console.log("ok");
-                            } else {
-                                sock.disconnect();
-                                console.log("err3");
-                            }                            
-                        }
-                    } else {
-                        sock.disconnect();
-                        console.log("err4");
-                    }
-                }
-            });
-       });
+    constructor(httpServ) {
+        this.io=new Server(httpServ);
+        this.io.on('connection', (sock) => {
+            SocketGestionnary.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REQUIRED);
+        });
+    }
+
+    /**
+     * Send message to user with the socket
+     * @param sock User's socket
+     * @param message Message defined in SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT
+     */
+    static emit(sock, message, arg) {
+        if (arg === undefined) {
+            arg = '';
+        }
+        if (message.replyProcess != null) {
+            sock.timeout(SOCKET_PROTOCOL.TIMEOUT_WHEN_REPLY_IS_REQUIRED);
+            sock.emit(message.name, arg, message.replyProcess(sock));
+        } else {
+            sock.emit(message.name, arg);
+        }
    }
 }
 

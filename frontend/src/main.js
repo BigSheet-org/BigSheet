@@ -11,6 +11,7 @@ import './assets/stylesheet/transitions.scss'
 import './assets/stylesheet/loading.scss'
 import './assets/stylesheet/forms_style.scss'
 import './assets/stylesheet/popup_style.scss'
+import './assets/stylesheet/sheet_list_style.scss'
 import './assets/stylesheet/sheet.scss'
 
 

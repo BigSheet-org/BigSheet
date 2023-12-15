@@ -13,7 +13,6 @@ class SocketGestionnary {
                 this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REQUIRED);
                 for (const key in SOCKET_PROTOCOL.MESSAGE_TYPE.FROM_CLIENT) {
                     let message = SOCKET_PROTOCOL.MESSAGE_TYPE.FROM_CLIENT[key];
-                    console.log(message.name);
                     sock.on(message.name, (arg) => {
                         if (message.checkerArg(arg)) {
                             message.event(sock, arg);

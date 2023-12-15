@@ -84,7 +84,8 @@ function modifyCellsChecker(arg) {
 }
 
 function modifyCellsEvent(sock, arg) {
-    SocketGestionnary.getInstance().emitToRooms(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.MODIFY_CELLS, arg);
+    SocketGestionnary.getInstance().emitToRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.MODIFY_CELLS, arg);
+    console.log(arg);
 }
 
 export default SOCKET_PROTOCOL;

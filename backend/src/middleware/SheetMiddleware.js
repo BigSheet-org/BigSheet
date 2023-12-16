@@ -94,8 +94,8 @@ class SheetMiddleware {
      */
     static async isOtherUser(req, res, next) {
         let connectedUserID= Params.getAddedParams(res).connectedUserID;
-        let userIDParam = Params.getRequestParams(res).userId;
-        if (connectedUserID == userIDParam) {
+        let userIDParam = Number(Params.getRequestParams(res).userId);
+        if (connectedUserID === userIDParam) {
             return res.status(401).send(Data.ANSWERS.ERRORS_401.INSUFFICIENT_PERMS);
         }
         return next();

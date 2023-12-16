@@ -30,3 +30,12 @@ export function numColCharsToInt(str) {
     }
     return res;
 }
+
+const regexCapitalAlpha=new RegExp('^[A-Z]+$');
+/**
+ * Verify if a string contains only capital letter
+ * @param str String verified.
+ */
+export function isCapitalWord(str) {
+    return regexCapitalAlpha.test(str);
+}

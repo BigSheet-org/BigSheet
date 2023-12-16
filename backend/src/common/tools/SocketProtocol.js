@@ -1,6 +1,7 @@
 import SocketGestionnary from "./SocketGestionnary.js";
 import Tokens from "./Tokens.js";
 import { UserAccessSheet } from "../../association/UserAccessSheet.js";
+import { isCapitalWord } from "./functions.js";
 
 /**
  * Define different message who can be send or receive by server.
@@ -93,8 +94,8 @@ function verifyCellCoord(arg) {
     if (arg.line === undefined || typeof arg.line !== "number" || !Number.isInteger(arg.line)) {
         return false;
     }
-    // we verify arg.column is a string
-    if (arg.column === undefined || typeof arg.column !== "string") {
+    // we verify arg.column is a string with full capital letters
+    if (arg.column === undefined || typeof arg.column !== "string" || !isCapitalWord(arg.column)) {
         return false;
     }
     return true;
@@ -126,7 +127,7 @@ function writeCellChecker(arg) {
  * @param arg  cell's coordinate and his content
  */
 function writeCellEvent(sock, arg) {
-    SocketGestionnary.getInstance().emitToRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.MODIFY_CELLS, arg);
+    SocketGestionnary.getInstance().emitToRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.WRITE_CELL, arg);
 }
 
 export default SOCKET_PROTOCOL;

@@ -2,6 +2,12 @@ import SocketGestionnary from "./SocketGestionnary.js";
 import Tokens from "./Tokens.js";
 import { UserAccessSheet } from "../../association/UserAccessSheet.js";
 
+/**
+ * Define different message who can be send or receive by server.
+ * TO_CLIENT.x.replyProcess is null or a function (sock) => function async (error, response) to act in terms of client's response.
+ * FROM_CLIENT.x.checkerArg is a function (arg) => boolean to verify arg who has received. True if arg has good format.
+ * FROM_CLIENT.x.event is a function (sock, arg) must be executed when received message from socket.
+ */
 const SOCKET_PROTOCOL = {
     TIMEOUT_WHEN_REPLY_IS_REQUIRED: 5000,
     MESSAGE_TYPE: {
@@ -33,11 +39,21 @@ const SOCKET_PROTOCOL = {
     }
 };
 
+/**
+ * To disconnect client's socket with different reason.
+ * @param sock Client's socket
+ * @param message Reason to disconnection
+ */
 function emitReasonToDisconnect(sock, message) {
     SocketGestionnary.getInstance().emit(sock, message);
     sock.disconnect();
 }
 
+/**
+ * Send request authentification for client.
+ * @param sock client's socket
+ * @returns Function must be executed in terms of client's response
+ */
 function requestAuth(sock) {
     return async (err, response) => {
         // if an error (access not autorized...) disconnect socket
@@ -45,14 +61,16 @@ function requestAuth(sock) {
             emitReasonToDisconnect(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REFUSED);
         } else {
             if (response.token !== undefined && response.sheetId !== undefined) {
+                // verify auth token
                 let data = await Tokens.verifyAuthToken(response.token);
                 if (data.error !== undefined) {
                     emitReasonToDisconnect(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REFUSED);
                 } else {
                     let access = await UserAccessSheet.getAccessByPk(data.userID, response.sheetId);
-                    // if user has access to sheet, he joins the room corresponding to corresponding to sheet
-                    if (access != null) {
+                    // if user has access to sheet, he joins the room corresponding to sheet
+                    if (access !== null) {
                         sock.join('sheet'+response.sheetId);
+                        // confirm to client that connection is a success
                         SocketGestionnary.getInstance().emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_SUCCESS);
                     } else {
                         emitReasonToDisconnect(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REFUSED);
@@ -65,6 +83,11 @@ function requestAuth(sock) {
     };
 }
 
+/**
+ * Verify type corresponding to cell's coordinate in message's arg receive.
+ * @param arg Arg received
+ * @returns True if arg contains cell's coordinate 
+ */
 function verifyCellCoord(arg) {
     // we verify arg.line is an integer
     if (arg.line === undefined || typeof arg.line !== "number" || !Number.isInteger(arg.line)) {
@@ -76,6 +99,12 @@ function verifyCellCoord(arg) {
     }
     return true;
 }
+
+/**
+ * Function to verify arg who has received. True if arg contains cell's coordinate and his content.
+ * @param arg Arg received
+ * @returns True if arg contains cell's coordinate and his content.
+ */
 function writeCellChecker(arg) {
     // we verify arg is an object
     if (arg === undefined || typeof arg !== 'object' || Array.isArray(arg)) {
@@ -91,6 +120,11 @@ function writeCellChecker(arg) {
     return true;
 }
 
+/**
+ * Modify cell and emit the modification to other users in same room.
+ * @param sock client's socket
+ * @param arg  cell's coordinate and his content
+ */
 function writeCellEvent(sock, arg) {
     SocketGestionnary.getInstance().emitToRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.MODIFY_CELLS, arg);
 }

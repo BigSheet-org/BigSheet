@@ -67,12 +67,12 @@ class SheetModel extends Model {
                     where: {
                         [Op.or]: [
                             { accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.READ },
-                            { accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.WRITE}
+                            { accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.WRITE }
                         ]
                     }
                 },
                 where: {
-                    id: userId,
+                    id: userId
                 }
             }
         });

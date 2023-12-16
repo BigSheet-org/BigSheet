@@ -66,4 +66,4 @@ console.log(`[INFO] - Done Initializing models.`);
 // -- Starting Server listener -- //
 server.listen(port, () => console.log(`[INFO] - Server launched on port ${port}. Awaiting requests...`));
 
-const sock=new SocketGestionnary(server);
+const sock = new SocketGestionnary(server);

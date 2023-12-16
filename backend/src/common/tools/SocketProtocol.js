@@ -18,16 +18,16 @@ const SOCKET_PROTOCOL = {
                 name: 'authOk',
                 replyProcess: null
             },
-            MODIFY_CELLS: {
-                name: 'modifyCells',
+            WRITE_CELL: {
+                name: 'writeCell',
                 replyProcess: null
             }
         },
         FROM_CLIENT: {
-            MODIFY_CELLS: {
-                name: 'modifyCells',
-                checkerArg: modifyCellsChecker,
-                event: modifyCellsEvent
+            WRITE_CELL: {
+                name: 'writeCell',
+                checkerArg: writeCellChecker,
+                event: writeCellEvent
             }
         }
     }
@@ -65,25 +65,33 @@ function requestAuth(sock) {
     };
 }
 
-function modifyCellsChecker(arg) {
-    /*if (arg.cells === undefined || arg.event === undefined) {
+function verifyCellCoord(arg) {
+    // we verify arg.line is an integer
+    if (arg.line === undefined || typeof arg.line !== "number" || !Number.isInteger(arg.line)) {
         return false;
     }
-    if (Array.isArray(arg.cells)) {
-        for (const elem in arg.cells) {
-            if (typeof elem !== 'object' || Array.isArray(elem)) {
-                return false;
-            }
-            if (elem.line === undefined || (!Number.isInteger(elem.line))) {
-                return false;
-            }
-
-        }
-    }*/
+    // we verify arg.column is a string
+    if (arg.column === undefined || typeof arg.column !== "string") {
+        return false;
+    }
+    return true;
+}
+function writeCellChecker(arg) {
+    // we verify arg is an object
+    if (arg === undefined || typeof arg !== 'object' || Array.isArray(arg)) {
+        return false;
+    }
+    if (!verifyCellCoord(arg)) {
+        return false;
+    }
+    // we verify arg.content is a string
+    if (arg.content === undefined || typeof arg.content !== "string") {
+        return false;
+    }
     return true;
 }
 
-function modifyCellsEvent(sock, arg) {
+function writeCellEvent(sock, arg) {
     SocketGestionnary.getInstance().emitToRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.MODIFY_CELLS, arg);
 }
 

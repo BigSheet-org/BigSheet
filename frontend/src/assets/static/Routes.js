@@ -3,7 +3,6 @@ import CompteView from "../../views/CompteView.vue";
 import InscriptionView from "../../views/InscriptionView.vue";
 import ConnexionView from "../../views/ConnexionView.vue";
 import HomePageView from "../../views/HomePageView.vue";
-import TestView from "../../views/TestView.vue";
 
 class Routes {
 
@@ -33,13 +32,6 @@ class Routes {
         name: "compte",
         path: "/compte",
         component: CompteView
-    };
-
-    
-    static TEST = {
-        name: "test",
-        path:"/test",
-        component: TestView
     };
     
     // Not found route

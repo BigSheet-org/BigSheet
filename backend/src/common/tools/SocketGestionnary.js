@@ -6,9 +6,7 @@ import SOCKET_PROTOCOL from "./SocketProtocol.js";
  * Singleton. Create and use a socket server to wait clients connections.
  */
 class SocketGestionnary {
-    /**
-     * Unique instance of this class. Private.
-     */
+    /** Unique instance of this class. Private.*/
     static #instance = null;
 
     /**
@@ -20,10 +18,8 @@ class SocketGestionnary {
         if (SocketGestionnary.#instance === null) {
             SocketGestionnary.#instance = this;
             // create a socket server
-            this.io=new Server(httpServ);
-            /**
-             * When a client connects, requests authentication
-             */
+            this.io = new Server(httpServ);
+            // When a client connects, requests authentication
             this.io.on('connection', (sock) => {
                 // requests authentication
                 this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REQUIRED);
@@ -42,12 +38,13 @@ class SocketGestionnary {
     }
 
     /**
-     * Give unique instance of SocketGestionnary
+     * Gives unique instance of SocketGestionnary.
      * @returns SocketGestionnary
      */
     static getInstance() {
         return SocketGestionnary.#instance;
     }
+
     /**
      * Send message to user with the socket
      * @param sock User's socket
@@ -58,7 +55,7 @@ class SocketGestionnary {
         if (arg === undefined) {
             arg = '';
         }
-        // if message wait a response
+        // If message wait a response
         if (message.replyProcess !== null) {
             sock.timeout(SOCKET_PROTOCOL.TIMEOUT_WHEN_REPLY_IS_REQUIRED);
             sock.emit(message.name, arg, message.replyProcess(sock));
@@ -68,10 +65,10 @@ class SocketGestionnary {
     }
 
     /**
-     * Emit a message to the socket's client's room. Useful when a client send message who must be resend to others client in same room.
-     * @param sock Client who has send message.
-     * @param message Message type compatible defined in SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT
-     * @param arg Argument in message
+     * Emits a message to the socket's client's room. Useful when a client send message who must be re-sent to others client in same room.
+     * @param sock      Client's socket which has sent the message.
+     * @param message   Message type compatible defined in SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.
+     * @param arg       Argument in message.
      */
     emitToRoom(sock, message, arg) {
         if (arg === undefined) {

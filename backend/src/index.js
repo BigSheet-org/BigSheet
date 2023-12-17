@@ -63,7 +63,10 @@ for (let i = 0; i < associations.length; i++) {
 await sequelize.sync({alter: true});
 console.log(`[INFO] - Done Initializing models.`);
 
+// -- Initializes sockets. -- //
+const sock = new SocketGestionnary(server);
+console.log(`[INFO] - Done Initializing socket manager.`);
+
 // -- Starting Server listener -- //
 server.listen(port, () => console.log(`[INFO] - Server launched on port ${port}. Awaiting requests...`));
 
-const sock = new SocketGestionnary(server);

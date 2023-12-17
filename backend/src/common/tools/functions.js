@@ -18,7 +18,7 @@ export function intToNumColChars(num) {
 
 /**
  * Function to convert number in base 26 defined by alphabet characters to base 10
- * @param num column number represented by capital letters
+ * @param str column number represented by capital letters
  * @returns column id in database for the CellModel
  */
 export function numColCharsToInt(str) {
@@ -31,10 +31,12 @@ export function numColCharsToInt(str) {
     return res;
 }
 
-const regexCapitalAlpha=new RegExp('^[A-Z]+$');
+const regexCapitalAlpha = new RegExp('^[A-Z]+$');
+
 /**
- * Verify if a string contains only capital letter
+ * Verifies if a string contains only capital letter
  * @param str String verified.
+ * @returns If a string contains only capital letter or not.
  */
 export function isCapitalWord(str) {
     return regexCapitalAlpha.test(str);

@@ -4,7 +4,7 @@ import { UserAccessSheet } from "../../association/UserAccessSheet.js";
 import { isCapitalWord } from "./functions.js";
 
 /**
- * Define different message who can be send or receive by server.
+ * Define different message which can be sent or received by the server.
  * TO_CLIENT.x.replyProcess is null or a function (sock) => function async (error, response) to act in terms of client's response.
  * FROM_CLIENT.x.checkerArg is a function (arg) => boolean to verify arg who has received. True if arg has good format.
  * FROM_CLIENT.x.event is a function (sock, arg) must be executed when received message from socket.
@@ -51,13 +51,13 @@ function emitReasonToDisconnect(sock, message) {
 }
 
 /**
- * Send request authentification for client.
+ * Send request authentication for client.
  * @param sock client's socket
  * @returns Function must be executed in terms of client's response
  */
 function requestAuth(sock) {
     return async (err, response) => {
-        // if an error (access not autorized...) disconnect socket
+        // if an error (access not authorized...) disconnect socket
         if (err) {
             emitReasonToDisconnect(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REFUSED);
         } else {
@@ -107,14 +107,14 @@ function verifyCellCoord(arg) {
  * @returns True if arg contains cell's coordinate and his content.
  */
 function writeCellChecker(arg) {
-    // we verify arg is an object
+    // We verify arg is an object
     if (arg === undefined || typeof arg !== 'object' || Array.isArray(arg)) {
         return false;
     }
     if (!verifyCellCoord(arg)) {
         return false;
     }
-    // we verify arg.content is a string
+    // We check if arg.content is a string.
     if (arg.content === undefined || typeof arg.content !== "string") {
         return false;
     }

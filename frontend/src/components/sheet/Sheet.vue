@@ -23,23 +23,23 @@ export default {
     },
 
     methods:{
-        // Generate the headers for the columns
-        setColumnsNames(nb){
+        // Generates the headers for the columns
+        setColumnsNames(nb) {
             for(let number = 1; number < nb; number++){
                 this.columnsNames.push(
                     Formatters.convertToColumnLabel(number)
-                )
+                );
             }
         },
-        //Generate the headers for the rows
-        setRowNames(nb){
+        //Generates the headers for the rows
+        setRowNames(nb) {
             for (let number = 1; number <= nb; number++){
                 this.rowsNames.push(number);
             }
         },
 
-        //Generate the sheet using the columns headers and the rows headers
-        createSheet(){
+        //Generates the sheet using the columns headers and the rows headers
+        createSheet() {
             this.rowsNames.forEach(rowHead => {
                 let row = []
                 this.columnsNames.forEach(name => {

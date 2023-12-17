@@ -152,7 +152,7 @@ function writeCellEvent(sock, arg) {
 /**
  * Function to verify arg who has received. True if arg contains token and to who's a userId.
  * @param arg Arg received
- * @returns True if arg contains cell's coordinate and his content.
+ * @returns True if arg contains token and to who's a userId.
  */
 function giveIdChecker(arg) {
     // We verify arg is an object
@@ -173,7 +173,7 @@ function giveIdChecker(arg) {
 /**
  * Transmit his login to user who has ask.
  * @param sock client's socket
- * @param arg  cell's coordinate and his content
+ * @param arg  token and to define the client's userId who must receive message.
  */
 async function giveIdEvent(sock, arg) {
     let data = await Tokens.verifyAuthToken(arg.token);

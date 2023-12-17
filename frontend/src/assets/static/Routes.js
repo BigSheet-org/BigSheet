@@ -12,7 +12,7 @@ class Routes {
         path: "/",
         component: HomePageView
     };
-
+    
     // Connexion route
     static CONNEXION = {
         name: "connexion",
@@ -33,7 +33,7 @@ class Routes {
         path: "/compte",
         component: CompteView
     };
-
+    
     // Not found route
     static NOT_FOUND = {
         name: "404",

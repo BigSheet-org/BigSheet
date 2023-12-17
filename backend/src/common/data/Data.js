@@ -36,8 +36,8 @@ class Data {
         },
         PERMISSIONS: {
             OWNER: "owner",
-            READ: "read",
-            WRITE: "write"
+            READ: "reader",
+            WRITE: "writer"
         }
     }
 }

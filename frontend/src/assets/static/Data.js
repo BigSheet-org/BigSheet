@@ -32,6 +32,21 @@ class Data {
             MAIL_ALREADY_USED: "Provided mail was already used."
         },
     };
+
+    static SOCKET_STANDARDS = {
+        AUTH_REQUIRED: {
+            name: 'authReq',
+        },
+        AUTH_REFUSED: {
+            name: 'authFail',
+        },
+        AUTH_SUCCESS: {
+            name: 'authOk',
+        },
+        WRITE_CELL: {
+            name: 'writeCell',
+        },
+    }
 }
 
 export default Data;

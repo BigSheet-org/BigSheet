@@ -5,7 +5,17 @@ import sequelize from "../common/tools/postgres.js";
 import {DataTypes, Model} from "sequelize";
 import Data from "../common/data/Data.js";
 
-class UserAccessSheet extends Model {}
+export class UserAccessSheet extends Model {
+    static async getAccessByPk(userId, sheetId) {
+        return await UserAccessSheet.findOne({
+            attributes: ['accessRight'],
+            where: {
+                userId: userId,
+                sheetId: sheetId
+            }
+        });
+    }
+}
 
 UserAccessSheet.init(
     {
@@ -37,8 +47,7 @@ UserAccessSheet.init(
     },
     {
         sequelize,
-        tableName: 'UserAccessSheet',
-        modelName: 'UserAccessSheet'
+        tableName: 'UserAccessSheet'
     }
 );
 

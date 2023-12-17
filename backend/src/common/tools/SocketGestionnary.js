@@ -19,7 +19,6 @@ class SocketGestionnary {
             SocketGestionnary.#instance = this;
             // create a socket server
             this.io = new Server(httpServ);
-            this.usersInSheet = [];
             // When a client connects, requests authentication
             this.io.on('connection', (sock) => {
                 // requests authentication

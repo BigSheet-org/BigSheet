@@ -70,20 +70,29 @@ class SocketGestionnary {
      * @param message   Message type compatible defined in SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.
      * @param arg       Argument in message.
      */
-    emitToRoom(sock, message, arg) {
+    emitToSheetRoom(sock, message, arg) {
         if (arg === undefined) {
             arg = '';
         }
-        sock.to(this.getRoom(sock)).emit(message.name, arg);
+        sock.to(this.getSheetRoom(sock)).emit(message.name, arg);
     }
 
     /**
-     * Get room who has joined by a client.
+     * Get sheet room who has joined by a client.
      * @param sock Socket's client 
      * @returns room
      */
-    getRoom(sock) {
+    getSheetRoom(sock) {
         return [...sock.rooms][1];
+    }
+
+    /**
+     * Get user personnal room who has joined by a client.
+     * @param sock Socket's client 
+     * @returns room
+     */
+    getSheetRoom(sock) {
+        return [...sock.rooms][2];
     }
 }
 

@@ -2,6 +2,7 @@ import SocketGestionnary from "./SocketGestionnary.js";
 import Tokens from "./Tokens.js";
 import { UserAccessSheet } from "../../association/UserAccessSheet.js";
 import { isCapitalWord } from "./functions.js";
+import UserModel from "../../model/UserModel.js";
 
 /**
  * Define different message which can be sent or received by the server.
@@ -27,6 +28,10 @@ const SOCKET_PROTOCOL = {
             },
             WRITE_CELL: {
                 name: 'writeCell',
+                replyProcess: null
+            },
+            ALERT_ROOM_NEW_CONNECTION: {
+                name: 'newConnect',
                 replyProcess: null
             }
         },
@@ -68,11 +73,16 @@ function requestAuth(sock) {
                     emitReasonToDisconnect(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REFUSED);
                 } else {
                     let access = await UserAccessSheet.getAccessByPk(data.userID, response.sheetId);
-                    // if user has access to sheet, he joins the room corresponding to sheet
+                    // if user has access to sheet, he joins the room corresponding to sheet and a personnal room
                     if (access !== null) {
                         sock.join('sheet'+response.sheetId);
+                        sock.join('user'+data.userID);
                         // confirm to client that connection is a success
                         SocketGestionnary.getInstance().emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_SUCCESS);
+                        SocketGestionnary.getInstance().emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_ROOM_NEW_CONNECTION, {
+                            userId: data.userID,
+                            login: (await UserModel.getById(data.userID)).login
+                        });
                     } else {
                         emitReasonToDisconnect(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REFUSED);
                     }                            
@@ -127,7 +137,7 @@ function writeCellChecker(arg) {
  * @param arg  cell's coordinate and his content
  */
 function writeCellEvent(sock, arg) {
-    SocketGestionnary.getInstance().emitToRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.WRITE_CELL, arg);
+    SocketGestionnary.getInstance().emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.WRITE_CELL, arg);
 }
 
 export default SOCKET_PROTOCOL;

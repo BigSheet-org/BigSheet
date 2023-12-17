@@ -3,7 +3,7 @@ import CompteView from "../../views/CompteView.vue";
 import InscriptionView from "../../views/InscriptionView.vue";
 import ConnexionView from "../../views/ConnexionView.vue";
 import HomePageView from "../../views/HomePageView.vue";
-import SheetView from "../../components/sheet/Sheet.vue";
+import SheetView from "../../views/SheetView.vue";
 
 class Routes {
 

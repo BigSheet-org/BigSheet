@@ -1,5 +1,14 @@
 <script>
+import router from "../../router/index.js";
+import Routes from "../../assets/static/Routes.js";
+import Formatters from "../../scripts/Utility/Formatters.js";
+
 export default {
+    computed: {
+        Formatters() {
+            return Formatters
+        }
+    },
     props: {
         sheet: {
             type: Object,
@@ -8,7 +17,10 @@ export default {
     },
     methods: {
         handleItemClick() {
-            // TODO : Faire en sorte que ca redirige vers la page avec le bon tableau
+            router.push({
+                name: Routes.SHEET.name,
+                query: { sheetID: this.sheet.id }
+            });
         },
     },
 };
@@ -19,8 +31,9 @@ export default {
          @click="this.handleItemClick()">
         <div class="sheet_info">
             <h3>{{ sheet.title }}</h3>
-            <p>Détails: {{ sheet.details }}</p>
-            <p>Propriétaire: {{ sheet.owner }}</p>
+            <p>Détails : {{ sheet.details }}</p>
+            <p>Propriétaire : {{ sheet.owner }}</p>
+            <p>Feuille créée le : {{ Formatters.formatDate(sheet.createdAt) }}</p>
         </div>
     </div>
 </template>

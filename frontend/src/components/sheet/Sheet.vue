@@ -3,6 +3,7 @@
 import Cell from "./Cell.vue"
 import SlideAndFadeTransition from "../transitions/SlideAndFadeTransition.vue";
 import Formatters from "../../scripts/Utility/Formatters.js";
+import Socket from "../../scripts/DAO/Socket.js";
 
 export default {
     components :{SlideAndFadeTransition, Cell},
@@ -12,7 +13,8 @@ export default {
             rowsNames : [], //Name of the headers of rows
             columnsNames : [], //Name of the headers of columns
             sheet : [], //Tab containing each row of the sheet
-            cells : [] //Tab containing all the cells, each cell can be accessed with her coords Ex : this.cells['a0']
+            cells : [], //Tab containing all the cells, each cell can be accessed with her coords Ex : this.cells['a0']
+            socket: null
         };
      },
 
@@ -20,6 +22,11 @@ export default {
         this.setRowNames(50);
         this.setColumnsNames(50);
         this.createSheet();
+
+        // We initialize the socket connexion for concurrrent modification.
+        if (this.$route.query.sheetID !== undefined && this.$route.query.sheetID !== null) {
+            this.socket = new Socket(this.$route.query.sheetID);
+        }
     },
 
     methods:{
@@ -53,6 +60,7 @@ export default {
         changeValue(index, value) {
             console.log("[INFO] - Cell with id " + index + " has changed value to " + value);
             this.cells[index] = value;
+            this.socket.sendRoom(index, value);
         }
     }
 }

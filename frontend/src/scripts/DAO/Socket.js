@@ -1,6 +1,8 @@
 import { io } from "https://cdn.socket.io/4.7.2/socket.io.esm.min.js";
 import LocalStorage from "./LocalStorage.js";
 import Data from "../../assets/static/Data.js";
+import Formatters from "../Utility/Formatters.js";
+import cell from "../../components/sheet/Cell.vue";
 class Socket {
 
     static SERVER_URL = "http://localhost:8000"
@@ -33,18 +35,20 @@ class Socket {
 
     /**
      * This method shares a change on a cell to all users connected to the server and editing the sheet.
+     *
      * @param cellID ID of the modified cell.
      * @param payload Data changed.
      */
     sendRoom(cellID, payload) {
-        console.log("[INFO] - Cell with ID "  + cellID + " has been modified.")
+        let colsAndLine = Formatters.extractColumnAndLinesFromColumnID(cellID);
         let data = {
-            line: 1,
-            column: "A",
+            line: colsAndLine.line,
+            column: colsAndLine.column,
             content: payload
         }
+        console.log("[INFO] - Sent Following data :");
+        console.log(data)
         this.socket.emit("writeCell", data);
-        console.log("[INFO] - Sent Following data : \n" + data);
     }
 }
 

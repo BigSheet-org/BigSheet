@@ -59,7 +59,7 @@ class Formatters {
             if (minutes < 10) { minutes = "0" + minutes; }
 
             // Returns the formatted date
-            return day + "-" + month + "-" + year + " " + hour + ":" + minutes;
+            return day + "-" + month + "-" + year + " à " + hour + ":" + minutes;
         } else {
             return "";
         }
@@ -209,6 +209,27 @@ class Formatters {
             number = Math.floor((number - 1) / 26);
         }
         return result;
+    }
+
+    /**
+     * This method extracts line and column id from a cell ID.
+     *
+     * @param input CellID to extract id's from.
+     * @returns {{line: null, column: null}|{line: number, column: *}}
+     */
+    static extractColumnAndLinesFromColumnID(input) {
+        const match = input.match(/^([A-Za-z]+)(\d+)$/);
+        if (match) {
+            return {
+                column: match[1],
+                line: parseInt(match[2], 10)
+            };
+        } else {
+            return {
+                column: null,
+                line: null
+            };
+        }
     }
 
 }

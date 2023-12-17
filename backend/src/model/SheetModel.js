@@ -38,7 +38,7 @@ class SheetModel extends Model {
      */
     static async getAccessibleByUser(userId) {
         return await SheetModel.findAll({
-            attributes: ['sheetID', 'title', 'createdAt'], // get title and creation date
+            attributes: ['id', 'title', 'createdAt'], // get title and creation date
             include: { // we include UserModel to do inner join
                 model: UserModel,
                 as: 'users',

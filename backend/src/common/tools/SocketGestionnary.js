@@ -19,6 +19,7 @@ class SocketGestionnary {
             SocketGestionnary.#instance = this;
             // create a socket server
             this.io = new Server(httpServ);
+            this.usersInSheet = [];
             // When a client connects, requests authentication
             this.io.on('connection', (sock) => {
                 // requests authentication
@@ -91,8 +92,22 @@ class SocketGestionnary {
      * @param sock Socket's client 
      * @returns room
      */
-    getSheetRoom(sock) {
+    getUserRoom(sock) {
         return [...sock.rooms][2];
+    }
+
+    /**
+     * Emits a message to the socket's client's room. Useful when a client send message who must be re-sent to others client in same room.
+     * @param sock      Client's socket which has sent the message.
+     * @param userId    User must be received the message.
+     * @param message   Message type compatible defined in SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.
+     * @param arg       Argument in message.
+     */
+    emitToUser(sock, userId, message, arg) {
+        if (arg === undefined) {
+            arg = '';
+        }
+        sock.to("user"+userId).emit(message.name, arg);
     }
 }
 

@@ -2,13 +2,13 @@
 export default {
     props: {
         sheet: {
-            type: Array,
+            type: Object,
             required: true,
         },
     },
     methods: {
         handleItemClick() {
-            //Faire en sorte que ca redirige vers la page avec le bon tableau
+            // TODO : Faire en sorte que ca redirige vers la page avec le bon tableau
         },
     },
 };

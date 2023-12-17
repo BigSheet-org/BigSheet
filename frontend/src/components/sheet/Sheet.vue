@@ -2,6 +2,7 @@
 
 import Cell from "./Cell.vue"
 import SlideAndFadeTransition from "../transitions/SlideAndFadeTransition.vue";
+import Formatters from "../../scripts/Utility/Formatters.js";
 
 export default {
     components :{SlideAndFadeTransition, Cell},
@@ -22,17 +23,12 @@ export default {
     },
 
     methods:{
-        //Generate the headers for the columns
+        // Generate the headers for the columns
         setColumnsNames(nb){
-            for(let number = 0; number < nb; number++){
-                if(number < 26){
-                    this.columnsNames.push(String.fromCharCode(number + 65))
-                } else {    //If there is more 26 columns we use two letter as a header
-                    this.columnsNames.push(
-                        String.fromCharCode(Math.floor((number / 26) + 64))
-                        + String.fromCharCode((number % 26) + 65)
-                    );
-                }
+            for(let number = 1; number < nb; number++){
+                this.columnsNames.push(
+                    Formatters.convertToColumnLabel(number)
+                )
             }
         },
         //Generate the headers for the rows

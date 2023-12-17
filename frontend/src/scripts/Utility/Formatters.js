@@ -193,6 +193,24 @@ class Formatters {
     static convertPlusToEncoded(string) {
         return string.replace(/\+/g, '%2B');
     }
+
+
+    /**
+     * This method converts a number to its column label's equivalent.
+     *
+     * @param number Number to convert.
+     * @returns {string} Label equivalent to number.
+     */
+    static convertToColumnLabel(number) {
+        let result = '';
+        while (number > 0) {
+            const remainder = (number - 1) % 26;
+            result = String.fromCharCode(65 + remainder) + result;
+            number = Math.floor((number - 1) / 26);
+        }
+        return result;
+    }
+
 }
 
 export default Formatters

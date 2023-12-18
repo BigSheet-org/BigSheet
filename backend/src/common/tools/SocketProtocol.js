@@ -30,12 +30,8 @@ const SOCKET_PROTOCOL = {
                 name: 'writeCell',
                 replyProcess: null
             },
-            ALERT_ROOM_NEW_CONNECTION: {
+            ALERT_NEW_CONNECTION: {
                 name: 'newConnect',
-                replyProcess: null
-            },
-            GIVE_IDENTITY: {
-                name: 'giveId',
                 replyProcess: null
             }
         },
@@ -44,12 +40,7 @@ const SOCKET_PROTOCOL = {
                 name: 'writeCell',
                 checkerArg: writeCellChecker,
                 event: writeCellEvent
-            },
-            GIVE_IDENTITY: {
-                name: 'giveId',
-                checkerArg: giveIdChecker,
-                event: giveIdEvent
-            },
+            }
         }
     }
 };
@@ -84,14 +75,10 @@ function requestAuth(sock) {
                     let access = await UserAccessSheet.getAccessByPk(data.userID, response.sheetId);
                     // if user has access to sheet, he joins the room corresponding to sheet and a personnal room
                     if (access !== null) {
-                        sock.join('sheet'+response.sheetId);
                         sock.join('user'+data.userID);
                         // confirm to client that connection is a success and send to other client his login
                         SocketGestionnary.getInstance().emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_SUCCESS);
-                        SocketGestionnary.getInstance().emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_ROOM_NEW_CONNECTION, {
-                            userId: data.userID,
-                            login: (await UserModel.getById(data.userID)).login
-                        });
+                        SocketGestionnary.getInstance().addUserInSheet(sock, response.sheetId);
                     } else {
                         emitReasonToDisconnect(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REFUSED);
                     }                            
@@ -147,41 +134,6 @@ function writeCellChecker(arg) {
  */
 function writeCellEvent(sock, arg) {
     SocketGestionnary.getInstance().emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.WRITE_CELL, arg);
-}
-
-/**
- * Function to verify arg who has received. True if arg contains token and to who's a userId.
- * @param arg Arg received
- * @returns True if arg contains token and to who's a userId.
- */
-function giveIdChecker(arg) {
-    // We verify arg is an object
-    if (arg === undefined || typeof arg !== 'object' || Array.isArray(arg)) {
-        return false;
-    }
-    // We check if arg.token is string.
-    if (arg.token === undefined || typeof arg.token !== "string") {
-        return false;
-    }
-    // We check if arg.to is an integer.
-    if (arg.to === undefined || typeof arg.to !== "number" || !Number.isInteger(arg.to)) {
-        return false;
-    }
-    return true;
-}
-
-/**
- * Transmit his login to user who has ask.
- * @param sock client's socket
- * @param arg  token and to define the client's userId who must receive message.
- */
-async function giveIdEvent(sock, arg) {
-    let data = await Tokens.verifyAuthToken(arg.token);
-    let toSend = {
-        userId: data.userID,
-        login: (await UserModel.getById(data.userID)).login
-    };
-    SocketGestionnary.getInstance().emitToUser(sock, arg.to, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.GIVE_IDENTITY, toSend);
 }
 
 export default SOCKET_PROTOCOL;

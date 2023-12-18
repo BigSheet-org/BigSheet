@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 
 import SOCKET_PROTOCOL from "./SocketProtocol.js";
+import UserModel from "../../model/UserModel.js";
 
 /**
  * Singleton. Create and use a socket server to wait clients connections.
@@ -19,6 +20,7 @@ class SocketGestionnary {
             SocketGestionnary.#instance = this;
             // create a socket server
             this.io = new Server(httpServ);
+            this.usersInSheet=[];
             // When a client connects, requests authentication
             this.io.on('connection', (sock) => {
                 // requests authentication
@@ -83,7 +85,7 @@ class SocketGestionnary {
      * @returns room
      */
     getSheetRoom(sock) {
-        return [...sock.rooms][1];
+        return [...sock.rooms][2];
     }
 
     /**
@@ -92,7 +94,7 @@ class SocketGestionnary {
      * @returns room
      */
     getUserRoom(sock) {
-        return [...sock.rooms][2];
+        return [...sock.rooms][1];
     }
 
     /**
@@ -107,6 +109,33 @@ class SocketGestionnary {
             arg = '';
         }
         sock.to("user"+userId).emit(message.name, arg);
+    }
+
+    /**
+     * Add socket in a sheet room and notify all clients
+     * @param sock Socket's client
+     * @param sheetId id's sheet that client want access
+     */
+    async addUserInSheet(sock, sheetId) {
+        sock.join('sheet'+sheetId);
+        if (this.usersInSheet[sheetId] === undefined) {
+            this.usersInSheet[sheetId] = [];
+        }
+        // we suppose socket has join his personnal before
+        let userId=Number(this.getUserRoom(sock).substring(4));
+        let user = {
+            userId: userId,
+            login: (await UserModel.getById(userId)).login
+        };
+        // send other clients login to this clients
+        for (let i in this.usersInSheet[sheetId]) {
+            let userConnected = this.usersInSheet[sheetId][i];
+            this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_NEW_CONNECTION, userConnected);
+        } 
+        this.usersInSheet[sheetId].push(user);
+        // send login to other clients
+        this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_NEW_CONNECTION, user);
+        
     }
 }
 

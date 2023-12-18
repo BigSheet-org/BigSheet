@@ -34,6 +34,11 @@ class SocketGestionnary {
                         }
                     });
                 }
+                sock.on('disconnecting', (reason) => {
+                    const user = this.usersInSheet[this.getSheetId(sock)][this.getUserId(sock)];
+                    this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_USER_DISCONNECTION, user);
+                    delete this.usersInSheet[this.getSheetId(sock)][this.getUserId(sock)];
+                });
             });
         }
         return SocketGestionnary.#instance;
@@ -97,6 +102,14 @@ class SocketGestionnary {
         return [...sock.rooms][1];
     }
 
+    getUserId(sock) {
+        return Number(this.getUserRoom(sock).substring(4));
+    }
+
+    getSheetId(sock) {
+        return Number(this.getSheetRoom(sock).substring(5));
+    }
+
     /**
      * Emits a message to the socket's client's room. Useful when a client send message who must be re-sent to others client in same room.
      * @param sock      Client's socket which has sent the message.
@@ -122,7 +135,7 @@ class SocketGestionnary {
             this.usersInSheet[sheetId] = [];
         }
         // we suppose socket has join his personnal before
-        let userId=Number(this.getUserRoom(sock).substring(4));
+        let userId = this.getUserId(sock);
         let user = {
             userId: userId,
             login: (await UserModel.getById(userId)).login
@@ -132,7 +145,7 @@ class SocketGestionnary {
             let userConnected = this.usersInSheet[sheetId][i];
             this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_NEW_CONNECTION, userConnected);
         } 
-        this.usersInSheet[sheetId].push(user);
+        this.usersInSheet[sheetId][userId]=user;
         // send login to other clients
         this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_NEW_CONNECTION, user);
         

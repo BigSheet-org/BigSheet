@@ -33,6 +33,10 @@ const SOCKET_PROTOCOL = {
             ALERT_NEW_CONNECTION: {
                 name: 'newConnect',
                 replyProcess: null
+            },
+            ALERT_USER_DISCONNECTION: {
+                name: 'userDisconnected',
+                replyProcess: null
             }
         },
         FROM_CLIENT: {

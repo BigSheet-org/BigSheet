@@ -21,8 +21,8 @@ class SocketGestionnary {
             SocketGestionnary.#instance = this;
             // create a socket server
             this.io = new Server(httpServ);
-            this.usersInSheet = [];
-            this.sheets = [];
+            this.usersInSheet = {};
+            this.sheets = {};
             // When a client connects, requests authentication
             this.io.on('connection', (sock) => {
                 // requests authentication
@@ -42,10 +42,10 @@ class SocketGestionnary {
                     const user = this.usersInSheet[sheetId][userId];
                     this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_USER_DISCONNECTION, user);
                     delete this.usersInSheet[sheetId][userId];
-                    console.log(this.usersInSheet);
-                    if (this.usersInSheet[sheetId].length === 0) {
+                    // if nobody connected to this sheet
+                    if (Object.keys(this.usersInSheet[sheetId]).length === 0) {
+                        delete this.usersInSheet[sheetId];
                         delete this.sheets[sheetId];
-                        console.log("empty");
                     }
                 });
             });
@@ -151,12 +151,10 @@ class SocketGestionnary {
     async addUserInSheet(sock, sheetId) {
         sock.join('sheet'+sheetId);
         // if nobody connected to this sheet
-        console.log(this.usersInSheet);
         if (this.usersInSheet[sheetId] === undefined) {
-            this.usersInSheet[sheetId] = [];
+            this.usersInSheet[sheetId] = {};
             this.sheets[sheetId] = (await SheetModel.getById(sheetId));
         }
-        console.log(this.usersInSheet);
         // we suppose socket has join his personnal before
         let userId = this.getUserId(sock);
         let user = {
@@ -171,8 +169,6 @@ class SocketGestionnary {
         this.usersInSheet[sheetId][userId]=user;
         // send login to other clients
         this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_NEW_CONNECTION, user);
-        console.log(this.usersInSheet);
-        //console.log(this.sheets);
     }
 }
 

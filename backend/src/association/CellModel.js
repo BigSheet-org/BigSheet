@@ -2,7 +2,19 @@ import sequelize from "../common/tools/postgres.js";
 import {DataTypes, Model} from "sequelize";
 import SheetModel from "../model/SheetModel.js";
 
-class CellModel extends Model {}
+export class CellModel extends Model {
+    static async getOrBuilt(sheetId, line, column) {
+        const [cell, built] = await CellModel.findOrBuild({
+            where: {
+                sheetId: sheetId,
+                line: line,
+                column: column
+            }
+        });
+        return cell;        
+    }
+
+}
 
 // -- Attribute definition in the SQL table -- //
 CellModel.init(
@@ -20,7 +32,11 @@ CellModel.init(
             primaryKey: true
         },
         column: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
+            // only uppercase characters
+            validate: {
+                is: ["^[A-Z]+$", 'i']
+            },
             primaryKey: true
         },
         content: {

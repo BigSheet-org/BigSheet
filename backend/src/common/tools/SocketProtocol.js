@@ -37,6 +37,14 @@ const SOCKET_PROTOCOL = {
             ALERT_USER_DISCONNECTION: {
                 name: 'userDisconnected',
                 replyProcess: null
+            },
+            RESPONSE_SELECT_CELL: {
+                name: 'responseSelectCell',
+                replyProcess: null
+            },
+            USER_SELECT_CELL: {
+                name: 'userSelectCell',
+                replyProcess: null
             }
         },
         FROM_CLIENT: {
@@ -44,6 +52,11 @@ const SOCKET_PROTOCOL = {
                 name: 'writeCell',
                 checkerArg: writeCellChecker,
                 event: writeCellEvent
+            },
+            SELECT_CELL: {
+                name: 'selectCell',
+                checkerArg: verifyCellCoord,
+                event: selectCellEvent
             }
         }
     }
@@ -100,6 +113,10 @@ function requestAuth(sock) {
  * @returns True if arg contains cell's coordinate 
  */
 function verifyCellCoord(arg) {
+    // We verify arg is an object
+    if (arg === undefined || typeof arg !== 'object' || Array.isArray(arg)) {
+        return false;
+    }
     // we verify arg.line is an integer
     if (arg.line === undefined || typeof arg.line !== "number" || !Number.isInteger(arg.line)) {
         return false;
@@ -112,20 +129,12 @@ function verifyCellCoord(arg) {
 }
 
 /**
- * Function to verify arg who has received. True if arg contains cell's coordinate and his content.
+ * Function to verify arg who has received. True if arg is a string.
  * @param arg Arg received
- * @returns True if arg contains cell's coordinate and his content.
+ * @returns True if arg is a string.
  */
 function writeCellChecker(arg) {
-    // We verify arg is an object
-    if (arg === undefined || typeof arg !== 'object' || Array.isArray(arg)) {
-        return false;
-    }
-    if (!verifyCellCoord(arg)) {
-        return false;
-    }
-    // We check if arg.content is a string.
-    if (arg.content === undefined || typeof arg.content !== "string") {
+    if (arg === undefined || typeof arg !== "string") {
         return false;
     }
     return true;
@@ -137,7 +146,11 @@ function writeCellChecker(arg) {
  * @param arg  cell's coordinate and his content
  */
 function writeCellEvent(sock, arg) {
-    SocketGestionnary.getInstance().emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.WRITE_CELL, arg);
+    SocketGestionnary.getInstance().writeCell(sock, arg);
+}
+
+function selectCellEvent(sock, arg) {
+    SocketGestionnary.getInstance().selectCellByUser(sock, arg.line, arg.column);
 }
 
 export default SOCKET_PROTOCOL;

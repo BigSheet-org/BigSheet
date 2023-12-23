@@ -3,6 +3,8 @@ import { Server } from "socket.io";
 import SOCKET_PROTOCOL from "./SocketProtocol.js";
 import UserModel from "../../model/UserModel.js";
 import SheetModel from "../../model/SheetModel.js";
+import { CellModel } from "../../association/CellModel.js";
+import { numColCharsToInt } from "./functions.js";
 
 /**
  * Singleton. Create and use a socket server to wait clients connections.
@@ -144,12 +146,44 @@ class SocketGestionnary {
     }
 
     /**
+     * Affect a cell to a user if it's not already affected
+     * @param sock 
+     * @param line Number integer
+     * @param column String 
+     */
+    async selectCellByUser(sock, line, column) {
+        const sheetId = this.getSheetId(sock);
+        const userId = this.getUserId(sock);
+        const cell = await CellModel.getOrBuilt(sheetId, line, column);
+        // if other user is already on cell
+        for (const key in this.usersInSheet[sheetId]) {
+            if (Number(key) !== userId && cell.equals(this.usersInSheet[sheetId][key].cell)) {
+                this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.RESPONSE_SELECT_CELL, 'error');
+                return false;
+            }
+        }
+        this.usersInSheet[sheetId][this.getUserId(sock)].cell = cell;
+        this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.RESPONSE_SELECT_CELL, 'ok');
+        this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.USER_SELECT_CELL, this.usersInSheet[sheetId][userId]);
+        return true;
+    }
+
+    writeCell(sock, text) {
+        const cell = this.usersInSheet[this.getSheetId(sock)][this.getUserId(sock)].cell;
+        if (cell !== null) {
+            this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.WRITE_CELL, text);
+            cell.content = text;
+            cell.save();
+        }
+    }
+
+    /**
      * Add socket in a sheet room and notify all clients
      * @param sock Socket's client
      * @param sheetId id's sheet that client want access
      */
     async addUserInSheet(sock, sheetId) {
-        sock.join('sheet'+sheetId);
+        sock.join('sheet' + sheetId);
         // if nobody connected to this sheet
         if (this.usersInSheet[sheetId] === undefined) {
             this.usersInSheet[sheetId] = {};
@@ -159,7 +193,8 @@ class SocketGestionnary {
         let userId = this.getUserId(sock);
         let user = {
             userId: userId,
-            login: (await UserModel.getById(userId)).login
+            login: (await UserModel.getById(userId)).login,
+            cell: null
         };
         // send other clients login to this clients
         for (let i in this.usersInSheet[sheetId]) {

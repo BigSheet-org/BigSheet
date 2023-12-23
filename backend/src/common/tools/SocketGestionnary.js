@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 
 import SOCKET_PROTOCOL from "./SocketProtocol.js";
 import UserModel from "../../model/UserModel.js";
+import SheetModel from "../../model/SheetModel.js";
 
 /**
  * Singleton. Create and use a socket server to wait clients connections.
@@ -20,7 +21,8 @@ class SocketGestionnary {
             SocketGestionnary.#instance = this;
             // create a socket server
             this.io = new Server(httpServ);
-            this.usersInSheet=[];
+            this.usersInSheet = [];
+            this.sheets = [];
             // When a client connects, requests authentication
             this.io.on('connection', (sock) => {
                 // requests authentication
@@ -35,9 +37,16 @@ class SocketGestionnary {
                     });
                 }
                 sock.on('disconnecting', (reason) => {
-                    const user = this.usersInSheet[this.getSheetId(sock)][this.getUserId(sock)];
+                    const sheetId = this.getSheetId(sock);
+                    const userId = this.getUserId(sock);
+                    const user = this.usersInSheet[sheetId][userId];
                     this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_USER_DISCONNECTION, user);
-                    delete this.usersInSheet[this.getSheetId(sock)][this.getUserId(sock)];
+                    delete this.usersInSheet[sheetId][userId];
+                    console.log(this.usersInSheet);
+                    if (this.usersInSheet[sheetId].length === 0) {
+                        delete this.sheets[sheetId];
+                        console.log("empty");
+                    }
                 });
             });
         }
@@ -102,10 +111,20 @@ class SocketGestionnary {
         return [...sock.rooms][1];
     }
 
+    /**
+     * Get userId for user connected by sock
+     * @param sock Socket's client 
+     * @returns userId
+     */
     getUserId(sock) {
         return Number(this.getUserRoom(sock).substring(4));
     }
 
+    /**
+     * Get sheetId for user connected by sock
+     * @param sock Socket's client 
+     * @returns sheetId
+     */
     getSheetId(sock) {
         return Number(this.getSheetRoom(sock).substring(5));
     }
@@ -131,9 +150,13 @@ class SocketGestionnary {
      */
     async addUserInSheet(sock, sheetId) {
         sock.join('sheet'+sheetId);
+        // if nobody connected to this sheet
+        console.log(this.usersInSheet);
         if (this.usersInSheet[sheetId] === undefined) {
             this.usersInSheet[sheetId] = [];
+            this.sheets[sheetId] = (await SheetModel.getById(sheetId));
         }
+        console.log(this.usersInSheet);
         // we suppose socket has join his personnal before
         let userId = this.getUserId(sock);
         let user = {
@@ -148,7 +171,8 @@ class SocketGestionnary {
         this.usersInSheet[sheetId][userId]=user;
         // send login to other clients
         this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_NEW_CONNECTION, user);
-        
+        console.log(this.usersInSheet);
+        //console.log(this.sheets);
     }
 }
 

@@ -12,7 +12,19 @@ export class UserAccessSheet extends Model {
             where: {
                 userId: userId,
                 sheetId: sheetId
-            }
+            },
+            include: [
+                {
+                    model: UserModel,
+                    as: 'user',
+                    attributes:  ['login']
+                },
+                {
+                    model: SheetModel,
+                    as: 'sheet',
+                    attributes:  ['title', 'detail']
+                }
+            ]
         });
     }
 }
@@ -57,6 +69,7 @@ UserAccessSheet.init(
  * Must be executed after the model's initialization.
  * Uses UserAccesSheet table to associate User and Sheet models.
  * Relation Many-to-Many.
+ * See Super Many-to-Many relationship in sequelize guide
  */
 export const initRelations = async () => {
     UserModel.belongsToMany(SheetModel, { 
@@ -68,5 +81,19 @@ export const initRelations = async () => {
         through: UserAccessSheet,
         foreignKey: 'sheetId',
         as: 'users'
+    });
+    UserAccessSheet.belongsTo(UserModel, {
+        foreignKey: 'userId',
+        as: 'user'
+    });
+    UserAccessSheet.belongsTo(SheetModel, {
+        foreignKey: 'sheetId',
+        as: 'sheet'
+    });
+    UserModel.hasMany(UserAccessSheet, {
+        foreignKey: 'userId'
+    });
+    SheetModel.hasMany(UserAccessSheet, {
+        foreignKey: 'sheetId'
     });
 };

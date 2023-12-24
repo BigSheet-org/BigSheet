@@ -63,16 +63,6 @@ const SOCKET_PROTOCOL = {
 };
 
 /**
- * To disconnect client's socket with different reason.
- * @param sock Client's socket
- * @param message Reason to disconnection
- */
-function emitReasonToDisconnect(sock, message) {
-    SocketGestionnary.getInstance().emit(sock, message);
-    sock.disconnect();
-}
-
-/**
  * Send request authentication for client.
  * @param sock client's socket
  * @returns Function must be executed in terms of client's response
@@ -81,28 +71,14 @@ function requestAuth(sock) {
     return async (err, response) => {
         // if an error (access not authorized...) disconnect socket
         if (err) {
-            emitReasonToDisconnect(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REFUSED);
+            SocketGestionnary.getInstance().refuseAuth(sock, 'timeout');
         } else {
             if (response.token !== undefined && response.sheetId !== undefined) {
-                // verify auth token
-                let data = await Tokens.verifyAuthToken(response.token);
-                if (data.error !== undefined) {
-                    emitReasonToDisconnect(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REFUSED);
-                } else {
-                    let access = await UserAccessSheet.getAccessByPk(data.userID, response.sheetId);
-                    // if user has access to sheet, he joins the room corresponding to sheet and a personnal room
-                    if (access !== null) {
-                        sock.join('user'+data.userID);
-                        // confirm to client that connection is a success and send to other client his login
-                        SocketGestionnary.getInstance().emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_SUCCESS);
-                        SocketGestionnary.getInstance().addUserInSheet(sock, response.sheetId);
-                    } else {
-                        emitReasonToDisconnect(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REFUSED);
-                    }                            
-                }
+                // confirm to client that connection is a success and send to other client his login
+                await SocketGestionnary.getInstance().authentifyUserInSheet(sock, response.token, response.sheetId);
             } else {
-                emitReasonToDisconnect(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REFUSED);
-            }
+                SocketGestionnary.getInstance().refuseAuth(sock, 'invalid response');
+            }     
         }
     };
 }

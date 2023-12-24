@@ -5,6 +5,8 @@ import UserModel from "../../model/UserModel.js";
 import SheetModel from "../../model/SheetModel.js";
 import { CellModel } from "../../association/CellModel.js";
 import { numColCharsToInt } from "./functions.js";
+import { UserAccessSheet } from "../../association/UserAccessSheet.js";
+import Tokens from "./Tokens.js";
 
 /**
  * Singleton. Create and use a socket server to wait clients connections.
@@ -25,6 +27,7 @@ class SocketGestionnary {
             this.io = new Server(httpServ);
             this.usersInSheet = {};
             this.sheets = {};
+            this.sockAuthentified = new Set();
             // When a client connects, requests authentication
             this.io.on('connection', (sock) => {
                 // requests authentication
@@ -39,15 +42,18 @@ class SocketGestionnary {
                     });
                 }
                 sock.on('disconnecting', (reason) => {
-                    const sheetId = this.getSheetId(sock);
-                    const userId = this.getUserId(sock);
-                    const user = this.usersInSheet[sheetId][userId];
-                    this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_USER_DISCONNECTION, user);
-                    delete this.usersInSheet[sheetId][userId];
-                    // if nobody connected to this sheet
-                    if (Object.keys(this.usersInSheet[sheetId]).length === 0) {
-                        delete this.usersInSheet[sheetId];
-                        delete this.sheets[sheetId];
+                    if (this.sockAuthentified.has(sock)) {
+                        const sheetId = this.getSheetId(sock);
+                        const userId = this.getUserId(sock);
+                        const user = this.usersInSheet[sheetId][userId];
+                        this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_USER_DISCONNECTION, user);
+                        delete this.usersInSheet[sheetId][userId];
+                        // if nobody connected to this sheet
+                        if (Object.keys(this.usersInSheet[sheetId]).length === 0) {
+                            delete this.usersInSheet[sheetId];
+                            delete this.sheets[sheetId];
+                        }
+                        this.sockAuthentified.delete(sock);
                     }
                 });
             });
@@ -146,7 +152,17 @@ class SocketGestionnary {
     }
 
     /**
-     * Affect a cell to a user if it's not already affected
+     * To disconnect client's socket with different reason.
+     * @param sock Client's socket
+     * @param message Reason to disconnection (string)
+     */
+    refuseAuth(sock, reason) {
+        this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REFUSED, reason);
+        sock.disconnect();
+    }
+
+    /**
+     * Affect a cell to a user if it's not already affected and he has write access
      * @param sock Client's socket
      * @param line Number integer
      * @param column String 
@@ -187,28 +203,47 @@ class SocketGestionnary {
      * @param sock Socket's client
      * @param sheetId id's sheet that client want access
      */
-    async addUserInSheet(sock, sheetId) {
-        sock.join('sheet' + sheetId);
-        // if nobody connected to this sheet
-        if (this.usersInSheet[sheetId] === undefined) {
-            this.usersInSheet[sheetId] = {};
-            this.sheets[sheetId] = (await SheetModel.getById(sheetId));
+    async authentifyUserInSheet(sock, token, sheetId) {
+        // verify token auth
+        let data = await Tokens.verifyAuthToken(token);
+        if (data.error !== undefined) {
+            this.refuseAuth(sock, 'not authentified');
+        } else {
+            const userId = data.userID;
+            if (this.usersInSheet[sheetId] !== undefined && this.usersInSheet[sheetId][userId] !== undefined) {
+                this.refuseAuth(sock, 'already connected');
+            } else {
+                const access = await UserAccessSheet.getAccessByPk(userId, sheetId);
+                if (access !== null) {
+                    sock.join('user' + userId);
+                    sock.join('sheet' + sheetId);
+                    // if nobody connected to this sheet
+                    if (this.usersInSheet[sheetId] === undefined) {
+                        this.usersInSheet[sheetId] = {};
+                        this.sheets[sheetId] = (await SheetModel.getById(sheetId));
+                    }
+                    let user = {
+                        userId: userId,
+                        login: access.user.login,
+                        cell: null,
+                        access: access.accessRight
+                    };
+                    // confirm auth success
+                    this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_SUCCESS);
+                    // send other clients login to this client
+                    for (let i in this.usersInSheet[sheetId]) {
+                        let userConnected = this.usersInSheet[sheetId][i];
+                        this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_NEW_CONNECTION, userConnected);
+                    } 
+                    this.usersInSheet[sheetId][userId] = user;
+                    // send login to other clients
+                    this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_NEW_CONNECTION, user);
+                    this.sockAuthentified.add(sock);
+                } else {
+                    this.refuseAuth(sock, 'not access');
+                }
+            }
         }
-        // we suppose socket has join his personnal before
-        let userId = this.getUserId(sock);
-        let user = {
-            userId: userId,
-            login: (await UserModel.getById(userId)).login,
-            cell: null
-        };
-        // send other clients login to this clients
-        for (let i in this.usersInSheet[sheetId]) {
-            let userConnected = this.usersInSheet[sheetId][i];
-            this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_NEW_CONNECTION, userConnected);
-        } 
-        this.usersInSheet[sheetId][userId]=user;
-        // send login to other clients
-        this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_NEW_CONNECTION, user);
     }
 }
 

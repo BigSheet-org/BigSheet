@@ -4,6 +4,7 @@ import SheetModel from "../model/SheetModel.js";
 import sequelize from "../common/tools/postgres.js";
 import {DataTypes, Model} from "sequelize";
 import Data from "../common/data/Data.js";
+import { CellModel } from "./CellModel.js";
 
 export class UserAccessSheet extends Model {
     static async getAccessByPk(userId, sheetId) {
@@ -22,7 +23,12 @@ export class UserAccessSheet extends Model {
                 {
                     model: SheetModel,
                     as: 'sheet',
-                    attributes:  ['title', 'detail']
+                    attributes:  ['title', 'detail'],
+                    include: {
+                        model: CellModel,
+                        as: 'cells',
+                        attributes: ['line', 'column', 'content']
+                    }
                 }
             ]
         });

@@ -1,10 +1,7 @@
 import { Server } from "socket.io";
 
 import SOCKET_PROTOCOL from "./SocketProtocol.js";
-import UserModel from "../../model/UserModel.js";
-import SheetModel from "../../model/SheetModel.js";
 import { CellModel } from "../../association/CellModel.js";
-import { numColCharsToInt } from "./functions.js";
 import { UserAccessSheet } from "../../association/UserAccessSheet.js";
 import Tokens from "./Tokens.js";
 import Data from "../data/Data.js";
@@ -27,7 +24,7 @@ class SocketGestionnary {
             // create a socket server
             this.io = new Server(httpServ);
             this.usersInSheet = {};
-            this.sheets = {};
+            this.cellsNotSavedPerSheet = {};
             this.sockAuthentified = new Set();
             // When a client connects, requests authentication
             this.io.on('connection', (sock) => {
@@ -52,7 +49,6 @@ class SocketGestionnary {
                         // if nobody connected to this sheet
                         if (Object.keys(this.usersInSheet[sheetId]).length === 0) {
                             delete this.usersInSheet[sheetId];
-                            delete this.sheets[sheetId];
                         }
                         this.sockAuthentified.delete(sock);
                     }
@@ -171,7 +167,9 @@ class SocketGestionnary {
     async selectCellByUser(sock, line, column) {
         const sheetId = this.getSheetId(sock);
         const userId = this.getUserId(sock);
+        // if not permission to write
         if (this.usersInSheet[sheetId][userId].access === Data.SERVER_COMPARISON_DATA.PERMISSIONS.READ) {
+            this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.RESPONSE_SELECT_CELL, 'error');
             return false;
         }
         const cell = await CellModel.getOrBuilt(sheetId, line, column);
@@ -195,11 +193,15 @@ class SocketGestionnary {
      * @param text Content
      */
     writeCell(sock, text) {
-        const cell = this.usersInSheet[this.getSheetId(sock)][this.getUserId(sock)].cell;
+        const sheetId = this.getSheetId(sock);
+        const cell = this.usersInSheet[sheetId][this.getUserId(sock)].cell;
         if (cell !== null) {
             cell.content = text;
             this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.WRITE_CELL, cell);
-            cell.save();
+            if (this.cellsNotSavedPerSheet[sheetId] === undefined) {
+                this.cellsNotSavedPerSheet[sheetId] = new Set();
+            }
+            this.cellsNotSavedPerSheet[sheetId].add(cell);
         }
     }
 
@@ -218,6 +220,8 @@ class SocketGestionnary {
             if (this.usersInSheet[sheetId] !== undefined && this.usersInSheet[sheetId][userId] !== undefined) {
                 this.refuseAuth(sock, 'already connected');
             } else {
+                // save to can load cells already init 
+                await this.save(sheetId);
                 const access = await UserAccessSheet.getAccessByPk(userId, sheetId);
                 if (access !== null) {
                     sock.join('user' + userId);
@@ -225,7 +229,6 @@ class SocketGestionnary {
                     // if nobody connected to this sheet
                     if (this.usersInSheet[sheetId] === undefined) {
                         this.usersInSheet[sheetId] = {};
-                        this.sheets[sheetId] = (await SheetModel.getById(sheetId));
                     }
                     let user = {
                         userId: userId,
@@ -235,12 +238,13 @@ class SocketGestionnary {
                     };
                     // confirm auth success
                     this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_SUCCESS);
+                    this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.LOAD_CELLS, access.sheet.cells);
                     // send other clients login to this client
                     for (let i in this.usersInSheet[sheetId]) {
                         let userConnected = this.usersInSheet[sheetId][i];
                         this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_NEW_CONNECTION, userConnected);
                     } 
-                    this.usersInSheet[sheetId][userId] = user;
+                    this.usersInSheet[sheetId][userId] = user;                    
                     // send login to other clients
                     this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_NEW_CONNECTION, user);
                     this.sockAuthentified.add(sock);
@@ -248,6 +252,22 @@ class SocketGestionnary {
                     this.refuseAuth(sock, 'not access');
                 }
             }
+        }
+    }
+
+    /**
+     * Save Cells who are not saved in DB
+     * @param sheetId Id of a sheet
+     */
+    async save(sheetId) {
+        if (this.cellsNotSavedPerSheet[sheetId] !== undefined) {
+            let iterator = this.cellsNotSavedPerSheet[sheetId].values();
+            let item = iterator.next();
+            while (!item.done) {
+                await item.value.save();
+                item = iterator.next();
+            }
+            delete this.cellsNotSavedPerSheet[sheetId];
         }
     }
 }

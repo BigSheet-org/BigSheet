@@ -56,10 +56,12 @@ CellModel.init(
  * Relation One-to-Many.
  */
 export const initRelations = async () => {
-    SheetModel.hasOne(CellModel, {
-        foreignKey: 'sheetId'
+    SheetModel.hasMany(CellModel, {
+        foreignKey: 'sheetId',
+        as: 'cells'
      });
     CellModel.belongsTo(SheetModel, {
-        foreignKey: 'sheetId'
+        foreignKey: 'sheetId',
+        as: 'sheet'
      });
 };

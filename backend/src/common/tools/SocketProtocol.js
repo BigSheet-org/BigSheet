@@ -42,6 +42,10 @@ const SOCKET_PROTOCOL = {
             USER_SELECT_CELL: {
                 name: 'userSelectCell',
                 replyProcess: null
+            },
+            LOAD_CELLS: {
+                name: 'loadCells',
+                replyProcess: null
             }
         },
         FROM_CLIENT: {
@@ -122,6 +126,11 @@ function writeCellEvent(sock, arg) {
     SocketGestionnary.getInstance().writeCell(sock, arg);
 }
 
+/**
+ * Select a cell and emit the cell selected by user to other users in same room.
+ * @param sock client's socket
+ * @param arg  cell's coordinate and his content
+ */
 function selectCellEvent(sock, arg) {
     SocketGestionnary.getInstance().selectCellByUser(sock, arg.line, arg.column);
 }

@@ -147,7 +147,7 @@ class SocketGestionnary {
 
     /**
      * Affect a cell to a user if it's not already affected
-     * @param sock 
+     * @param sock Client's socket
      * @param line Number integer
      * @param column String 
      */
@@ -168,11 +168,16 @@ class SocketGestionnary {
         return true;
     }
 
+    /**
+     * Modify content in selected cell by client 
+     * @param sock Client's socket
+     * @param text Content
+     */
     writeCell(sock, text) {
         const cell = this.usersInSheet[this.getSheetId(sock)][this.getUserId(sock)].cell;
         if (cell !== null) {
-            this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.WRITE_CELL, text);
             cell.content = text;
+            this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.WRITE_CELL, cell);
             cell.save();
         }
     }

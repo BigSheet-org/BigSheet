@@ -1,8 +1,5 @@
 import SocketGestionnary from "./SocketGestionnary.js";
-import Tokens from "./Tokens.js";
-import { UserAccessSheet } from "../../association/UserAccessSheet.js";
 import { isCapitalWord } from "./functions.js";
-import UserModel from "../../model/UserModel.js";
 
 /**
  * Define different message which can be sent or received by the server.

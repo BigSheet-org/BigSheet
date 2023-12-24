@@ -7,6 +7,7 @@ import { CellModel } from "../../association/CellModel.js";
 import { numColCharsToInt } from "./functions.js";
 import { UserAccessSheet } from "../../association/UserAccessSheet.js";
 import Tokens from "./Tokens.js";
+import Data from "../data/Data.js";
 
 /**
  * Singleton. Create and use a socket server to wait clients connections.
@@ -162,7 +163,7 @@ class SocketGestionnary {
     }
 
     /**
-     * Affect a cell to a user if it's not already affected and he has write access
+     * Affect a cell to a user if it's not already affected and he has write permission
      * @param sock Client's socket
      * @param line Number integer
      * @param column String 
@@ -170,6 +171,9 @@ class SocketGestionnary {
     async selectCellByUser(sock, line, column) {
         const sheetId = this.getSheetId(sock);
         const userId = this.getUserId(sock);
+        if (this.usersInSheet[sheetId][userId].access === Data.SERVER_COMPARISON_DATA.PERMISSIONS.READ) {
+            return false;
+        }
         const cell = await CellModel.getOrBuilt(sheetId, line, column);
         // if other user is already on cell
         for (const key in this.usersInSheet[sheetId]) {
@@ -178,10 +182,11 @@ class SocketGestionnary {
                 return false;
             }
         }
-        this.usersInSheet[sheetId][this.getUserId(sock)].cell = cell;
+        this.usersInSheet[sheetId][userId].cell = cell;
         this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.RESPONSE_SELECT_CELL, 'ok');
         this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.USER_SELECT_CELL, this.usersInSheet[sheetId][userId]);
         return true;
+
     }
 
     /**

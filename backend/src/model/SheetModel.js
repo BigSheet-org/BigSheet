@@ -1,8 +1,7 @@
 import sequelize from "../common/tools/postgres.js";
-import {DataTypes, Model, Op, Sequelize} from "sequelize";
+import {DataTypes, Model, Op} from "sequelize";
 import UserModel from "./UserModel.js";
 import Data from "../common/data/Data.js";
-import { UserAccessSheet } from "../association/UserAccessSheet.js";
 
 class SheetModel extends Model {
 

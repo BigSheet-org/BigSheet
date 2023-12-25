@@ -51,6 +51,7 @@ class SocketGestionnary {
                             delete this.usersInSheet[sheetId];
                         }
                         this.sockAuthentified.delete(sock);
+                        this.save(sheetId);
                     }
                 });
             });

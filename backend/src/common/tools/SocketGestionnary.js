@@ -23,9 +23,14 @@ class SocketGestionnary {
             SocketGestionnary.#instance = this;
             // create a socket server
             this.io = new Server(httpServ);
+            // object to stock users connected on each sheet.
             this.usersInSheet = {};
+            // object to stock cells must be saved on each sheet.
             this.cellsNotSavedPerSheet = {};
+            // Set to know sockets who are authentified
             this.sockAuthentified = new Set();
+            // object counter to know a sheet must be saved.
+            this.saveInNbModif = {};
             // When a client connects, requests authentication
             this.io.on('connection', (sock) => {
                 // requests authentication
@@ -39,21 +44,7 @@ class SocketGestionnary {
                         }
                     });
                 }
-                sock.on('disconnecting', (reason) => {
-                    if (this.sockAuthentified.has(sock)) {
-                        const sheetId = this.getSheetId(sock);
-                        const userId = this.getUserId(sock);
-                        const user = this.usersInSheet[sheetId][userId];
-                        this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_USER_DISCONNECTION, user);
-                        delete this.usersInSheet[sheetId][userId];
-                        // if nobody connected to this sheet
-                        if (Object.keys(this.usersInSheet[sheetId]).length === 0) {
-                            delete this.usersInSheet[sheetId];
-                        }
-                        this.sockAuthentified.delete(sock);
-                        this.save(sheetId);
-                    }
-                });
+                sock.on('disconnecting', (reason) => this.disconnect(sock));
             });
         }
         return SocketGestionnary.#instance;
@@ -203,6 +194,10 @@ class SocketGestionnary {
                 this.cellsNotSavedPerSheet[sheetId] = new Set();
             }
             this.cellsNotSavedPerSheet[sheetId].add(cell);
+            this.saveInNbModif[sheetId]--;
+            if (this.saveInNbModif[sheetId] === 0) {
+                this.save(sheetId);
+            }
         }
     }
 
@@ -230,6 +225,7 @@ class SocketGestionnary {
                     // if nobody connected to this sheet
                     if (this.usersInSheet[sheetId] === undefined) {
                         this.usersInSheet[sheetId] = {};
+                        this.saveInNbModif[sheetId] = Data.SAVE_TIME;
                     }
                     let user = {
                         userId: userId,
@@ -268,7 +264,29 @@ class SocketGestionnary {
                 await item.value.save();
                 item = iterator.next();
             }
+            this.saveInNbModif[sheetId] = Data.SAVE_TIME;
             delete this.cellsNotSavedPerSheet[sheetId];
+        }
+    }
+
+    /**
+     * To remove auth when a user's is disconnected and inform other users.
+     * @param sock Socket's client
+     */
+    disconnect(sock) {
+        if (this.sockAuthentified.has(sock)) {
+            const sheetId = this.getSheetId(sock);
+            const userId = this.getUserId(sock);
+            const user = this.usersInSheet[sheetId][userId];
+            this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_USER_DISCONNECTION, user);
+            delete this.usersInSheet[sheetId][userId];
+            // if nobody connected to this sheet
+            if (Object.keys(this.usersInSheet[sheetId]).length === 0) {
+                delete this.usersInSheet[sheetId];
+                delete this.saveInNbModif[sheetId];
+            }
+            this.sockAuthentified.delete(sock);
+            this.save(sheetId);
         }
     }
 }

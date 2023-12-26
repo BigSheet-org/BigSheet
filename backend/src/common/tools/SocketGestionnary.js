@@ -279,6 +279,7 @@ class SocketGestionnary {
             const userId = this.getUserId(sock);
             const user = this.usersInSheet[sheetId][userId];
             this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_USER_DISCONNECTION, user);
+            this.save(sheetId);
             delete this.usersInSheet[sheetId][userId];
             // if nobody connected to this sheet
             if (Object.keys(this.usersInSheet[sheetId]).length === 0) {
@@ -286,7 +287,6 @@ class SocketGestionnary {
                 delete this.saveInNbModif[sheetId];
             }
             this.sockAuthentified.delete(sock);
-            this.save(sheetId);
         }
     }
 }

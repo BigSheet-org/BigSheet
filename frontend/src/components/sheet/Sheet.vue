@@ -4,63 +4,89 @@ import Cell from "./Cell.vue"
 import SlideAndFadeTransition from "../transitions/SlideAndFadeTransition.vue";
 import Formatters from "../../scripts/Utility/Formatters.js";
 import Socket from "../../scripts/DAO/Socket.js";
+import SocketProtocols from "../../scripts/DAO/SocketProtocols.js";
+import Data from "../../assets/static/Data.js";
 
 export default {
-    components :{SlideAndFadeTransition, Cell},
+    components : { SlideAndFadeTransition, Cell },
 
     data(){
         return {
-            rowsNames : [], //Name of the headers of rows
-            columnsNames : [], //Name of the headers of columns
-            sheet : [], //Tab containing each row of the sheet
-            cells : [], //Tab containing all the cells, each cell can be accessed with her coords Ex : this.cells['a0']
+            rowsNames : [],         // Name of the headers of rows
+            columnsNames : [],      // Name of the headers of columns
+            sheet : [],             // Tab containing each row of the sheet
+            cells : [],             // Tab containing all the cells, each cell can be accessed with her coords Ex : this.cells['a0']
+            tableDimensions: 50,    // Dimension of the table.
             socket: null
         };
-     },
+    },
 
     beforeMount(){
-        this.setRowNames(50);
-        this.setColumnsNames(50);
+        this.setRowNames(this.tableDimensions);
+        this.setColumnsNames(this.tableDimensions);
         this.createSheet();
 
-        // We initialize the socket connexion for concurrrent modification.
+        // We initialize the socket connexion for concurrent modification.
         if (this.$route.query.sheetID !== undefined && this.$route.query.sheetID !== null) {
-            this.socket = new Socket(this.$route.query.sheetID);
+            // We add the handlers for the sockets possible calls.
+            let handlers = new SocketProtocols();
+            handlers.addHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.WRITE_CELL, this.handleCellChange);
+            handlers.addHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.ALERT_NEW_CONNECTION, this.handleUserConnect);
+            handlers.addHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.ALERT_USER_DISCONNECT, this.handleUserDisconnect);
+
+            // We create the handler.
+            this.socket = new Socket(this.$route.query.sheetID, handlers);
         }
     },
 
     methods:{
-        // Generates the headers for the columns
+        // Generates the headers for the columns.
         setColumnsNames(nb) {
             for(let number = 1; number < nb; number++){
-                this.columnsNames.push(
-                    Formatters.convertToColumnLabel(number)
-                );
+                this.columnsNames.push(Formatters.convertToColumnLabel(number));
             }
         },
-        //Generates the headers for the rows
+        // Generates the headers for the rows.
         setRowNames(nb) {
             for (let number = 1; number <= nb; number++){
                 this.rowsNames.push(number);
             }
         },
 
-        //Generates the sheet using the columns headers and the rows headers
+        // Generates the sheet using the columns headers and the rows headers.
         createSheet() {
             this.rowsNames.forEach(rowHead => {
                 let row = []
                 this.columnsNames.forEach(name => {
-                    this.cells[name + rowHead] = ''; //Allow to access cells with their coords
+                    this.cells[name + rowHead] = '';    // Allows to access cells with their coords.
                     row.push(name);
                 });
                 this.sheet.push(row);
             });
         },
 
+        // Method called when data is changed inside a cell.
         changeValue(index, value) {
             console.log("[INFO] - Cell with id " + index + " has changed value to " + value);
             this.cells[index] = value;
             this.socket.sendRoom(index, value);
+        },
+
+
+        // ------------- [ SOCKET HANDLERS ] ------------- //
+        // Method called when a cell is modified by a user.
+        handleCellChange(cellID, payload) {
+            console.log("[INFO] - Cell with id " + cellID + " has changed remotely been changed to " + payload);
+        },
+
+        // Method called when a user connects to the room.
+        handleUserConnect(payload) {
+            console.log("[INFO] - A user joined ! Payload : " + payload);
+        },
+
+        // Method called when a user disconnects from a room.
+        handleUserDisconnect(payload) {
+            console.log("[INFO] - A user left ! Payload : " + payload);
         }
     }
 }

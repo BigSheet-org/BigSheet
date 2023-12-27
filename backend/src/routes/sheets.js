@@ -52,6 +52,14 @@ sheetRouter
         SheetMiddleware.hasValidAccess,
         SheetController.addUser
     ])
+    /** Method to modify title and detail   */
+    .put('/:sheetId', [
+        Params.exportParamsToResLocale,
+        AuthMiddleware.checkAuthToken,
+        SheetMiddleware.sheetExists,
+        SheetMiddleware.hasOwnerPermission,
+        SheetController.modifySheet
+    ])
 
     /** Method to delete a specific sheet. */
     .delete('/:sheetId', [

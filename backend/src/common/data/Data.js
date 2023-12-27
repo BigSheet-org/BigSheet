@@ -40,6 +40,8 @@ class Data {
             WRITE: "writer"
         }
     }
+
+    static SAVE_TIME = 500;
 }
 
 export default Data

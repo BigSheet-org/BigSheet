@@ -4,6 +4,7 @@ import SheetModel from "../model/SheetModel.js";
 import sequelize from "../common/tools/postgres.js";
 import {DataTypes, Model} from "sequelize";
 import Data from "../common/data/Data.js";
+import { CellModel } from "./CellModel.js";
 
 export class UserAccessSheet extends Model {
     static async getAccessByPk(userId, sheetId) {
@@ -12,7 +13,24 @@ export class UserAccessSheet extends Model {
             where: {
                 userId: userId,
                 sheetId: sheetId
-            }
+            },
+            include: [
+                {
+                    model: UserModel,
+                    as: 'user',
+                    attributes:  ['login']
+                },
+                {
+                    model: SheetModel,
+                    as: 'sheet',
+                    attributes:  ['title', 'detail'],
+                    include: {
+                        model: CellModel,
+                        as: 'cells',
+                        attributes: ['line', 'column', 'content']
+                    }
+                }
+            ]
         });
     }
 }
@@ -57,6 +75,7 @@ UserAccessSheet.init(
  * Must be executed after the model's initialization.
  * Uses UserAccesSheet table to associate User and Sheet models.
  * Relation Many-to-Many.
+ * See Super Many-to-Many relationship in sequelize guide
  */
 export const initRelations = async () => {
     UserModel.belongsToMany(SheetModel, { 
@@ -68,5 +87,19 @@ export const initRelations = async () => {
         through: UserAccessSheet,
         foreignKey: 'sheetId',
         as: 'users'
+    });
+    UserAccessSheet.belongsTo(UserModel, {
+        foreignKey: 'userId',
+        as: 'user'
+    });
+    UserAccessSheet.belongsTo(SheetModel, {
+        foreignKey: 'sheetId',
+        as: 'sheet'
+    });
+    UserModel.hasMany(UserAccessSheet, {
+        foreignKey: 'userId'
+    });
+    SheetModel.hasMany(UserAccessSheet, {
+        foreignKey: 'sheetId'
     });
 };

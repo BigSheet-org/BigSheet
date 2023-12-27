@@ -9,7 +9,6 @@ import sequelize from "./common/tools/postgres.js";
 import SocketGestionnary from "./common/tools/SocketGestionnary.js";
 
 dotenv.config();
-
 // A list of accepted origins.
 const origins = [
     "http://localhost:5173",
@@ -33,17 +32,6 @@ app.use(corsMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// -- Routes Import -- //
-// Import the routes into the different paths.
-// It searches all default module exports in the routes directory.
-const files = fs.readdirSync('./src/routes/');
-for (let i = 0; i < files.length; i++) {
-    let file = files[i];
-    const module = await import('./routes/' + file);
-    app.use("/" + file.split('.')[0], module.default);
-}
-console.log(`[INFO] - Done mounting paths.`);
-
 // -- Models import -- //
 const models = fs.readdirSync('./src/model/');
 for (let i = 0; i < models.length; i++) {
@@ -58,6 +46,17 @@ for (let i = 0; i < associations.length; i++) {
     const module = await import('./association/' + file);
     module.initRelations();
 }
+
+// -- Routes Import -- //
+// Import the routes into the different paths.
+// It searches all default module exports in the routes directory.
+const files = fs.readdirSync('./src/routes/');
+for (let i = 0; i < files.length; i++) {
+    let file = files[i];
+    const module = await import('./routes/' + file);
+    app.use("/" + file.split('.')[0], module.default);
+}
+console.log(`[INFO] - Done mounting paths.`);
 
 // -- Create or modify all tables in database if it's necessary -- //
 await sequelize.sync({alter: true});

@@ -13,12 +13,13 @@ class SheetModel extends Model {
      */
     static async getAllByOwner(userId) {
         return await SheetModel.findAll({
-            attributes: ['id', 'title', 'createdAt'], // get title and creation date
+            attributes: ['id', 'title', 'detail', 'createdAt'], // get title and creation date
             include: { // we include UserModel to do inner join
                 model: UserModel,
                 as: 'users',
-                attributes: [], // but we do not want Users who have access on sheet
+                attributes: ['id', 'login'], 
                 through: {
+                    attributes: [], // we don't want attributes in UserAccessSheet
                     where: {
                         accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.OWNER
                     }
@@ -38,13 +39,27 @@ class SheetModel extends Model {
      */
     static async getAccessibleByUser(userId) {
         return await SheetModel.findAll({
-            attributes: ['id', 'title', 'createdAt'], // get title and creation date
+            attributes: ['id', 'title', 'detail', 'createdAt'], // get title and creation date
             include: { // we include UserModel to do inner join
                 model: UserModel,
                 as: 'users',
-                attributes: [], // but we not want Users who have access on sheet
-                where: {
-                    id: userId,
+                attributes: ['id', 'login'], 
+                where: { 
+                    [Op.or]: [
+                        { id: userId },
+                        { id: {
+                            [Op.eq]: sequelize.col('users->UserAccessSheet.userId')
+                         } }
+                    ]
+                },
+                through: {
+                    attributes: [], // we don't want attributes in UserAccessSheet
+                    where: {
+                        accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.OWNER,
+                        sheetId: {  // we search only good sheetId
+                            [Op.eq]: sequelize.col('users->UserAccessSheet.sheetId')
+                        }
+                    }
                 }
             }
         });
@@ -57,25 +72,10 @@ class SheetModel extends Model {
      * @returns {Promise<SheetModel[]>} Return sheet or null if not exist
      */
     static async getSharedToUser(userId) {
-        return await SheetModel.findAll({
-            attributes: ['id', 'title', 'createdAt'], // get title and creation date
-            include: { // we include UserModel to do inner join
-                model: UserModel,
-                as: 'users',
-                attributes: [], // but we do not want Users who have access on sheet
-                through: {
-                    where: {
-                        [Op.or]: [
-                            { accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.READ },
-                            { accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.WRITE }
-                        ]
-                    }
-                },
-                where: {
-                    id: userId
-                }
-            }
-        });
+        let owned = await SheetModel.getAllByOwner(userId);
+        let all = await SheetModel.getAccessibleByUser(userId);
+        let ownedId = owned.map(sheet => sheet.id);
+        return all.filter(sheet => !ownedId.includes(sheet.id));
     }
 
     /**

@@ -1,6 +1,4 @@
 import SocketGestionnary from "./SocketGestionnary.js";
-import Tokens from "./Tokens.js";
-import { UserAccessSheet } from "../../association/UserAccessSheet.js";
 import { isCapitalWord } from "./functions.js";
 
 /**
@@ -28,6 +26,26 @@ const SOCKET_PROTOCOL = {
             WRITE_CELL: {
                 name: 'writeCell',
                 replyProcess: null
+            },
+            ALERT_NEW_CONNECTION: {
+                name: 'newConnect',
+                replyProcess: null
+            },
+            ALERT_USER_DISCONNECTION: {
+                name: 'userDisconnected',
+                replyProcess: null
+            },
+            RESPONSE_SELECT_CELL: {
+                name: 'responseSelectCell',
+                replyProcess: null
+            },
+            USER_SELECT_CELL: {
+                name: 'userSelectCell',
+                replyProcess: null
+            },
+            LOAD_CELLS: {
+                name: 'loadCells',
+                replyProcess: null
             }
         },
         FROM_CLIENT: {
@@ -35,20 +53,15 @@ const SOCKET_PROTOCOL = {
                 name: 'writeCell',
                 checkerArg: writeCellChecker,
                 event: writeCellEvent
+            },
+            SELECT_CELL: {
+                name: 'selectCell',
+                checkerArg: verifyCellCoord,
+                event: selectCellEvent
             }
         }
     }
 };
-
-/**
- * To disconnect client's socket with different reason.
- * @param sock Client's socket
- * @param message Reason to disconnection
- */
-function emitReasonToDisconnect(sock, message) {
-    SocketGestionnary.getInstance().emit(sock, message);
-    sock.disconnect();
-}
 
 /**
  * Send request authentication for client.
@@ -59,27 +72,14 @@ function requestAuth(sock) {
     return async (err, response) => {
         // if an error (access not authorized...) disconnect socket
         if (err) {
-            emitReasonToDisconnect(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REFUSED);
+            SocketGestionnary.getInstance().refuseAuth(sock, 'timeout');
         } else {
             if (response.token !== undefined && response.sheetId !== undefined) {
-                // verify auth token
-                let data = await Tokens.verifyAuthToken(response.token);
-                if (data.error !== undefined) {
-                    emitReasonToDisconnect(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REFUSED);
-                } else {
-                    let access = await UserAccessSheet.getAccessByPk(data.userID, response.sheetId);
-                    // if user has access to sheet, he joins the room corresponding to sheet
-                    if (access !== null) {
-                        sock.join('sheet'+response.sheetId);
-                        // confirm to client that connection is a success
-                        SocketGestionnary.getInstance().emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_SUCCESS);
-                    } else {
-                        emitReasonToDisconnect(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REFUSED);
-                    }                            
-                }
+                // confirm to client that connection is a success and send to other client his login
+                await SocketGestionnary.getInstance().authentifyUserInSheet(sock, response.token, response.sheetId);
             } else {
-                emitReasonToDisconnect(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REFUSED);
-            }
+                SocketGestionnary.getInstance().refuseAuth(sock, 'invalid response');
+            }     
         }
     };
 }
@@ -90,6 +90,10 @@ function requestAuth(sock) {
  * @returns True if arg contains cell's coordinate 
  */
 function verifyCellCoord(arg) {
+    // We verify arg is an object
+    if (arg === undefined || typeof arg !== 'object' || Array.isArray(arg)) {
+        return false;
+    }
     // we verify arg.line is an integer
     if (arg.line === undefined || typeof arg.line !== "number" || !Number.isInteger(arg.line)) {
         return false;
@@ -102,20 +106,12 @@ function verifyCellCoord(arg) {
 }
 
 /**
- * Function to verify arg who has received. True if arg contains cell's coordinate and his content.
+ * Function to verify arg who has received. True if arg is a string.
  * @param arg Arg received
- * @returns True if arg contains cell's coordinate and his content.
+ * @returns True if arg is a string.
  */
 function writeCellChecker(arg) {
-    // We verify arg is an object
-    if (arg === undefined || typeof arg !== 'object' || Array.isArray(arg)) {
-        return false;
-    }
-    if (!verifyCellCoord(arg)) {
-        return false;
-    }
-    // We check if arg.content is a string.
-    if (arg.content === undefined || typeof arg.content !== "string") {
+    if (arg === undefined || typeof arg !== "string") {
         return false;
     }
     return true;
@@ -127,7 +123,16 @@ function writeCellChecker(arg) {
  * @param arg  cell's coordinate and his content
  */
 function writeCellEvent(sock, arg) {
-    SocketGestionnary.getInstance().emitToRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.WRITE_CELL, arg);
+    SocketGestionnary.getInstance().writeCell(sock, arg);
+}
+
+/**
+ * Select a cell and emit the cell selected by user to other users in same room.
+ * @param sock client's socket
+ * @param arg  cell's coordinate and his content
+ */
+function selectCellEvent(sock, arg) {
+    SocketGestionnary.getInstance().selectCellByUser(sock, arg.line, arg.column);
 }
 
 export default SOCKET_PROTOCOL;

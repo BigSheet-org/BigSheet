@@ -262,12 +262,11 @@ class SocketGestionnary {
             let iterator = this.cellsNotSavedPerSheet[sheetId].values();
             let item = iterator.next();
             while (!item.done) {
-                if (item.value.content === '' ) {
-                    if (!item.value.isNewRecord) {
-                        await item.value.destroy();
-                    }
+                const cell = item.value;
+                if (cell.content === '' ) {
+                    await cell.destroy();
                 } else {
-                    await item.value.save();
+                    await cell.save();
                 }
                 item = iterator.next();
             }

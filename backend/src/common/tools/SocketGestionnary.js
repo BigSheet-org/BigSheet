@@ -199,6 +199,7 @@ class SocketGestionnary {
                 this.save(sheetId);
             }
         }
+        
     }
 
     /**
@@ -261,7 +262,13 @@ class SocketGestionnary {
             let iterator = this.cellsNotSavedPerSheet[sheetId].values();
             let item = iterator.next();
             while (!item.done) {
-                await item.value.save();
+                if (item.value.content === '' ) {
+                    if (!item.value.isNewRecord) {
+                        await item.value.destroy();
+                    }
+                } else {
+                    await item.value.save();
+                }
                 item = iterator.next();
             }
             this.saveInNbModif[sheetId] = Data.SAVE_TIME;

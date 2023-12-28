@@ -226,7 +226,7 @@ class SocketGestionnary {
                     // if nobody connected to this sheet
                     if (this.usersInSheet[sheetId] === undefined) {
                         this.usersInSheet[sheetId] = {};
-                        this.saveInNbModif[sheetId] = Data.SAVE_TIME;
+                        this.saveInNbModif[sheetId] = Data.SAVE_AFTER_MODIFICATION_COUNT;
                     }
                     let user = {
                         userId: userId,
@@ -270,7 +270,7 @@ class SocketGestionnary {
                 }
                 item = iterator.next();
             }
-            this.saveInNbModif[sheetId] = Data.SAVE_TIME;
+            this.saveInNbModif[sheetId] = Data.SAVE_AFTER_MODIFICATION_COUNT;
             delete this.cellsNotSavedPerSheet[sheetId];
         }
     }

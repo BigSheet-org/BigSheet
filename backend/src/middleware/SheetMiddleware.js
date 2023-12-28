@@ -100,6 +100,24 @@ class SheetMiddleware {
         }
         return next();
     }
+
+    /**
+     * This method checks if the body fields are present in the request for the modification.
+     *
+     * @param req request provided.
+     * @param res response to send.
+     * @param next next handler to call.
+     * @returns {Promise<*>}
+     */
+    static async hasValidModificationFields(req, res, next) {
+        let body =  Params.getRequestParams(res);
+        // We check if there are at least some fields provided.
+        if (!body.title && !body.detail) {
+            return res.status(400)
+                      .send(Data.ANSWERS.ERRORS_400.NO_FIELDS);
+        }
+        return next();
+    }
 }
 
 

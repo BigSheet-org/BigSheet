@@ -143,6 +143,25 @@ class SheetController {
         await sheet.save();
         return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);
     }
+
+    /**
+     * This method will modify the sheet with the id present in URL request.
+     *
+     * @param req Request provided. Contains the parameters required in its body.
+     * @param res Response to provide.
+     * @returns {Promise<void>}
+     */
+    static async modifySheet(req, res) {
+        let body = Params.getRequestParams(res);
+        let sheet = Params.getAddedParams(res).sheet;
+
+        // We check the fields of the body, and we apply the necessary modifications.
+        if (body.title)  { sheet.title = body.title; }
+        if (body.detail)     { sheet.detail = body.detail; }
+
+        await sheet.save();
+        return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);
+    }
 }
 
 export default SheetController;

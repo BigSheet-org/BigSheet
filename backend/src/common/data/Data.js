@@ -40,6 +40,8 @@ class Data {
             WRITE: "writer"
         }
     }
+
+    static SAVE_AFTER_MODIFICATION_COUNT = 500;
 }
 
 export default Data

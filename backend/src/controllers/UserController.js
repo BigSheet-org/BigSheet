@@ -68,7 +68,6 @@ class UserController {
     static async deleteUser(req, res) {
         let userToDelete = await UserModel.getById(Params.getRequestParams(res).id);
         await userToDelete.destroy();
-        await userToDelete.save();
         return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);
     }
 

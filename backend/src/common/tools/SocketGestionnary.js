@@ -1,6 +1,10 @@
 import { Server } from "socket.io";
 
 import SOCKET_PROTOCOL from "./SocketProtocol.js";
+import { CellModel } from "../../association/CellModel.js";
+import { UserAccessSheet } from "../../association/UserAccessSheet.js";
+import Tokens from "./Tokens.js";
+import Data from "../data/Data.js";
 
 /**
  * Singleton. Create and use a socket server to wait clients connections.
@@ -19,6 +23,14 @@ class SocketGestionnary {
             SocketGestionnary.#instance = this;
             // create a socket server
             this.io = new Server(httpServ);
+            // object to stock users connected on each sheet.
+            this.usersInSheet = {};
+            // object to stock cells must be saved on each sheet.
+            this.cellsNotSavedPerSheet = {};
+            // Set to know sockets who are authentified
+            this.sockAuthentified = new Set();
+            // object counter to know a sheet must be saved.
+            this.saveInNbModif = {};
             // When a client connects, requests authentication
             this.io.on('connection', (sock) => {
                 // requests authentication
@@ -32,6 +44,7 @@ class SocketGestionnary {
                         }
                     });
                 }
+                sock.on('disconnecting', (reason) => this.disconnect(sock));
             });
         }
         return SocketGestionnary.#instance;
@@ -70,20 +83,217 @@ class SocketGestionnary {
      * @param message   Message type compatible defined in SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.
      * @param arg       Argument in message.
      */
-    emitToRoom(sock, message, arg) {
+    emitToSheetRoom(sock, message, arg) {
         if (arg === undefined) {
             arg = '';
         }
-        sock.to(this.getRoom(sock)).emit(message.name, arg);
+        sock.to(this.getSheetRoom(sock)).emit(message.name, arg);
     }
 
     /**
-     * Get room who has joined by a client.
+     * Get sheet room who has joined by a client.
      * @param sock Socket's client 
      * @returns room
      */
-    getRoom(sock) {
+    getSheetRoom(sock) {
+        return [...sock.rooms][2];
+    }
+
+    /**
+     * Get user personnal room who has joined by a client.
+     * @param sock Socket's client 
+     * @returns room
+     */
+    getUserRoom(sock) {
         return [...sock.rooms][1];
+    }
+
+    /**
+     * Get userId for user connected by sock
+     * @param sock Socket's client 
+     * @returns userId
+     */
+    getUserId(sock) {
+        return Number(this.getUserRoom(sock).substring(4));
+    }
+
+    /**
+     * Get sheetId for user connected by sock
+     * @param sock Socket's client 
+     * @returns sheetId
+     */
+    getSheetId(sock) {
+        return Number(this.getSheetRoom(sock).substring(5));
+    }
+
+    /**
+     * Emits a message to the socket's client's room. Useful when a client send message who must be re-sent to others client in same room.
+     * @param sock      Client's socket which has sent the message.
+     * @param userId    User must be received the message.
+     * @param message   Message type compatible defined in SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.
+     * @param arg       Argument in message.
+     */
+    emitToUser(sock, userId, message, arg) {
+        if (arg === undefined) {
+            arg = '';
+        }
+        sock.to("user"+userId).emit(message.name, arg);
+    }
+
+    /**
+     * To disconnect client's socket with different reason.
+     * @param sock Client's socket
+     * @param message Reason to disconnection (string)
+     */
+    refuseAuth(sock, reason) {
+        this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REFUSED, reason);
+        sock.disconnect();
+    }
+
+    /**
+     * Affect a cell to a user if it's not already affected and he has write permission
+     * @param sock Client's socket
+     * @param line Number integer
+     * @param column String 
+     */
+    async selectCellByUser(sock, line, column) {
+        const sheetId = this.getSheetId(sock);
+        const userId = this.getUserId(sock);
+        // if not permission to write
+        if (this.usersInSheet[sheetId][userId].access === Data.SERVER_COMPARISON_DATA.PERMISSIONS.READ) {
+            this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.RESPONSE_SELECT_CELL, 'error');
+            return false;
+        }
+        const cell = await CellModel.getOrBuilt(sheetId, line, column);
+        // if other user is already on cell
+        for (const key in this.usersInSheet[sheetId]) {
+            if (Number(key) !== userId && cell.equals(this.usersInSheet[sheetId][key].cell)) {
+                this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.RESPONSE_SELECT_CELL, 'error');
+                return false;
+            }
+        }
+        this.usersInSheet[sheetId][userId].cell = cell;
+        this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.RESPONSE_SELECT_CELL, 'ok');
+        this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.USER_SELECT_CELL, this.usersInSheet[sheetId][userId]);
+        return true;
+
+    }
+
+    /**
+     * Modify content in selected cell by client 
+     * @param sock Client's socket
+     * @param text Content
+     */
+    writeCell(sock, text) {
+        const sheetId = this.getSheetId(sock);
+        const cell = this.usersInSheet[sheetId][this.getUserId(sock)].cell;
+        if (cell !== null) {
+            cell.content = text;
+            this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.WRITE_CELL, cell);
+            if (this.cellsNotSavedPerSheet[sheetId] === undefined) {
+                this.cellsNotSavedPerSheet[sheetId] = new Set();
+            }
+            this.cellsNotSavedPerSheet[sheetId].add(cell);
+            this.saveInNbModif[sheetId]--;
+            if (this.saveInNbModif[sheetId] === 0) {
+                this.save(sheetId);
+            }
+        }
+        
+    }
+
+    /**
+     * Add socket in a sheet room and notify all clients
+     * @param sock Socket's client
+     * @param sheetId id's sheet that client want access
+     */
+    async authentifyUserInSheet(sock, token, sheetId) {
+        // verify token auth
+        let data = await Tokens.verifyAuthToken(token);
+        if (data.error !== undefined) {
+            this.refuseAuth(sock, 'not authentified');
+        } else {
+            const userId = data.userID;
+            if (this.usersInSheet[sheetId] !== undefined && this.usersInSheet[sheetId][userId] !== undefined) {
+                this.refuseAuth(sock, 'already connected');
+            } else {
+                // save to can load cells already init 
+                await this.save(sheetId);
+                const access = await UserAccessSheet.getAccessByPk(userId, sheetId);
+                if (access !== null) {
+                    sock.join('user' + userId);
+                    sock.join('sheet' + sheetId);
+                    // if nobody connected to this sheet
+                    if (this.usersInSheet[sheetId] === undefined) {
+                        this.usersInSheet[sheetId] = {};
+                        this.saveInNbModif[sheetId] = Data.SAVE_AFTER_MODIFICATION_COUNT;
+                    }
+                    let user = {
+                        userId: userId,
+                        login: access.user.login,
+                        cell: null,
+                        access: access.accessRight
+                    };
+                    // confirm auth success
+                    this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_SUCCESS);
+                    this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.LOAD_CELLS, access.sheet.cells);
+                    // send other clients login to this client
+                    for (let i in this.usersInSheet[sheetId]) {
+                        let userConnected = this.usersInSheet[sheetId][i];
+                        this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_NEW_CONNECTION, userConnected);
+                    } 
+                    this.usersInSheet[sheetId][userId] = user;                    
+                    // send login to other clients
+                    this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_NEW_CONNECTION, user);
+                    this.sockAuthentified.add(sock);
+                } else {
+                    this.refuseAuth(sock, 'not access');
+                }
+            }
+        }
+    }
+
+    /**
+     * Save Cells who are not saved in DB
+     * @param sheetId Id of a sheet
+     */
+    async save(sheetId) {
+        if (this.cellsNotSavedPerSheet[sheetId] !== undefined) {
+            let iterator = this.cellsNotSavedPerSheet[sheetId].values();
+            let item = iterator.next();
+            while (!item.done) {
+                const cell = item.value;
+                if (cell.content === '' ) {
+                    await cell.destroy();
+                } else {
+                    await cell.save();
+                }
+                item = iterator.next();
+            }
+            this.saveInNbModif[sheetId] = Data.SAVE_AFTER_MODIFICATION_COUNT;
+            delete this.cellsNotSavedPerSheet[sheetId];
+        }
+    }
+
+    /**
+     * To remove auth when a user's is disconnected and inform other users.
+     * @param sock Socket's client
+     */
+    disconnect(sock) {
+        if (this.sockAuthentified.has(sock)) {
+            const sheetId = this.getSheetId(sock);
+            const userId = this.getUserId(sock);
+            const user = this.usersInSheet[sheetId][userId];
+            this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_USER_DISCONNECT, user);
+            this.save(sheetId);
+            delete this.usersInSheet[sheetId][userId];
+            // if nobody connected to this sheet
+            if (Object.keys(this.usersInSheet[sheetId]).length === 0) {
+                delete this.usersInSheet[sheetId];
+                delete this.saveInNbModif[sheetId];
+            }
+            this.sockAuthentified.delete(sock);
+        }
     }
 }
 

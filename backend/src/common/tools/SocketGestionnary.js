@@ -284,7 +284,7 @@ class SocketGestionnary {
             const sheetId = this.getSheetId(sock);
             const userId = this.getUserId(sock);
             const user = this.usersInSheet[sheetId][userId];
-            this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_USER_DISCONNECTION, user);
+            this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_USER_DISCONNECT, user);
             this.save(sheetId);
             delete this.usersInSheet[sheetId][userId];
             // if nobody connected to this sheet

@@ -5,11 +5,6 @@
 
     export default {
         components: {HomePageContent, SlideAndFadeTransition, NavBar},
-        methods: {
-            redirect() {
-
-            }
-        }
     }
 </script>
 

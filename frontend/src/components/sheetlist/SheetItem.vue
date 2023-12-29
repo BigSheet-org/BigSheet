@@ -31,8 +31,9 @@ export default {
          @click="this.handleItemClick()">
         <div class="sheet_info">
             <h3>{{ sheet.title }}</h3>
-            <p>Détails : {{ sheet.details }}</p>
-            <p>Propriétaire : {{ sheet.owner }}</p>
+            <p v-if="sheet.detail !== null">Détails : {{ sheet.detail }}</p>
+            <p v-else>Détails : Aucun détails</p>
+            <p>Propriétaire : {{ sheet.users[0].login }}</p>
             <p>Feuille créée le : {{ Formatters.formatDate(sheet.createdAt) }}</p>
         </div>
     </div>

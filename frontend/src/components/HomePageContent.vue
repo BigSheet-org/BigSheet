@@ -30,14 +30,16 @@ export default {
 </script>
 
 <template>
-    <div v-if="!this.CheckAuthentication">
+    <div v-if="!this.CheckAuthentication" >
         <h1>Veuillez vous authentifier pour continuer.</h1>
-        <router-link :to="Routes.CONNEXION.path">
-            <button>Connexion</button>
-        </router-link>
-        <router-link :to="Routes.INSCRIPTION.path">
-            <button>Inscription</button>
-        </router-link>
+        <div class="homepage_content">
+            <router-link :to="Routes.CONNEXION.path" class="align_left">
+                <button>Connexion</button>
+            </router-link>
+            <router-link :to="Routes.INSCRIPTION.path" class="align_right">
+                <button>Inscription</button>
+            </router-link>
+        </div>
     </div>
 
     <div v-else>

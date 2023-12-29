@@ -1,10 +1,10 @@
-import { io } from "https://cdn.socket.io/4.7.2/socket.io.esm.min.js";
 import Storage from "./Storage.js";
 import Formatters from "../Utility/Formatters.js";
 import Data from "../../assets/static/Data.js";
 import User from "./User.js";
+import {io} from "socket.io-client";
 
-class Socket {
+class SocketManager {
 
     static SERVER_URL = "http://localhost:8000"
 
@@ -13,21 +13,8 @@ class Socket {
      * Builds a new socket to the server.
      */
     constructor(sheetID, callbacks) {
-        this.openSocket(sheetID)
-
-        // TODO : Try to refresh tokens if it expires
-        this.socket.on(Data.SOCKET_PROTOCOLS_QUALIFIERS.AUTH_REFUSED, async (arg) => {
-            console.log("[INFO] - Auth Unsuccessful. " + arg);
-            // We try to refresh the tokens, and we try to open a socket again.
-            await User.refreshTokens();
-            this.openSocket(sheetID);
-            this.registerHandlers(callbacks);
-        });
-        this.socket.on(Data.SOCKET_PROTOCOLS_QUALIFIERS.AUTH_SUCCESS, (arg) => {
-            console.log("[INFO] - Auth successful. " + arg);
-            this.registerHandlers(callbacks);
-        });
-
+        // this.openSocket(sheetID)
+        // this.registerHandlers(callbacks)
     }
 
     /**
@@ -57,16 +44,30 @@ class Socket {
     }
 
     openSocket(sheetID) {
-        this.socket = io(Socket.SERVER_URL, {
-            transports: ['websocket']
-        });
+        // Building the socket connexion.
+        this.socket = io(SocketManager.SERVER_URL);
+
+        // When the auth is asked by the server.
         this.socket.on(Data.SOCKET_PROTOCOLS_QUALIFIERS.AUTH_REQUIRED, (arg, callback) => {
             callback({
                 token: Storage.getAccessToken(),
                 sheetId: sheetID
             });
         });
+
+        // If the auth has failed
+        this.socket.on(Data.SOCKET_PROTOCOLS_QUALIFIERS.AUTH_REFUSED, async (arg) => {
+            console.log("[INFO] - Auth Unsuccessful. " + arg);
+            // We try to refresh the tokens, and we try to open a socket again.
+            await User.refreshTokens();
+            this.openSocket(sheetID);
+        });
+
+        // If the auth is successful.
+        this.socket.on(Data.SOCKET_PROTOCOLS_QUALIFIERS.AUTH_SUCCESS, (arg) => {
+            console.log("[INFO] - Auth successful. " + arg);
+        });
     }
 }
 
-export default Socket;
+export default SocketManager;

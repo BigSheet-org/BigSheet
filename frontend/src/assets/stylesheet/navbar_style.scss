@@ -43,4 +43,44 @@
             margin-bottom: 0.5em;
         }
     }
+
+
+    .user_items {
+
+        display: flex;
+        justify-self: end;
+        margin-right: 1%;
+        border: #213547 2px solid;
+        border-radius: 5px;
+
+        .user_item {
+            border-radius: 100px;
+            height: 40px;
+            width: 40px;
+            margin-top: auto;
+            margin-bottom: auto;
+            padding: 8px;
+            margin-right: 5px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+    }
+
+    .formulas_input {
+        display: block;
+        column-span: 2;
+
+        .description {
+            margin-left: 1%;
+            width: fit-content;
+        }
+
+        input {
+            margin-left: 1%;
+            margin-bottom: 1%;
+            width: 100%;
+            border-radius: 5px;
+            height: 25px;
+        }
+    }
 }

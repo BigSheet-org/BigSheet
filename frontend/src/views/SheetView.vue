@@ -8,6 +8,5 @@ export default {
 </script>
 
 <template>
-    <NavBar/>
     <Sheet/>
 </template>

@@ -51,9 +51,7 @@ table {
     table {
         color: variables.$light_font_main;
 
-        td, th {
-            background-color: variables.$light_background_color;
-        }
+        td, th { background-color: variables.$light_background_color; }
 
         th { background-color: variables.$light_wrapper_background; }
 

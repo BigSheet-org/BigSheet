@@ -3,12 +3,16 @@
 import Cell from "./Cell.vue"
 import SlideAndFadeTransition from "../transitions/SlideAndFadeTransition.vue";
 import Formatters from "../../scripts/Utility/Formatters.js";
-import Socket from "../../scripts/DAO/Socket.js";
+import SocketManager from "../../scripts/DAO/SocketManager.js";
 import SocketProtocols from "../../scripts/DAO/SocketProtocols.js";
 import Data from "../../assets/static/Data.js";
+import UserItem from "./UserItem.vue";
+import UpperBar from "./UpperBar.vue";
+import User from "../../scripts/DAO/User.js";
+import UserModel from "../../scripts/Models/UserModel.js"
 
 export default {
-    components : { SlideAndFadeTransition, Cell },
+    components : {UpperBar, UserItem, SlideAndFadeTransition, Cell },
 
     data(){
         return {
@@ -17,11 +21,12 @@ export default {
             sheet : [],             // Tab containing each row of the sheet
             cells : [],             // Tab containing all the cells, each cell can be accessed with her coords Ex : this.cells['a0']
             tableDimensions: 50,    // Dimension of the table.
+            users: [],              // Users connected to this sheet.
             socket: null
         };
     },
 
-    beforeMount(){
+    async beforeMount() {
         this.setRowNames(this.tableDimensions);
         this.setColumnsNames(this.tableDimensions);
         this.createSheet();
@@ -35,8 +40,15 @@ export default {
             handlers.addHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.ALERT_USER_DISCONNECT, this.handleUserDisconnect);
 
             // We create the handler.
-            this.socket = new Socket(this.$route.query.sheetID, handlers);
+            this.socket = new SocketManager(this.$route.query.sheetID, handlers);
         }
+        let connectedUser = await User.fetchUserData();
+        this.users.push(new UserModel(connectedUser.login))
+        this.users.push(new UserModel("Elisa"))
+        this.users.push(new UserModel("Test"))
+
+        setTimeout(() => this.users.push(new UserModel("A")), 3000)
+        setTimeout(() => this.users.pop(), 6000)
     },
 
     methods:{
@@ -69,6 +81,8 @@ export default {
         changeValue(index, value) {
             console.log("[INFO] - Cell with id " + index + " has changed value to " + value);
             this.cells[index] = value;
+
+            // We notify to other users and to the server that the cell has changed value.
             this.socket.sendRoom(index, value);
         },
 
@@ -93,6 +107,7 @@ export default {
 </script>
 
 <template>
+    <UpperBar :users="this.users"/>
     <SlideAndFadeTransition>
         <table>
             <thead class="column-header">

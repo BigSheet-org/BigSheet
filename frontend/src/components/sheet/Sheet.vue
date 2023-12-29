@@ -107,21 +107,25 @@ export default {
 </script>
 
 <template>
-    <UpperBar :users="this.users"/>
-    <SlideAndFadeTransition>
-        <table>
-            <thead class="column-header">
-                <th></th>
-                <th v-for="name in this.columnsNames">{{name}}</th>
-            </thead>
-            <tr v-for="(row, index) in this.sheet">
-                <th class="row-header">{{(index + 1)}}</th>
-                <td v-for="cell in row">
-                    <Cell :id="cell + (index + 1)"
-                          :prefill="this.cells[cell + (index + 1)]"
-                          @valueChange="(index, payload) => { this.changeValue(index, payload); }"/>
-                </td>
-            </tr>
-        </table>
-    </SlideAndFadeTransition>
+    <div class="sheet">
+        <UpperBar :users="this.users"/>
+        <SlideAndFadeTransition>
+            <div class="table_container">
+            <table>
+                <thead class="column-header">
+                    <th></th>
+                    <th v-for="name in this.columnsNames">{{name}}</th>
+                </thead>
+                <tr v-for="(row, index) in this.sheet">
+                    <th class="row-header">{{(index + 1)}}</th>
+                    <td v-for="cell in row">
+                        <Cell :id="cell + (index + 1)"
+                              :prefill="this.cells[cell + (index + 1)]"
+                              @valueChange="(index, payload) => { this.changeValue(index, payload); }"/>
+                    </td>
+                </tr>
+            </table>
+            </div>
+        </SlideAndFadeTransition>
+    </div>
 </template>

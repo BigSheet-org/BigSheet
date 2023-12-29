@@ -22,7 +22,7 @@ export default {
 </script>
 
 <template>
-    <div class="navbar_container">
+    <div class="upper_bar">
         <div class="title">
             <router-link :to="Routes.HOME.path">
                 <img src="../../assets/pictures/Logo_webpage.png" alt="BigSheet logo">
@@ -33,6 +33,10 @@ export default {
         <div class="user_items">
             <UserItem v-for="user in this.users"
                       :user="user"/>
+        </div>
+
+        <div class="styles">
+
         </div>
 
         <div class="formulas_input">

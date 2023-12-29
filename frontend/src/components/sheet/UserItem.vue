@@ -2,9 +2,8 @@
 
 import {defineComponent} from "vue";
 import AppendTransition from "../transitions/AppendTransition.vue";
-import Utils from "../../scripts/Utility/Utils.js";
+import UserModel from "../../scripts/Models/UserModel.js";
 
-let UserModel;
 export default defineComponent({
     components: {AppendTransition},
     props: {

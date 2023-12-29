@@ -40,7 +40,7 @@ export default {
         </div>
 
         <div class="formulas_input">
-            <div class="description">Formules : </div>
+            <h4 class="description">Formules : </h4>
             <input>
         </div>
     </div>

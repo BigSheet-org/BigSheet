@@ -79,7 +79,6 @@ class SheetController {
     static async deleteSheet(req, res) {
         let sheet = Params.getAddedParams(res).sheet;
         await sheet.destroy();
-        await sheet.save();
         return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);
     }
 

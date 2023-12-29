@@ -199,6 +199,7 @@ class SocketGestionnary {
                 this.save(sheetId);
             }
         }
+        
     }
 
     /**
@@ -225,7 +226,7 @@ class SocketGestionnary {
                     // if nobody connected to this sheet
                     if (this.usersInSheet[sheetId] === undefined) {
                         this.usersInSheet[sheetId] = {};
-                        this.saveInNbModif[sheetId] = Data.SAVE_TIME;
+                        this.saveInNbModif[sheetId] = Data.SAVE_AFTER_MODIFICATION_COUNT;
                     }
                     let user = {
                         userId: userId,
@@ -261,10 +262,15 @@ class SocketGestionnary {
             let iterator = this.cellsNotSavedPerSheet[sheetId].values();
             let item = iterator.next();
             while (!item.done) {
-                await item.value.save();
+                const cell = item.value;
+                if (cell.content === '' ) {
+                    await cell.destroy();
+                } else {
+                    await cell.save();
+                }
                 item = iterator.next();
             }
-            this.saveInNbModif[sheetId] = Data.SAVE_TIME;
+            this.saveInNbModif[sheetId] = Data.SAVE_AFTER_MODIFICATION_COUNT;
             delete this.cellsNotSavedPerSheet[sheetId];
         }
     }
@@ -278,7 +284,7 @@ class SocketGestionnary {
             const sheetId = this.getSheetId(sock);
             const userId = this.getUserId(sock);
             const user = this.usersInSheet[sheetId][userId];
-            this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_USER_DISCONNECTION, user);
+            this.emitToSheetRoom(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.ALERT_USER_DISCONNECT, user);
             this.save(sheetId);
             delete this.usersInSheet[sheetId][userId];
             // if nobody connected to this sheet

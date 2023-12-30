@@ -10,6 +10,7 @@ import UserItem from "./UserItem.vue";
 import UpperBar from "./UpperBar.vue";
 import User from "../../scripts/DAO/User.js";
 import UserModel from "../../scripts/Models/UserModel.js"
+import UserList from "../../scripts/Models/UserList.js";
 
 export default {
     components : {UpperBar, UserItem, SlideAndFadeTransition, Cell },
@@ -21,8 +22,8 @@ export default {
             sheet : [],             // Tab containing each row of the sheet
             cells : [],             // Tab containing all the cells, each cell can be accessed with her coords Ex : this.cells['a0']
             tableDimensions: 50,    // Dimension of the table.
-            users: [],              // Users connected to this sheet.
-            socket: null
+            users: null,            // Users connected to this sheet.
+            socket: null            // Socket to share modifications between users.
         };
     },
 
@@ -30,6 +31,7 @@ export default {
         this.setRowNames(this.tableDimensions);
         this.setColumnsNames(this.tableDimensions);
         this.createSheet();
+        this.users = new UserList();
 
         // We initialize the socket connexion for concurrent modification.
         if (this.$route.query.sheetID !== undefined && this.$route.query.sheetID !== null) {
@@ -42,9 +44,15 @@ export default {
             // We create the handler.
             this.socket = new SocketManager(this.$route.query.sheetID, handlers);
         }
-        let connectedUser = await User.fetchUserData();
-        this.users.push(new UserModel(connectedUser.login))
 
+        let connectedUser = await User.fetchUserData();
+        this.users.addUser(new UserModel(connectedUser.login, parseInt(connectedUser.id)))
+    },
+
+    unmounted() {
+        // We close the socket when leaving.
+        console.log("Goodbye !")
+        this.socket.closeSocket();
     },
 
     methods:{
@@ -91,12 +99,16 @@ export default {
 
         // Method called when a user connects to the room.
         handleUserConnect(payload) {
-            console.log("[INFO] - A user joined ! Payload : " + payload);
+            console.log("[INFO] - A user joined ! Payload : ");
+            console.log(payload)
+            this.users.addUser(new UserModel(payload.login, payload.userId));
         },
 
         // Method called when a user disconnects from a room.
         handleUserDisconnect(payload) {
-            console.log("[INFO] - A user left ! Payload : " + payload);
+            console.log("[INFO] - A user left ! Payload : ");
+            console.log(payload)
+            this.users.removeUser(payload.userId);
         }
     }
 }

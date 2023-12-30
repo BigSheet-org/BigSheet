@@ -41,6 +41,16 @@ class SocketManager {
             Data.SOCKET_PROTOCOLS_QUALIFIERS.WRITE_CELL,
             callbacks.getHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.WRITE_CELL)
         );
+        // Handler for when users connects.
+        this.socket.on(
+            Data.SOCKET_PROTOCOLS_QUALIFIERS.ALERT_NEW_CONNECTION,
+            callbacks.getHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.ALERT_NEW_CONNECTION)
+        );
+        // Handler for when users disconnects.
+        this.socket.on(
+            Data.SOCKET_PROTOCOLS_QUALIFIERS.ALERT_USER_DISCONNECT,
+            callbacks.getHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.ALERT_USER_DISCONNECT)
+        );
     }
 
     openSocket(sheetID) {
@@ -70,7 +80,7 @@ class SocketManager {
     }
 
     closeSocket() {
-        this.socket.disconnect()
+        this.socket.close()
     }
 }
 

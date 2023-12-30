@@ -2,6 +2,7 @@
 import Routes from "../../assets/static/Routes.js";
 import User from "../../scripts/DAO/User.js";
 import UserItem from "./UserItem.vue";
+import UserList from "../../scripts/Models/UserList.js";
 
 export default {
     computed: {
@@ -10,9 +11,8 @@ export default {
     components:{UserItem},
     props:{
         users: {
-            required: false,
-            default: [],
-            type: Array
+            required: true,
+            type: UserList
         }
     },
     methods:{
@@ -31,7 +31,7 @@ export default {
         </div>
 
         <div class="user_items">
-            <UserItem v-for="user in this.users"
+            <UserItem v-for="user in this.users.userList"
                       :user="user"/>
         </div>
 

@@ -39,3 +39,16 @@
         &:hover { scale: 125%; }
     }
 }
+
+.delete_button {
+    background-color: transparent;
+    border: none; 
+    cursor: pointer;
+
+    img {
+        width: 25px;
+        height: 25px;
+
+        &:hover { scale: 125%; }
+    }
+}

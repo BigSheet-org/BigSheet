@@ -15,13 +15,16 @@ export default {
             loading: false
         }
     },
-    components: {SlideAndFadeTransition, Loading, SheetItem },
+    components: { SlideAndFadeTransition, Loading, SheetItem },
     methods: {
         async fetchSheets() {
             this.loading = true;
             this.sheets = await Sheets.getOwnedSheets();
             this.loading = false;
         },
+        deleteSheet(deletedSheet) {
+            this.sheets = this.sheets.filter((sheet) => sheet !== deletedSheet);
+        }
     },
     async beforeMount() {
         await this.fetchSheets();
@@ -33,24 +36,20 @@ export default {
     <div>
         <div class="sheet_list">
             <h2>Vos feuilles de calcul :</h2>
-            <div v-if="!this.loading"
-                 class="item_container">
+            <div v-if="!this.loading" class="item_container">
                 <SlideAndFadeTransition>
                     <ul v-if="this.sheets.length > 0">
-                        <sheet-item v-for="sheet in sheets"
-                                    :key="sheet.name"
-                                    :sheet="sheet"/>
+                        <sheet-item v-for="sheet in sheets" :key="sheet.name" :sheet="sheet" @delete-sheet="deleteSheet" />
                     </ul>
                     <div v-else>
                         Aucune feuille de calcul n'a été trouvée.
                     </div>
                 </SlideAndFadeTransition>
             </div>
-            <Loading v-else/>
+            <Loading v-else />
         </div>
 
-        <router-link class="add_button"
-                     :to="Routes.NOT_FOUND.path">
+        <router-link class="add_button" :to="Routes.NOT_FOUND.path">
             <img src="../../assets/pictures/icons/Ajouter.png" alt="Add">
         </router-link>
     </div>

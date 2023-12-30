@@ -35,10 +35,6 @@ export default {
                       :user="user"/>
         </div>
 
-        <div class="styles">
-
-        </div>
-
         <div class="formulas_input">
             <h4 class="description">Formules : </h4>
             <input>

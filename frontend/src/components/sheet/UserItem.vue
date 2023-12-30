@@ -3,9 +3,10 @@
 import {defineComponent} from "vue";
 import AppendTransition from "../transitions/AppendTransition.vue";
 import UserModel from "../../scripts/Models/UserModel.js";
+import Tooltip from "../common/Tooltip.vue";
 
 export default defineComponent({
-    components: {AppendTransition},
+    components: {Tooltip, AppendTransition},
     props: {
         user: {
             required: true,
@@ -20,9 +21,11 @@ export default defineComponent({
 
 <template>
     <AppendTransition>
-        <div class="user_item"
-             :style="'background-color:' + this.user.color">
-            {{ this.user.getInitials() }}
-        </div>
+        <Tooltip :text="this.user.login">
+            <div class="user_item"
+                 :style="'background-color:' + this.user.color">
+                {{ this.user.getInitials() }}
+            </div>
+        </Tooltip>
     </AppendTransition>
 </template>

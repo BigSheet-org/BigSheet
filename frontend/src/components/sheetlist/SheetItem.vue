@@ -1,5 +1,6 @@
 <script>
 import PopUp from "../common/PopUp.vue";
+import SharePopUp from "../common/SharePopUp.vue";
 
 export default {
     props: {
@@ -9,11 +10,13 @@ export default {
         },
     },
     components: {
-        PopUp
+        PopUp,
+        SharePopUp
     },
     data() {
         return {
-            askDeletionConfirm: false
+            askDeletionConfirm: false,
+            shareModalVisible: false
         }
     },
     methods: {
@@ -22,9 +25,6 @@ export default {
         },
         handleItemClick() {
             // TODO : Faire en sorte que ca redirige vers la page avec le bon tableau
-        },
-        editItem() {
-
         },
         async hideConfirmDeletion(confirms) {
             if (confirms) {
@@ -43,17 +43,20 @@ export default {
             <p>Détails: {{ sheet.details }}</p>
             <p>Propriétaire: {{ sheet.owner }}</p>
             <div class="button_container">
-                <div v-if="isOwner" class="dropdown" @click.stop>
+                <div class="dropdown" @click.stop>
                     <div class="dots">
                         <img src="../../assets/pictures/icons/Dots.png">
                     </div>
                     <div class="dropdown-content">
-                        <a @click="editItem">Gérer</a>
-                        <a @click="this.askDeletionConfirm = true;">Supprimer</a>
+                        <button class="button_dropdown" @click="shareModalVisible = true">Partager</button>
+                        <button class="button_dropdown" :disabled="!isOwner"
+                            @click="askDeletionConfirm = true">Supprimer</button>
                     </div>
                 </div>
             </div>
         </div>
+
+        <SharePopUp :isVisible="shareModalVisible" @dismiss="shareModalVisible = false" />
 
         <PopUp v-if="this.askDeletionConfirm" popup-class="error" :choice="true" @dismiss="this.hideConfirmDeletion(false)"
             @confirm="this.hideConfirmDeletion(true)" title="Suppression du tableau."

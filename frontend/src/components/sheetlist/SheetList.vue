@@ -22,8 +22,8 @@ export default {
             this.sheets = await Sheets.getOwnedSheets();
             this.loading = false;
         },
-        deleteSheet(deletedSheet) {
-            this.sheets = this.sheets.filter((sheet) => sheet !== deletedSheet);
+        removeSheet(removedSheet) {
+            this.sheets = this.sheets.filter((sheet) => sheet !== removedSheet);
         }
     },
     async beforeMount() {
@@ -39,7 +39,7 @@ export default {
             <div v-if="!this.loading" class="item_container">
                 <SlideAndFadeTransition>
                     <ul v-if="this.sheets.length > 0">
-                        <sheet-item v-for="sheet in sheets" :key="sheet.name" :sheet="sheet" @delete-sheet="deleteSheet" />
+                        <sheet-item v-for="sheet in sheets" :key="sheet.name" :sheet="sheet" @remove-sheet="removeSheet" />
                     </ul>
                     <div v-else>
                         Aucune feuille de calcul n'a été trouvée.

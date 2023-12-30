@@ -19,12 +19,19 @@
 
             .sheet_info {
                 display: flex;
+                align-items: center;
                 justify-content: space-between;
                 margin-right: 1em;
                 margin-left: 1em;
             }
         }
     }
+}
+
+.button_container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .add_button {
@@ -40,7 +47,8 @@
     }
 }
 
-.delete_button {
+.remove_button {
+    align-items: center;
     background-color: transparent;
     border: none; 
     cursor: pointer;
@@ -52,3 +60,46 @@
         &:hover { scale: 125%; }
     }
 }
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dots {
+    cursor: pointer;
+    padding: 8px;
+
+    img {
+        width: 25px;
+        height: 25px;
+
+        &:hover { scale: 125%; }
+    }
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    z-index: 1;
+    right: 0;
+    border-radius: 8px;
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  
+  
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    border-radius: 8px;
+  }
+  
+  .dropdown-content a:hover {
+    background-color: variables.$dark_list_hover_color;
+  }

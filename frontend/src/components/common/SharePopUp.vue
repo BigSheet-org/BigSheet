@@ -9,6 +9,11 @@ export default {
             required: true
         }
     },
+    data() {
+        return {
+            searchTerm: ''
+        }
+    },
     emits: {
         dismiss() { return true; }
     },
@@ -23,7 +28,13 @@ export default {
             <div class="wrapper">
                 <div class="container">
                     <h1>Partager</h1>
+                    <div class="searchbar-container">
+                        <input class="searchbar-input" v-model="searchTerm" type="text" placeholder="Ajouter des personnes">
+                    </div>
                     <h2>Voici la liste des utilisateurs :</h2>
+                    <ul>
+                        <li v-for="user in filteredUsers" :key="user.id">{{ user.name }}</li>
+                    </ul>
                     <button @click="$emit('dismiss')">
                         Fermer
                     </button>

@@ -17,6 +17,9 @@ export default {
         }
     },
     methods: {
+        isOwner() {
+            //TODO
+        },
         handleItemClick() {
             // TODO : Faire en sorte que ca redirige vers la page avec le bon tableau
         },
@@ -43,7 +46,7 @@ export default {
             <p>Détails: {{ sheet.details }}</p>
             <p>Propriétaire: {{ sheet.owner }}</p>
             <div class="button_container">
-                <div class="dropdown" @click.stop>
+                <div v-if="isOwner" class="dropdown" @click.stop>
                     <div class="dots">
                         <img src="../../assets/pictures/icons/Dots.png">
                     </div>
@@ -52,7 +55,7 @@ export default {
                         <a @click="this.askDeletionConfirm = true;">Supprimer</a>
                     </div>
                 </div>
-                <button class="remove_button" @click="removeItem" title="Retirer de la liste">
+                <button v-else class="remove_button" @click="removeItem" title="Retirer de la liste">
                     <img src="../../assets/pictures/icons/Supprimer.png" alt="Remove">
                 </button>
             </div>

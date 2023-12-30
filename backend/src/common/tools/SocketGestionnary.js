@@ -148,7 +148,7 @@ class SocketGestionnary {
     /**
      * To disconnect client's socket with different reason.
      * @param sock Client's socket
-     * @param message Reason to disconnection (string)
+     * @param reason Reason to disconnection (string)
      */
     refuseAuth(sock, reason) {
         this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_REFUSED, reason);

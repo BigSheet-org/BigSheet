@@ -47,20 +47,6 @@
     }
 }
 
-.remove_button {
-    align-items: center;
-    background-color: transparent;
-    border: none; 
-    cursor: pointer;
-
-    img {
-        width: 25px;
-        height: 25px;
-
-        &:hover { scale: 125%; }
-    }
-}
-
 .dropdown {
     position: relative;
     display: inline-block;

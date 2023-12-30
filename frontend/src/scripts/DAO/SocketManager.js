@@ -45,11 +45,7 @@ class SocketManager {
 
     openSocket(sheetID) {
         // Building the socket connexion.
-        this.socket = io(SocketManager.SERVER_URL, {
-            cors: {
-                origin: "http://localhost:8080"
-            }
-        });
+        this.socket = io(SocketManager.SERVER_URL);
 
         // When the auth is asked by the server.
         this.socket.on(Data.SOCKET_PROTOCOLS_QUALIFIERS.AUTH_REQUIRED, (arg, callback) => {

@@ -22,7 +22,12 @@ class SocketGestionnary {
         if (SocketGestionnary.#instance === null) {
             SocketGestionnary.#instance = this;
             // create a socket server
-            this.io = new Server(httpServ);
+            this.io = new Server(httpServ, {
+                cors: {
+                    origin: "http://localhost:5173",
+                    methods: ["GET", "POST"]
+                }
+            });
             // object to stock users connected on each sheet.
             this.usersInSheet = {};
             // object to stock cells must be saved on each sheet.

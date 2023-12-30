@@ -26,9 +26,6 @@ export default {
         editItem() {
 
         },
-        removeItem() {
-            this.$emit('remove-sheet', this.sheet);
-        },
         async hideConfirmDeletion(confirms) {
             if (confirms) {
                 //TODO
@@ -55,9 +52,6 @@ export default {
                         <a @click="this.askDeletionConfirm = true;">Supprimer</a>
                     </div>
                 </div>
-                <button v-else class="remove_button" @click="removeItem" title="Retirer de la liste">
-                    <img src="../../assets/pictures/icons/Supprimer.png" alt="Remove">
-                </button>
             </div>
         </div>
 

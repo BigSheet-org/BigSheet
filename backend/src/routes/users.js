@@ -3,6 +3,7 @@ import UserController from "../controllers/UserController.js";
 import AuthMiddleware from "../middleware/AuthMiddleware.js";
 import UserMiddleware from "../middleware/UserMiddleware.js";
 import Params from "../middleware/Params.js";
+import userController from "../controllers/UserController.js";
 
 const userRouter = express.Router()
 userRouter
@@ -23,6 +24,7 @@ userRouter
     .get('/search/:query', [
         Params.exportParamsToResLocale,
         AuthMiddleware.checkAuthToken,
+        userController.getByLoginQuery
     ])
 
     /** Method to register a new User. */

@@ -44,11 +44,7 @@ export default {
         }
         let connectedUser = await User.fetchUserData();
         this.users.push(new UserModel(connectedUser.login))
-        this.users.push(new UserModel("Elisa"))
-        this.users.push(new UserModel("Test"))
 
-        setTimeout(() => this.users.push(new UserModel("A")), 3000)
-        setTimeout(() => this.users.pop(), 6000)
     },
 
     methods:{

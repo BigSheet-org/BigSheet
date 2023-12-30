@@ -13,8 +13,8 @@ class SocketManager {
      * Builds a new socket to the server.
      */
     constructor(sheetID, callbacks) {
-        // this.openSocket(sheetID)
-        // this.registerHandlers(callbacks)
+        this.openSocket(sheetID)
+        this.registerHandlers(callbacks)
     }
 
     /**
@@ -45,7 +45,11 @@ class SocketManager {
 
     openSocket(sheetID) {
         // Building the socket connexion.
-        this.socket = io(SocketManager.SERVER_URL);
+        this.socket = io(SocketManager.SERVER_URL, {
+            cors: {
+                origin: "http://localhost:8080"
+            }
+        });
 
         // When the auth is asked by the server.
         this.socket.on(Data.SOCKET_PROTOCOLS_QUALIFIERS.AUTH_REQUIRED, (arg, callback) => {
@@ -67,6 +71,10 @@ class SocketManager {
         this.socket.on(Data.SOCKET_PROTOCOLS_QUALIFIERS.AUTH_SUCCESS, (arg) => {
             console.log("[INFO] - Auth successful. " + arg);
         });
+    }
+
+    closeSocket() {
+        this.socket.disconnect()
     }
 }
 

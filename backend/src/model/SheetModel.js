@@ -38,27 +38,33 @@ class SheetModel extends Model {
      * @returns {Promise<SheetModel[]>} Return sheets
      */
     static async getAccessibleByUser(userId) {
+        const sheets = await SheetModel.findAll({
+            attributes: ['id'], // get title and creation date
+            include: { // we include UserModel to do inner join
+                model: UserModel,
+                as: 'users',
+                attributes: [], 
+                where: {
+                    id: userId,
+                }
+            }
+        });
+        const sheetsId = sheets.map(sheet => sheet.id);
         return await SheetModel.findAll({
             attributes: ['id', 'title', 'detail', 'createdAt'], // get title and creation date
+            where: { 
+                id: {
+                    [Op.in]: sheetsId
+                }
+            },
             include: { // we include UserModel to do inner join
                 model: UserModel,
                 as: 'users',
                 attributes: ['id', 'login'], 
-                where: { 
-                    [Op.or]: [
-                        { id: userId },
-                        { id: {
-                            [Op.eq]: sequelize.col('users->UserAccessSheet.userId')
-                         } }
-                    ]
-                },
                 through: {
                     attributes: [], // we don't want attributes in UserAccessSheet
                     where: {
-                        accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.OWNER,
-                        sheetId: {  // we search only good sheetId
-                            [Op.eq]: sequelize.col('users->UserAccessSheet.sheetId')
-                        }
+                        accessRight: Data.SERVER_COMPARISON_DATA.PERMISSIONS.OWNER
                     }
                 }
             }

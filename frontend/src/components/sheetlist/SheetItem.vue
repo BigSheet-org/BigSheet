@@ -11,6 +11,9 @@ export default {
     computed: {
         Formatters() {
             return Formatters
+        },
+        IsOwner() {
+
         }
     },
     props: {
@@ -34,10 +37,6 @@ export default {
         }
     },
     methods: {
-        isOwner() {
-            const ownedSheets = Sheets.getOwnedSheets();
-            return ownedSheets.some(sheet => sheet.id === this.sheet.id);
-        },
         handleItemClick() {
             router.push({
                 name: Routes.SHEET.name,
@@ -56,7 +55,7 @@ export default {
 </script>
 
 <template>
-    <SharePopUp :isVisible="shareModalVisible" @dismiss="shareModalVisible = false" />
+    <SharePopUp :isVisible="shareModalVisible" @dismiss="shareModalVisible = false"  :concerned-sheet="this.sheet.id"/>
 
     <PopUp v-if="this.askDeletionConfirm" popup-class="error" :choice="true" @dismiss="this.hideConfirmDeletion(false)"
         @confirm="this.hideConfirmDeletion(true)" title="Suppression du tableau."
@@ -70,7 +69,7 @@ export default {
             <p>Propriétaire : {{ sheet.users[0].login }}</p>
             <p>Feuille créée le : {{ Formatters.formatDate(sheet.createdAt) }}</p>
             <div class="button_container">
-                <div v-if="isOwner" class="dropdown" @click.stop>
+                <div v-if="IsOwner" class="dropdown" @click.stop>
                     <div class="dots">
                         <img src="../../assets/pictures/icons/Dots.png" alt="Dots">
                     </div>

@@ -90,8 +90,8 @@ class Sheets {
     static async shareTo(userID, sheetID, permission) {
         return await api.request_logged(
             api.METHODS.PUT,
-            "/sheets/" + sheetID + "/" + userID + "/" + permission
-        )
+            "/sheets/addUser/" + sheetID + "/" + userID + "/" + permission,
+        );
     }
 }
 

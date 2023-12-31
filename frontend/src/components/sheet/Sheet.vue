@@ -13,6 +13,11 @@ import UserModel from "../../scripts/Models/UserModel.js"
 import UserList from "../../scripts/Models/UserList.js";
 
 export default {
+    computed: {
+        Formatters() {
+            return Formatters
+        }
+    },
     components : {UpperBar, UserItem, SlideAndFadeTransition, Cell },
 
     data(){
@@ -98,6 +103,10 @@ export default {
         // Method called when data is changed inside a cell.
         changeValue(index, value) {
             this.cells[index] = value;
+            this.currentCell = {
+                id: index,
+                content: value
+            };
             // We notify to other users and to the server that the cell has changed value.
             this.socket.sendRoom(value);
         },
@@ -191,13 +200,13 @@ export default {
                 <table>
                     <thead class="column-header">
                         <th></th>
-                        <th v-for="name in this.columnsNames">
+                        <th v-for="name in this.columnsNames"
+                            :class="{highlight: Formatters.extractColumnAndLinesFromColumnID(this.currentCell.id).column === name}">
                             {{name}}
-<!--                            TODO : Highlight on column and line selected -->
                         </th>
                     </thead>
                     <tr v-for="(row, index) in this.sheet">
-                        <th class="row-header">
+                        <th :class="{ highlight: Formatters.extractColumnAndLinesFromColumnID(this.currentCell.id).line === index + 1 }">
                             {{(index + 1)}}
                         </th>
                         <td v-for="cell in row">

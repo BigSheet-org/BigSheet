@@ -1,11 +1,13 @@
 <script>
     import UserModel from "../../scripts/Models/UserModel.js";
+    import Data from "../../assets/static/Data.js";
 
     export default {
         data() {
             return {
                 model: '',
-                colorModel: ''
+                colorModel: '',
+                lock: false
             }
         },
         props: {
@@ -34,7 +36,15 @@
             selectedCell() { return true; }
         },
         methods: {
-            sendChange() { this.$emit('valueChange', this.id, this.model); },
+            sendChange() {
+                if (!this.lock) {
+                    this.lock = true;
+                    this.$emit('valueChange', this.id, this.model);
+                    setTimeout(() => { this.lock = false; },
+                        Data.PROGRAM_VALUES.TIMEOUT_BETWEEN_DATA_SENDS
+                    );
+                }
+            },
             selectedCell() { this.$emit('selectedCell', this.id); }
         },
         watch: {    // We watch for props value changes.
@@ -62,6 +72,6 @@
          v-model="this.model"
          :style="Style"
          @click="this.selectedCell"
-         @change="this.sendChange"/>
+         @keyup="this.sendChange"/>
 
 </template>

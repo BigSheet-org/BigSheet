@@ -1,9 +1,10 @@
 class Data {
 
     static PROGRAM_VALUES = {
-        TIMEOUT_BEFORE_REQUEST_FAILURE: 6000,                  // Timeout for requests in ms.
-        TIMEOUT_BEFORE_REDIRECT: 1000,  // Timeout for redirections in ms.
-        PHONE_SEPARATION_CHAR: '.',     // Character used to make phone number separators.
+        TIMEOUT_BEFORE_REQUEST_FAILURE: 6000,       // Timeout for requests in ms.
+        TIMEOUT_BEFORE_REDIRECT: 1000,              // Timeout for redirections in ms.
+        PHONE_SEPARATION_CHAR: '.',                 // Character used to make phone number separators.
+        TIMEOUT_BETWEEN_DATA_SENDS: 500             // Timeout before re-sending data in sockets.
     };
 
     static COMPARISON_DATA = {

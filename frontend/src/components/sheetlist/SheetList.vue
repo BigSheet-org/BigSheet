@@ -23,10 +23,9 @@ export default {
             this.loading = false;
         },
         async createSheet() {
-            await Sheets.createSheet({
-                title: "TestTitle",
-                detail: "TestDetail"
-            })
+            const newData = { title: "New Sheet", detail: "Some details" };
+            const newSheet = await Sheets.createSheet(newData);
+            this.$router.push({ name: Routes.SHEET.name, query: { id: newSheet.id } });
         }
     },
     async beforeMount() {
@@ -52,10 +51,8 @@ export default {
             <Loading v-else />
         </div>
 
-        <router-link class="add_button"
-                     :to="Routes.NOT_FOUND.path"
-                     @click="this.createSheet">
+        <div class="add_button" @click="this.createSheet">
             <img src="../../assets/pictures/icons/Ajouter.png" alt="Add">
-        </router-link>
+        </div>
     </div>
 </template>

@@ -18,12 +18,12 @@
             prefill: {
                 required: false,
                 type: String,
-                default: '',
+                default: ''
             },
             borderColor: {
                 required: false,
                 type: String,
-                default: '',
+                default: ''
             },
             modifyingUser: {
                 required: false,

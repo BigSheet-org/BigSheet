@@ -39,3 +39,16 @@
         &:hover { scale: 125%; }
     }
 }
+
+
+@media (prefers-color-scheme: light) {
+    .sheet_list {
+        .item_container {
+            .sheet_item {
+                border-bottom: 1px solid variables.$light_input_border_color;
+                &:hover { background-color: variables.$light_list_hover_color;}
+            }
+        }
+    }
+}
+

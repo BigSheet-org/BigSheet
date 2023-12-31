@@ -1,14 +1,16 @@
+@use "variables";
+
 .tooltip__text {
     visibility: hidden;
     opacity: 0;
-    transition: opacity 1s;
+    transition: opacity variables.$timing_background_transition;
 
-    color: #ffffff;
+    color: variables.$dark_font_main;
     text-align: center;
     padding: 5px;
     border-radius: 2px;
     width: fit-content;
-    background: #5e5d5d;
+    background: variables.$dark_tooltip_background;
     position: absolute;
     z-index: 1;
     right: 50%;
@@ -21,5 +23,13 @@
     &:hover .tooltip__text{
         visibility: visible;
         opacity: 1;
+    }
+}
+
+
+@media (prefers-color-scheme: light) {
+    .tooltip__text {
+        color: variables.$light_font_main;
+        background: variables.$light_tooltip_background;
     }
 }

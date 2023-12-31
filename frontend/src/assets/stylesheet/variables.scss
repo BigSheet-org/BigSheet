@@ -9,10 +9,15 @@ $dark_form_background_color: #363636;
 $dark_input_background_color: transparent;
 $dark_navbar_color: #d09110;
 $dark_wrapper_background: #363636;
+$dark_tooltip_background: #5e5d5d;
 
 /* -> Light theme */
 $light_background_color: #e8dbd2;
 $light_wrapper_background: #d9d4d0;
+$light_tooltip_background: #5e5d5d;
+$light_form_background_color: #363636;
+$light_input_background_color: transparent;
+$light_navbar_color: #d09110;
 
 /* Shadows */
 $hover_shadow: #1e1d1d;
@@ -38,12 +43,17 @@ $light_input_darker_border_color: #363636;
 $right_highlight: #159f15;
 $wrong_highlight: #ad1313;
 $neutral_highlight: #c4c4c4;
+$link_highlight: #b23a09;
 
 /* Hovering */
 /* -> Dark theme */
 $dark_list_hover_color: #878585;
 
 /* -> Light theme */
+$light_list_hover_color: #878585;
+
+/* -> Neutral */
+$link_highlight_hover: #93300c;
 
 
 /* ################################# */

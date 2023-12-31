@@ -2,6 +2,8 @@
 import PopUpTransition from "../transitions/PopUpTransition.vue";
 import User from "../../scripts/DAO/User.js";
 import Data from "../../assets/static/Data.js";
+import Sheets from "../../scripts/DAO/Sheets.js";
+import Input from "../forms/Input.vue";
 
 export default {
     components: { PopUpTransition },
@@ -9,6 +11,10 @@ export default {
         isVisible: {
             type: Boolean,
             required: true
+        },
+        concernedSheet: {
+            required: true,
+            type: Number
         }
     },
     data() {
@@ -16,6 +22,7 @@ export default {
             searchTerm: '',
             selectedUser: null,
             filteredUsers: null,
+            permissionModel: "reader",
             lock: false
         }
     },
@@ -27,9 +34,12 @@ export default {
             this.selectedUser = id;
             console.log("[INFO] - Selected user with id : " + this.selectedUser);
         },
-        shareToUser() {
+        async shareToUser() {
             if (this.selectedUser !== null) {
-                console.log("[INFO] - Sharing to user with id : " + this.selectedUser);
+                console.log(this.selectedUser.id)
+                console.log(this.concernedSheet)
+                console.log(this.permissionModel)
+                await Sheets.shareTo(this.selectedUser.id, this.concernedSheet, this.permissionModel);
             }
             // We close the popup.
             this.$emit('dismiss');
@@ -57,7 +67,7 @@ export default {
                 <div class="container">
                     <h1>Partager</h1>
                     <div class="searchbar-container">
-                        <input class="searchbar-input"
+                        <input name="Recherche"
                                v-model="searchTerm"
                                type="text"
                                placeholder="Ajouter des personnes"
@@ -71,8 +81,16 @@ export default {
                             {{ user.login }}
                         </li>
                     </ul>
+                    <h2>Permissions :</h2>
+                    <select v-model="permissionModel">
+                        <option value="reader" selected>Lecture uniquement</option>
+                        <option value="writer">Lecture et Ecriture</option>
+                    </select>
+                    <br/>
+                    <br/>
+
                     <button @click="this.shareToUser">
-                        Fermer
+                        Terminer
                     </button>
                 </div>
             </div>

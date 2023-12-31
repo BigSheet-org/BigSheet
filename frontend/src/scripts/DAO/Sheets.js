@@ -69,7 +69,7 @@ class Sheets {
     /**
      * Method to create a new sheet. Owned by the current user.
      *
-     * @param data Must be in the following format : {title: "example", detail: "detail"}. Detail field is NOT mandatory.
+     * @param sheetID Must be in the following format : {title: "example", detail: "detail"}. Detail field is NOT mandatory.
      * @returns {Promise<void>}
      */
     static async deleteSheet(sheetID) {
@@ -79,6 +79,20 @@ class Sheets {
         );
     }
 
+    /**
+     * Shares a sheet to a user.
+     *
+     * @param userID
+     * @param sheetID
+     * @param permission writer or reader
+     * @returns {Promise<void>}
+     */
+    static async shareTo(userID, sheetID, permission) {
+        return await api.request_logged(
+            api.METHODS.PUT,
+            "/sheets/" + sheetID + "/" + userID + "/" + permission
+        )
+    }
 }
 
 export default Sheets

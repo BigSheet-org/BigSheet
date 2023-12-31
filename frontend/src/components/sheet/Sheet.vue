@@ -22,6 +22,7 @@ export default {
             sheet : [],             // Tab containing each row of the sheet.
             cells : [],             // Tab containing all the cells, each cell can be accessed with her coords Ex : this.cells['A1'].
             cellsColors : [],       // Tab containing all the cells colors.
+            modifyingUsers: [],     // Tab containing all the cells modifiers.
             tableDimensions: 50,    // Dimension of the table.
             users: null,            // Users connected to this sheet.
             socket: null,           // Socket to share modifications between users.
@@ -43,12 +44,10 @@ export default {
             handlers.addHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.ALERT_NEW_CONNECTION, this.handleUserConnect);
             handlers.addHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.ALERT_USER_DISCONNECT, this.handleUserDisconnect);
             handlers.addHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.USER_SELECT_CELL, this.handleSelectCell);
+            handlers.addHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.LOAD_CELLS, this.handleCellLoad);
 
             // We create the handler.
             this.socket = new SocketManager(this.$route.query.sheetID, handlers);
-
-            // We load the cells.
-            // this.socket.loadCells();
         }
 
         let connectedUser = await User.fetchUserData();
@@ -82,6 +81,7 @@ export default {
                 this.columnsNames.forEach(name => {
                     this.cells[name + rowHead] = '';            // Allows to access cells with their coords.
                     this.cellsColors[name + rowHead] = '';      // Allows to access cellsColors with their coords.
+                    this.modifyingUsers[name + rowHead] = null;      // Allows to access modifyingUsers with their coords.
                     row.push(name);
                 });
                 this.sheet.push(row);
@@ -100,10 +100,12 @@ export default {
             // We reset the previous selected cell by the user.
             if (this.currentUserModel.lastCellSelected !== "") {
                 this.cellsColors[this.currentUserModel.lastCellSelected] = '';
+                this.modifyingUsers[this.currentUserModel.lastCellSelected] = null;
             }
 
             // We notify to other users and to the server that the cell is being selected.
             this.cellsColors[index] = this.currentUserModel.color;
+            this.modifyingUsers[index] = this.currentUserModel;
             this.currentUserModel.lastCellSelected = index;
             this.socket.selectCell(index);
         },
@@ -123,10 +125,12 @@ export default {
             // We reset the previous selected cell by the user.
             if (userModifyingCell.lastCellSelected !== "") {
                 this.cellsColors[userModifyingCell.lastCellSelected] = '';
+                this.modifyingUsers[userModifyingCell.lastCellSelected] = null;
             }
 
             // We change the color of the new cell.
             this.cellsColors[cellID] = userModifyingCell.color;
+            this.modifyingUsers[cellID] = userModifyingCell;
             userModifyingCell.lastCellSelected = cellID;
 
         },
@@ -139,6 +143,17 @@ export default {
         // Method called when a user disconnects from a room.
         handleUserDisconnect(payload) {
             this.users.removeUser(payload.userId);
+        },
+
+        // Method to call when cells have been loaded.
+        handleCellLoad(payload) {
+            for(let cellIndex in payload) {
+                let cellID = Formatters.formatColumnAndLinesToCellID(
+                    payload[cellIndex].column,
+                    payload[cellIndex].line
+                );
+                this.cells[cellID] = payload[cellIndex].content;
+            }
         }
     }
 }
@@ -160,6 +175,7 @@ export default {
                             <Cell :id="cell + (index + 1)"
                                   :prefill="this.cells[cell + (index + 1)]"
                                   :borderColor="this.cellsColors[cell + (index + 1)]"
+                                  :modifying-user="this.modifyingUsers[cell + (index + 1)]"
                                   @selectedCell="(cellID) => { this.selectCell(cellID); }"
                                   @valueChange="(cellID, payload) => { this.changeValue(cellID, payload); }"/>
                         </td>

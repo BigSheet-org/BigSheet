@@ -85,6 +85,11 @@ class SocketManager {
         this.socket.on(Data.SOCKET_PROTOCOLS_QUALIFIERS.AUTH_SUCCESS, (arg) => {
             this.registerHandlers(callbacks);
         });
+
+        this.socket.on(
+            Data.SOCKET_PROTOCOLS_QUALIFIERS.LOAD_CELLS,
+            callbacks.getHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.LOAD_CELLS)
+        );
     }
 
     /**

@@ -1,4 +1,6 @@
 <script>
+    import UserModel from "../../scripts/Models/UserModel.js";
+
     export default {
         data() {
             return {
@@ -20,6 +22,11 @@
                 required: false,
                 type: String,
                 default: '',
+            },
+            modifyingUser: {
+                required: false,
+                type: UserModel,
+                default: null
             }
         },
         emits: {
@@ -41,7 +48,7 @@
             }
         },
         computed: {
-            Style() { return this.colorModel === '' ? "border: none" : `border: 2px solid ${this.colorModel}` }
+            Style() { return this.colorModel === '' ? "border: none" : `border: 2px solid ${this.colorModel}` },
         },
         mounted() {
             this.colorModel = this.borderColor;
@@ -51,9 +58,10 @@
 </script>
 
 <template>
-  <input type="text"
+    <input type="text"
          v-model="this.model"
          :style="Style"
          @click="this.selectedCell"
          @change="this.sendChange"/>
+
 </template>

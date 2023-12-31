@@ -12,7 +12,10 @@ $dark_wrapper_background: #363636;
 
 /* -> Light theme */
 $light_background_color: #e8dbd2;
-$light_wrapper_background: #d9d4d0;
+$light_form_background_color: #f9f7f7;
+$light_input_background_color: transparent;
+$light_navbar_color: #d09110;
+$light_wrapper_background: #a37047;
 
 /* Shadows */
 $hover_shadow: #1e1d1d;
@@ -22,7 +25,7 @@ $hover_shadow: #1e1d1d;
 $dark_font_main: rgba(255, 255, 255, 0.87);
 
 /* -> Light theme */
-$light_font_main: rgba(255, 255, 255, 0.87);
+$light_font_main: rgba(0, 0, 0, 0.87);
 
 /* Borders */
 /* -> Dark theme */
@@ -32,6 +35,7 @@ $dark_input_lighter_border_color: #e0e0e0;
 
 /* -> Light theme */
 $light_input_border_color: #242424;
+$light_classic_border_color: #878585;
 $light_input_darker_border_color: #363636;
 
 /* Neutral themes */
@@ -44,7 +48,7 @@ $neutral_highlight: #c4c4c4;
 $dark_list_hover_color: #878585;
 
 /* -> Light theme */
-
+$light_list_hover_color: #878585;
 
 /* ################################# */
 /* --------TIMINGS AND VALUES------- */

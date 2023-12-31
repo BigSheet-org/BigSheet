@@ -41,7 +41,7 @@ class Data {
         }
     }
 
-    static SAVE_AFTER_MODIFICATION_COUNT = 500;
+    static SAVE_AFTER_MODIFICATION_COUNT = 50;
 }
 
 export default Data

@@ -1,12 +1,14 @@
 class Data {
+
     static PROGRAM_VALUES = {
-        TIMEOUT_BEFORE_REQUEST_FAILURE: 6000,                  // Timeout for requests in ms.
-        TIMEOUT_BEFORE_REDIRECT: 1000,  // Timeout for redirections in ms.
-        PHONE_SEPARATION_CHAR: '.',     // Character used to make phone number separators.
+        TIMEOUT_BEFORE_REQUEST_FAILURE: 6000,       // Timeout for requests in ms.
+        TIMEOUT_BEFORE_REDIRECT: 1000,              // Timeout for redirections in ms.
+        PHONE_SEPARATION_CHAR: '.',                 // Character used to make phone number separators.
+        TIMEOUT_BETWEEN_DATA_SENDS: 500             // Timeout before re-sending data in sockets.
     };
 
     static COMPARISON_DATA = {
-        ERROR_INVALID_CREDENTIALS: "L'identifiant ou le mot de passe est incorrect.",
+        ERROR_INVALID_CREDENTIALS: "L'identifiant ou le mot de passe est incorrect."
     };
 
     // Qualifiers for the Input component.
@@ -16,7 +18,7 @@ class Data {
         CHECKBOX: "checkbox",
         PASSWORD: "password",
         TEXTAREA: "textarea",
-        TEXT: "text",
+        TEXT: "text"
     };
 
     static MESSAGES = {
@@ -33,19 +35,17 @@ class Data {
         },
     };
 
-    static SOCKET_STANDARDS = {
-        AUTH_REQUIRED: {
-            name: 'authReq',
-        },
-        AUTH_REFUSED: {
-            name: 'authFail',
-        },
-        AUTH_SUCCESS: {
-            name: 'authOk',
-        },
-        WRITE_CELL: {
-            name: 'writeCell',
-        },
+    static SOCKET_PROTOCOLS_QUALIFIERS = {
+        AUTH_REQUIRED: 'authReq',
+        AUTH_REFUSED : 'authFail',
+        AUTH_SUCCESS : 'authOk',
+        WRITE_CELL : 'writeCell',
+        ALERT_NEW_CONNECTION : 'newConnect',
+        ALERT_USER_DISCONNECT : 'userDisconnected',
+        RESPONSE_SELECT_CELL : 'responseSelectCell',
+        USER_SELECT_CELL : 'userSelectCell',
+        LOAD_CELLS : 'loadCells',
+        SELECT_CELL : 'selectCell'
     }
 }
 

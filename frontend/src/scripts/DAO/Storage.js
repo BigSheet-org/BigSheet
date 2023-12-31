@@ -1,11 +1,11 @@
-class LocalStorage {
+class Storage {
 
-    static saveToLocalStorage(access_token, refresh_token){
+    static saveToStorage(access_token, refresh_token){
         window.sessionStorage.setItem("access_token", access_token);
         window.sessionStorage.setItem("refresh_token", refresh_token);
     }
 
-    static cleanLocalStorage(){
+    static cleanStorage(){
         window.sessionStorage.clear();
     }
 
@@ -18,4 +18,4 @@ class LocalStorage {
     }
 }
 
-export default LocalStorage;
+export default Storage;

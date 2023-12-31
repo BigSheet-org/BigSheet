@@ -59,7 +59,7 @@ class AuthController {
         let data = Params.getAddedParams(res).dataFromRefreshToken;
 
         // We generate a new pair.
-        let newTokens = Tokens.generateTokens(data.connectedUserID);
+        let newTokens = Tokens.generateTokens(data.userID);
         await Tokens.banToken(Params.getRequestParams(res).refresh_token, data);                // We blacklist the older refresh token.
 
         // We send the new pair.

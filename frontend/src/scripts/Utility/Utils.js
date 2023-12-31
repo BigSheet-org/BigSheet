@@ -47,6 +47,15 @@ class Utils {
             correct[attribute] = false;
         }
     }
+
+    /**
+     * This method generates a random Hexadecimal color code.
+     *
+     * @returns {string} Hexadecimal color code.
+     */
+    static generateRandomHexColor() {
+        return '#' + (Math.random() * 0xFFFFFF << 0).toString(16)
+    }
 }
 
 export default Utils

@@ -86,6 +86,25 @@ button {
     font-weight: bolder;
 }
 
+.homepage_content {
+    display: grid;
+    grid-template-columns: 50% 50%;
+
+    h1 { column-span: 2; }
+
+    .align_left {
+        grid-column: 1;
+        margin-right: 1em;
+        justify-self: right;
+    }
+    .align_right {
+        grid-column: 2;
+        margin-left: 1em;
+        justify-self: left;
+    }
+}
+
+
 @media (prefers-color-scheme: light) {
     :root {
         color: #213547;

@@ -6,7 +6,7 @@ class UserModel {
     _color;
     _lastCellSelected;
 
-    constructor(login, userID) {
+    constructor(login, userID, permissions) {
         this._userID = userID;
         this._login = login;
         this._color = Utils.generateRandomHexColor();

@@ -36,7 +36,8 @@ export default {
             currentCell: {
                 id: "",
                 content: ""
-            }
+            },
+            currentPermission: null
         };
     },
 
@@ -45,10 +46,6 @@ export default {
         let connectedUser = await User.fetchUserData();
         this.currentUserModel = new UserModel(connectedUser.login, parseInt(connectedUser.id));
         this.users.addUser(this.currentUserModel);
-
-        this.setRowNames(this.tableDimensions);
-        this.setColumnsNames(this.tableDimensions);
-        this.createSheet();
 
 
         // We initialize the socket connexion for concurrent modification.
@@ -60,13 +57,18 @@ export default {
             handlers.addHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.ALERT_USER_DISCONNECT, this.handleUserDisconnect);
             handlers.addHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.USER_SELECT_CELL, this.handleSelectCell);
             handlers.addHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.LOAD_CELLS, this.handleCellLoad);
+            handlers.addHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.AUTH_SUCCESS, this.handlePermissionSend);
 
             // We create the handler.
             this.socket = new SocketManager(this.$route.query.sheetID, handlers);
         }
+
+        this.setRowNames(this.tableDimensions);
+        this.setColumnsNames(this.tableDimensions);
+        this.createSheet();
     },
 
-    beforeUnmounted() {
+    beforeUnmount() {
         // We close the socket when leaving. Just to be sure.
         this.socket.closeSocket();
     },
@@ -147,7 +149,9 @@ export default {
             if (userModifyingCell.lastCellSelected !== "") {
                 this.cellsColors[userModifyingCell.lastCellSelected] = '';
                 this.modifyingUsers[userModifyingCell.lastCellSelected] = null;
-                this.locks[userModifyingCell.lastCellSelected] = false;
+                if (this.currentPermission !== "reader") {
+                    this.locks[userModifyingCell.lastCellSelected] = false;
+                }
             }
 
             // We change the color of the new cell.
@@ -184,6 +188,18 @@ export default {
                     payload[cellIndex].line
                 );
                 this.cells[cellID] = payload[cellIndex].content;
+            }
+        },
+
+        // Method to call for a permission registering.
+        handlePermissionSend(payload) {
+            this.currentPermission = payload;
+            if (payload === "reader") {
+                this.rowsNames.forEach(rowHead => {
+                    this.columnsNames.forEach(name => {
+                        this.locks[name + rowHead] = true;
+                    });
+                });
             }
         }
     }

@@ -90,6 +90,7 @@ class SocketManager {
         // If the auth is successful.
         this.socket.on(Data.SOCKET_PROTOCOLS_QUALIFIERS.AUTH_SUCCESS, (arg) => {
             this.registerHandlers(callbacks);
+            callbacks.getHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.AUTH_SUCCESS)(arg);
         });
     }
 

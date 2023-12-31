@@ -13,26 +13,30 @@ class SocketManager {
      * Builds a new socket to the server.
      */
     constructor(sheetID, callbacks) {
-        this.openSocket(sheetID)
-        this.registerHandlers(callbacks)
+        this.openSocket(sheetID, callbacks);
     }
 
     /**
      * This method shares a change on a cell to all users connected to the server and editing the sheet.
      *
-     * @param cellID  ID of the modified cell.
      * @param payload Data changed.
      */
-    sendRoom(cellID, payload) {
+    sendRoom(payload) {
+        this.socket.emit(Data.SOCKET_PROTOCOLS_QUALIFIERS.WRITE_CELL, payload);
+    }
+
+    /**
+     * This method shares a cell selection.
+     *
+     * @param cellID  ID of the modified cell.
+     */
+    selectCell(cellID) {
         let colsAndLines = Formatters.extractColumnAndLinesFromColumnID(cellID);
         let data = {
             line: colsAndLines.line,
             column: colsAndLines.column,
-            content: payload
         }
-        console.log("[INFO] - Sent Following data :");
-        console.log(data);
-        this.socket.emit("writeCell", data);
+        this.socket.emit(Data.SOCKET_PROTOCOLS_QUALIFIERS.SELECT_CELL, data);
     }
 
     registerHandlers(callbacks) {
@@ -51,9 +55,14 @@ class SocketManager {
             Data.SOCKET_PROTOCOLS_QUALIFIERS.ALERT_USER_DISCONNECT,
             callbacks.getHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.ALERT_USER_DISCONNECT)
         );
+        // Handler for the cell Selection by another user.
+        this.socket.on(
+            Data.SOCKET_PROTOCOLS_QUALIFIERS.USER_SELECT_CELL,
+            callbacks.getHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.USER_SELECT_CELL)
+        );
     }
 
-    openSocket(sheetID) {
+    openSocket(sheetID, callbacks) {
         // Building the socket connexion.
         this.socket = io(SocketManager.SERVER_URL);
 
@@ -67,7 +76,6 @@ class SocketManager {
 
         // If the auth has failed
         this.socket.on(Data.SOCKET_PROTOCOLS_QUALIFIERS.AUTH_REFUSED, async (arg) => {
-            console.log("[INFO] - Auth Unsuccessful. " + arg);
             // We try to refresh the tokens, and we try to open a socket again.
             await User.refreshTokens();
             this.openSocket(sheetID);
@@ -75,13 +83,14 @@ class SocketManager {
 
         // If the auth is successful.
         this.socket.on(Data.SOCKET_PROTOCOLS_QUALIFIERS.AUTH_SUCCESS, (arg) => {
-            console.log("[INFO] - Auth successful. " + arg);
+            this.registerHandlers(callbacks);
         });
     }
 
-    closeSocket() {
-        this.socket.close()
-    }
+    /**
+     * This method closes the connexion with the server.
+     */
+    closeSocket() { this.socket.close(); }
 }
 
 export default SocketManager;

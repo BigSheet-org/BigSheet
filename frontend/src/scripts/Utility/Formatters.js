@@ -232,6 +232,9 @@ class Formatters {
         }
     }
 
+    static formatColumnAndLinesToCellID(column, line) {
+        return `${column}${line}`;
+    }
 }
 
 export default Formatters;

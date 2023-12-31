@@ -29,6 +29,11 @@
                 required: false,
                 type: UserModel,
                 default: null
+            },
+            lockCellModifications: {
+                required: false,
+                type: Boolean,
+                default: false
             }
         },
         emits: {
@@ -69,9 +74,9 @@
 
 <template>
     <input type="text"
-         v-model="this.model"
-         :style="Style"
-         @click="this.selectedCell"
-         @keyup="this.sendChange"/>
-
+           v-model="this.model"
+           :style="Style"
+           :disabled="this.lockCellModifications"
+           @click="this.selectedCell"
+           @keyup="this.sendChange"/>
 </template>

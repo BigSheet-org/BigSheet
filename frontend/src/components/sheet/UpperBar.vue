@@ -36,7 +36,7 @@ export default {
         </div>
 
         <div class="formulas_input">
-            <h4 class="description">Formules : </h4>
+            <h4 class="description">Cellule : {{  }}</h4>
             <input>
         </div>
     </div>

@@ -23,6 +23,7 @@ export default {
             cells : [],             // Tab containing all the cells, each cell can be accessed with her coords Ex : this.cells['A1'].
             cellsColors : [],       // Tab containing all the cells colors.
             modifyingUsers: [],     // Tab containing all the cells modifiers.
+            locks: [],              // Tab containing all the cells locks.
             tableDimensions: 50,    // Dimension of the table.
             users: null,            // Users connected to this sheet.
             socket: null,           // Socket to share modifications between users.
@@ -82,6 +83,7 @@ export default {
                     this.cells[name + rowHead] = '';            // Allows to access cells with their coords.
                     this.cellsColors[name + rowHead] = '';      // Allows to access cellsColors with their coords.
                     this.modifyingUsers[name + rowHead] = null;      // Allows to access modifyingUsers with their coords.
+                    this.locks[name + rowHead] = false;
                     row.push(name);
                 });
                 this.sheet.push(row);
@@ -126,11 +128,13 @@ export default {
             if (userModifyingCell.lastCellSelected !== "") {
                 this.cellsColors[userModifyingCell.lastCellSelected] = '';
                 this.modifyingUsers[userModifyingCell.lastCellSelected] = null;
+                this.locks[userModifyingCell.lastCellSelected] = false;
             }
 
             // We change the color of the new cell.
             this.cellsColors[cellID] = userModifyingCell.color;
             this.modifyingUsers[cellID] = userModifyingCell;
+            this.locks[cellID] = true;
             userModifyingCell.lastCellSelected = cellID;
 
         },
@@ -142,6 +146,15 @@ export default {
 
         // Method called when a user disconnects from a room.
         handleUserDisconnect(payload) {
+            let userModifyingCell = this.users.getUser(payload.userId);
+            // We reset the last selected cell by the user.
+            if (userModifyingCell.lastCellSelected !== "") {
+                this.cellsColors[userModifyingCell.lastCellSelected] = '';
+                this.modifyingUsers[userModifyingCell.lastCellSelected] = null;
+                this.locks[userModifyingCell.lastCellSelected] = false;
+            }
+
+            // We remove the user from the list?
             this.users.removeUser(payload.userId);
         },
 
@@ -176,6 +189,7 @@ export default {
                                   :prefill="this.cells[cell + (index + 1)]"
                                   :borderColor="this.cellsColors[cell + (index + 1)]"
                                   :modifying-user="this.modifyingUsers[cell + (index + 1)]"
+                                  :lock-cell-modifications="this.locks[cell + (index + 1)]"
                                   @selectedCell="(cellID) => { this.selectCell(cellID); }"
                                   @valueChange="(cellID, payload) => { this.changeValue(cellID, payload); }"/>
                         </td>

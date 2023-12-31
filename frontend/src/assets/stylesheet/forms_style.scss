@@ -114,29 +114,20 @@
 @media (prefers-color-scheme: light) {
     .form {
         background-color: variables.$light_form_background_color;
-    
+
         .group {
-    
             input, textarea {
                
                 border-color: variables.$light_input_border_color;
                 background-color: variables.$light_input_background_color;
     
-                &:focus {
-                    border-color: variables.$light_input_border_color;
-                }
-                // Pour mettre à jour le style du label en cas de focus sur l'input.
-                &:focus + label {
-                    background-color: variables.$light_form_background_color;
-                }
+                &:focus { border-color: variables.$light_input_border_color; }
+                &:focus + label { background-color: variables.$light_form_background_color; }
             }
     
             label {
                 background-color: variables.$light_form_background_color;
-    
-                &.filled {
-                    background-color: variables.$light_form_background_color;
-                }
+                &.filled { background-color: variables.$light_form_background_color; }
             }
         }
     }

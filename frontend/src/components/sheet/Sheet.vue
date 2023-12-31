@@ -222,14 +222,14 @@ export default {
             <div class="table_container">
                 <table>
                     <thead class="column-header">
-                        <th></th>
+                        <th class="header"></th>
                         <th v-for="name in this.columnsNames"
-                            :class="{highlight: Formatters.extractColumnAndLinesFromColumnID(this.currentCell.id).column === name}">
+                            :class="{highlight: Formatters.extractColumnAndLinesFromColumnID(this.currentCell.id).column === name , header: true}">
                             {{name}}
                         </th>
                     </thead>
                     <tr v-for="(row, index) in this.sheet">
-                        <th :class="{ highlight: Formatters.extractColumnAndLinesFromColumnID(this.currentCell.id).line === index + 1 }">
+                        <th :class="{ highlight: Formatters.extractColumnAndLinesFromColumnID(this.currentCell.id).line === index + 1 , header: true}">
                             {{(index + 1)}}
                         </th>
                         <td v-for="cell in row">

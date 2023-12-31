@@ -66,6 +66,12 @@ class SocketManager {
         // Building the socket connexion.
         this.socket = io(SocketManager.SERVER_URL);
 
+        // Handler for the cells loading.
+        this.socket.on(
+            Data.SOCKET_PROTOCOLS_QUALIFIERS.LOAD_CELLS,
+            callbacks.getHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.LOAD_CELLS)
+        );
+
         // When the auth is asked by the server.
         this.socket.on(Data.SOCKET_PROTOCOLS_QUALIFIERS.AUTH_REQUIRED, (arg, callback) => {
             callback({
@@ -85,11 +91,6 @@ class SocketManager {
         this.socket.on(Data.SOCKET_PROTOCOLS_QUALIFIERS.AUTH_SUCCESS, (arg) => {
             this.registerHandlers(callbacks);
         });
-
-        this.socket.on(
-            Data.SOCKET_PROTOCOLS_QUALIFIERS.LOAD_CELLS,
-            callbacks.getHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.LOAD_CELLS)
-        );
     }
 
     /**

@@ -27,15 +27,24 @@ export default {
             tableDimensions: 50,    // Dimension of the table.
             users: null,            // Users connected to this sheet.
             socket: null,           // Socket to share modifications between users.
-            currentUserModel: null  // Current user's model.
+            currentUserModel: new UserModel("", 0),  // Current user's model.
+            currentCell: {
+                id: "",
+                content: ""
+            }
         };
     },
 
     async beforeMount() {
+        this.users = new UserList();
+        let connectedUser = await User.fetchUserData();
+        this.currentUserModel = new UserModel(connectedUser.login, parseInt(connectedUser.id));
+        this.users.addUser(this.currentUserModel);
+
         this.setRowNames(this.tableDimensions);
         this.setColumnsNames(this.tableDimensions);
         this.createSheet();
-        this.users = new UserList();
+
 
         // We initialize the socket connexion for concurrent modification.
         if (this.$route.query.sheetID !== undefined && this.$route.query.sheetID !== null) {
@@ -50,10 +59,6 @@ export default {
             // We create the handler.
             this.socket = new SocketManager(this.$route.query.sheetID, handlers);
         }
-
-        let connectedUser = await User.fetchUserData();
-        this.currentUserModel = new UserModel(connectedUser.login, parseInt(connectedUser.id));
-        this.users.addUser(this.currentUserModel);
     },
 
     unmounted() {
@@ -109,6 +114,11 @@ export default {
             this.cellsColors[index] = this.currentUserModel.color;
             this.modifyingUsers[index] = this.currentUserModel;
             this.currentUserModel.lastCellSelected = index;
+            this.currentCell = {
+                id: index,
+                content: this.cells[index]
+            }
+
             this.socket.selectCell(index);
         },
 
@@ -136,7 +146,6 @@ export default {
             this.modifyingUsers[cellID] = userModifyingCell;
             this.locks[cellID] = true;
             userModifyingCell.lastCellSelected = cellID;
-
         },
 
         // Method called when a user connects to the room.
@@ -174,16 +183,23 @@ export default {
 
 <template>
     <div class="sheet">
-        <UpperBar :users="this.users"/>
+        <UpperBar :current-cell="this.currentCell"
+                  :users="this.users"
+                  @valueChange="(cellID, payload) => { this.changeValue(cellID, payload); }"/>
         <SlideAndFadeTransition>
             <div class="table_container">
                 <table>
                     <thead class="column-header">
                         <th></th>
-                        <th v-for="name in this.columnsNames">{{name}}</th>
+                        <th v-for="name in this.columnsNames">
+                            {{name}}
+<!--                            TODO : Highlight on column and line selected -->
+                        </th>
                     </thead>
                     <tr v-for="(row, index) in this.sheet">
-                        <th class="row-header">{{(index + 1)}}</th>
+                        <th class="row-header">
+                            {{(index + 1)}}
+                        </th>
                         <td v-for="cell in row">
                             <Cell :id="cell + (index + 1)"
                                   :prefill="this.cells[cell + (index + 1)]"

@@ -1,0 +1,27 @@
+@use "variables";
+
+.searchbar-container {
+    width: 75%;
+    margin: 0 auto;
+}
+
+.searchbar-input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.label-bold {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-right: 10px;
+}
+
+.choice {
+    margin-top: 15px;
+}

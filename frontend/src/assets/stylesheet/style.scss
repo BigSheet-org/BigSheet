@@ -107,13 +107,13 @@ button {
 
 @media (prefers-color-scheme: light) {
     :root {
-        color: #213547;
+        color: variables.$light_font_main;
         background-color: variables.$light_background_color;
     }
     a:hover {
         color: #747bff;
     }
     button {
-        background-color: #f9f9f9;
+        background-color: #d9d9d9;
     }
 }

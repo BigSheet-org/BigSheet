@@ -36,7 +36,8 @@ export default {
             currentCell: {
                 id: "",
                 content: ""
-            }
+            },
+            currentPermission: null
         };
     },
 
@@ -45,10 +46,6 @@ export default {
         let connectedUser = await User.fetchUserData();
         this.currentUserModel = new UserModel(connectedUser.login, parseInt(connectedUser.id));
         this.users.addUser(this.currentUserModel);
-
-        this.setRowNames(this.tableDimensions);
-        this.setColumnsNames(this.tableDimensions);
-        this.createSheet();
 
 
         // We initialize the socket connexion for concurrent modification.
@@ -60,13 +57,18 @@ export default {
             handlers.addHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.ALERT_USER_DISCONNECT, this.handleUserDisconnect);
             handlers.addHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.USER_SELECT_CELL, this.handleSelectCell);
             handlers.addHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.LOAD_CELLS, this.handleCellLoad);
+            handlers.addHandler(Data.SOCKET_PROTOCOLS_QUALIFIERS.AUTH_SUCCESS, this.handlePermissionSend);
 
             // We create the handler.
             this.socket = new SocketManager(this.$route.query.sheetID, handlers);
         }
+
+        this.setRowNames(this.tableDimensions);
+        this.setColumnsNames(this.tableDimensions);
+        this.createSheet();
     },
 
-    unmounted() {
+    beforeUnmounted() {
         // We close the socket when leaving. Just to be sure.
         this.socket.closeSocket();
     },
@@ -147,7 +149,9 @@ export default {
             if (userModifyingCell.lastCellSelected !== "") {
                 this.cellsColors[userModifyingCell.lastCellSelected] = '';
                 this.modifyingUsers[userModifyingCell.lastCellSelected] = null;
-                this.locks[userModifyingCell.lastCellSelected] = false;
+                if (this.currentPermission !== "reader") {
+                    this.locks[userModifyingCell.lastCellSelected] = false;
+                }
             }
 
             // We change the color of the new cell.
@@ -159,7 +163,14 @@ export default {
 
         // Method called when a user connects to the room.
         handleUserConnect(payload) {
-            this.users.addUser(new UserModel(payload.login, payload.userId));
+            const user = new UserModel(payload.login, payload.userId);
+            user.lastCellSelected = payload.cell === null ? "" : Formatters.formatColumnAndLinesToCellID(payload.cell.column, payload.cell.line)
+            if (user.lastCellSelected !== "") {
+                this.cellsColors[user.lastCellSelected] = user.color;
+                this.modifyingUsers[user.lastCellSelected] = user;
+                this.locks[user.lastCellSelected] = true;
+            }
+            this.users.addUser(user);
         },
 
         // Method called when a user disconnects from a room.
@@ -185,6 +196,18 @@ export default {
                 );
                 this.cells[cellID] = payload[cellIndex].content;
             }
+        },
+
+        // Method to call for a permission registering.
+        handlePermissionSend(payload) {
+            this.currentPermission = payload;
+            if (payload === "reader") {
+                this.rowsNames.forEach(rowHead => {
+                    this.columnsNames.forEach(name => {
+                        this.locks[name + rowHead] = true;
+                    });
+                });
+            }
         }
     }
 }
@@ -199,14 +222,14 @@ export default {
             <div class="table_container">
                 <table>
                     <thead class="column-header">
-                        <th></th>
+                        <th class="header"></th>
                         <th v-for="name in this.columnsNames"
-                            :class="{highlight: Formatters.extractColumnAndLinesFromColumnID(this.currentCell.id).column === name}">
+                            :class="{highlight: Formatters.extractColumnAndLinesFromColumnID(this.currentCell.id).column === name , header: true}">
                             {{name}}
                         </th>
                     </thead>
                     <tr v-for="(row, index) in this.sheet">
-                        <th :class="{ highlight: Formatters.extractColumnAndLinesFromColumnID(this.currentCell.id).line === index + 1 }">
+                        <th :class="{ highlight: Formatters.extractColumnAndLinesFromColumnID(this.currentCell.id).line === index + 1 , header: true}">
                             {{(index + 1)}}
                         </th>
                         <td v-for="cell in row">

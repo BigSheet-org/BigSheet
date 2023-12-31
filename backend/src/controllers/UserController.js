@@ -92,6 +92,12 @@ class UserController {
         await userToChange.save();
         return res.send(Data.ANSWERS.DEFAULT.DEFAULT_OK_ANSWER);
     }
+
+    static async getByLoginQuery(req, res) {
+        let query = Params.getRequestParams(res).query;
+        let data = await UserModel.findLoginMatches(query);
+        return res.send(data);
+    }
 }
 
 export default UserController

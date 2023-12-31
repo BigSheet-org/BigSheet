@@ -240,7 +240,7 @@ class SocketGestionnary {
                         access: access.accessRight
                     };
                     // confirm auth success
-                    this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_SUCCESS);
+                    this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.AUTH_SUCCESS, access.accessRight);
                     this.emit(sock, SOCKET_PROTOCOL.MESSAGE_TYPE.TO_CLIENT.LOAD_CELLS, access.sheet.cells);
                     // send other clients login to this client
                     for (let i in this.usersInSheet[sheetId]) {

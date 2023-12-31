@@ -13,6 +13,7 @@ import './assets/stylesheet/forms_style.scss'
 import './assets/stylesheet/popup_style.scss'
 import './assets/stylesheet/sheet_list_style.scss'
 import './assets/stylesheet/sheet.scss'
+import './assets/stylesheet/other_popup_style.scss'
 import './assets/stylesheet/tooltip_style.scss'
 
 

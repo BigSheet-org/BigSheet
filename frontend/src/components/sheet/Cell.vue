@@ -44,10 +44,18 @@
             sendChange() {
                 if (!this.lock) {
                     this.lock = true;
-                    this.$emit('valueChange', this.id, this.model);
-                    setTimeout(() => { this.lock = false; },
+                    setTimeout(() => {
+                            this.lock = false;
+                            this.$emit('valueChange', this.id, this.model);
+                        },
                         Data.PROGRAM_VALUES.TIMEOUT_BETWEEN_DATA_SENDS
                     );
+                }
+            },
+            cleanContent(e) {
+                if (this.modifyingUser !== null && e.key === "Delete") {      // We check that the cell is the one being selected.
+                    this.model = '' ;
+                    this.sendChange()
                 }
             },
             selectedCell() { this.$emit('selectedCell', this.id); }
@@ -77,6 +85,7 @@
            v-model="this.model"
            :style="Style"
            :disabled="this.lockCellModifications"
+           @keydown.delete="this.cleanContent($event)"
            @click="this.selectedCell"
            @keyup="this.sendChange"/>
 </template>

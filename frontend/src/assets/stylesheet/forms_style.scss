@@ -60,7 +60,7 @@
             height: 0.8em;
             padding-right: 5px;
             padding-left: 5px;
-            bottom: 0.9em;
+            bottom: 1.3em;
             left: 2.5em;
             font-size: 150%;
             background-color: variables.$dark_form_background_color;
@@ -111,3 +111,24 @@
     }
 }
 
+@media (prefers-color-scheme: light) {
+    .form {
+        background-color: variables.$light_form_background_color;
+
+        .group {
+            input, textarea {
+               
+                border-color: variables.$light_input_border_color;
+                background-color: variables.$light_input_background_color;
+    
+                &:focus { border-color: variables.$light_input_border_color; }
+                &:focus + label { background-color: variables.$light_form_background_color; }
+            }
+    
+            label {
+                background-color: variables.$light_form_background_color;
+                &.filled { background-color: variables.$light_form_background_color; }
+            }
+        }
+    }
+}

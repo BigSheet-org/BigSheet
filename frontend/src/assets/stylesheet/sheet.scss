@@ -104,7 +104,10 @@
                 border-bottom: 1px solid rgb(125, 125, 125);
                 min-width: 80px;
                 min-height: 50px;
-                background-color: variables.$dark_background_color;
+            }
+
+            .header {
+                background-color: variables.$dark_wrapper_background;
             }
 
             th { background-color: variables.$dark_wrapper_background; }
@@ -137,17 +140,22 @@
 }
 
 @media (prefers-color-scheme: light) {
-    table {
-        color: variables.$light_font_main;
-        td, th { background-color: variables.$light_background_color; }
-        th { background-color: variables.$light_wrapper_background; }
-        td {
-            background-color: variables.$light_wrapper_background;
-            input {
-                &:focus{ border: 2px solid variables.$light_input_border_color; }
+    .sheet {
+        .table_container {
+            table {
+                color: variables.$light_font_main;
+
+                td, th {background-color: variables.$light_background_color;}
+                .header {background-color: variables.$light_darker_background_color;}
+                th {background-color: variables.$light_wrapper_background;}
+                td {
+                    background-color: variables.$light_wrapper_background;
+
+                    input {
+                        &:focus {border: 2px solid variables.$light_input_border_color;}
+                    }
+                }
             }
         }
     }
 }
-
-

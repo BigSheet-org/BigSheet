@@ -123,6 +123,7 @@ class User {
 
     /**
      * This method fetches the data concerning the connected user.
+     *
      * @returns {Promise<*>}
      */
     static fetchUserData() {
@@ -179,6 +180,18 @@ class User {
             User.BASE_PATH +'/delete/' + userID,
         );
         return await User.logout();
+    }
+
+    /**
+     * This method fetches users that match the query provided.
+     *
+     * @returns {Promise<*>}
+     */
+    static fetchUsersByLogin(query) {
+        return api.request_logged(
+            api.METHODS.GET,
+            User.BASE_PATH + "/search/" + query
+        );
     }
 }
 

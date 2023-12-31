@@ -1,5 +1,5 @@
 import sequelize from "../common/tools/postgres.js";
-import {DataTypes, Model} from "sequelize";
+import {DataTypes, Model, Op} from "sequelize";
 import SheetModel from "./SheetModel.js";
 
 class UserModel extends Model {
@@ -43,6 +43,21 @@ class UserModel extends Model {
     static async getUserByMail(mail) {
         return await UserModel.findOne({
             where: {mail: mail},
+        });
+    }
+
+    /**
+     * Returns all Users that match the login provided in the query.
+     *
+     * @param query
+     * @returns {Promise<UserModel[]>}
+     */
+    static async findLoginMatches(query) {
+        return await UserModel.findAll({
+            where: {
+                login: { [Op.iLike]: '%' + query + '%' }
+            },
+            attributes: ['id', 'login']
         });
     }
 }

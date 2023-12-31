@@ -38,6 +38,7 @@ sheetRouter
     .post('/create', [
         Params.exportParamsToResLocale,
         AuthMiddleware.checkAuthToken,
+        SheetMiddleware.hasValidCreationFields,
         SheetController.createSheet
     ])
 

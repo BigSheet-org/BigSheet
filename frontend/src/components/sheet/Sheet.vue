@@ -66,7 +66,7 @@ export default {
         }
     },
 
-    unmounted() {
+    beforeUnmounted() {
         // We close the socket when leaving. Just to be sure.
         this.socket.closeSocket();
     },

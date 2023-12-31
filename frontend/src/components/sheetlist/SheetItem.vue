@@ -2,6 +2,7 @@
 import PopUp from "../common/PopUp.vue";
 import SharePopUp from "../common/SharePopUp.vue";
 
+import Sheets from "../../scripts/DAO/Sheets.js";
 import router from "../../router/index.js";
 import Routes from "../../assets/static/Routes.js";
 import Formatters from "../../scripts/Utility/Formatters.js";
@@ -40,7 +41,7 @@ export default {
         },
         async hideConfirmDeletion(confirms) {
             if (confirms) {
-                //TODO
+                await Sheets.deleteSheet({sheetID: this.sheet.id})
             }
             this.askDeletionConfirm = false;
         }

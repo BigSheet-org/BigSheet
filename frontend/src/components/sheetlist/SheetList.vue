@@ -22,6 +22,9 @@ export default {
             this.sheets = await Sheets.getAllSheets();
             this.loading = false;
         },
+        async updateSheetList() {
+            await this.fetchSheets();
+        },
         async createSheet() {
             const newData = { title: "New Sheet", detail: "Some details" };
             const newSheet = await Sheets.createSheet(newData);
@@ -41,7 +44,7 @@ export default {
             <div v-if="!this.loading" class="item_container">
                 <SlideAndFadeTransition>
                     <ul v-if="this.sheets.length > 0">
-                        <sheet-item v-for="sheet in sheets" :key="sheet.name" :sheet="sheet" />
+                        <sheet-item v-for="sheet in sheets" :key="sheet.name" :sheet="sheet" :updateSheetList="updateSheetList"/>
                     </ul>
                     <div v-else>
                         Aucune feuille de calcul n'a été trouvée.

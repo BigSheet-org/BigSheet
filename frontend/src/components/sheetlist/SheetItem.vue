@@ -18,6 +18,10 @@ export default {
             type: Object,
             required: true
         },
+        updateSheetList: {
+            type: Function,
+            required: true
+        }
     },
     components: {
         PopUp,
@@ -42,6 +46,7 @@ export default {
         async hideConfirmDeletion(confirms) {
             if (confirms) {
                 await Sheets.deleteSheet(this.sheet.id);
+                this.updateSheetList();
             }
             this.askDeletionConfirm = false;
         }

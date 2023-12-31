@@ -63,3 +63,22 @@
         }
     }
 }
+
+@media (prefers-color-scheme: light) {
+    
+    .pop_up_mask {
+        background-color: rgba(variables.$light_background_color, 0);
+
+        &.active {
+            /* When the popup is active, we grayscale the background */
+            background-color: rgba(variables.$light_background_color, variables.$popup_opacity_factor);
+        }
+
+
+        .wrapper {
+            .container {
+                background-color: variables.$light_wrapper_background
+            }
+        }
+    }
+}

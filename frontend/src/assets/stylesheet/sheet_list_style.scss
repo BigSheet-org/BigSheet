@@ -106,3 +106,37 @@
 .dropdown-content a:hover {
   background-color: variables.$dark_list_hover_color;
 }
+
+@media (prefers-color-scheme: light) {
+    .sheet_list {
+
+      .item_container {
+    
+        .sheet_item {
+          border-bottom: 1px solid variables.$light_input_border_color;
+    
+          &:hover {
+            background-color: variables.$light_list_hover_color;
+          }
+        }
+      }
+    }
+    
+    .button_dropdown {    
+      &:hover {
+        background-color: variables.$light_list_hover_color;
+      }
+    }
+    
+    .dropdown-content {
+      background-color: #f9f9f9;
+    } 
+    
+    .dropdown-content a {
+      color: black;
+    }
+    
+    .dropdown-content a:hover {
+      background-color: variables.$light_list_hover_color;
+    }
+}

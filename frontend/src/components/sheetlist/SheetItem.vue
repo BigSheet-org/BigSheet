@@ -52,27 +52,36 @@ export default {
     <div class="sheet_item" @click="this.handleItemClick()">
         <div class="sheet_info">
             <h3>{{ sheet.title }}</h3>
-            <p>Détails: {{ sheet.details }}</p>
-            <p>Propriétaire: {{ sheet.owner }}</p>
+            <p v-if="sheet.detail !== null">Détails : {{ sheet.detail }}</p>
+            <p v-else>Détails : Aucun détails</p>
+            <p>Propriétaire : {{ sheet.users[0].login }}</p>
+            <p>Feuille créée le : {{ Formatters.formatDate(sheet.createdAt) }}</p>
             <div class="button_container">
                 <div class="dropdown" @click.stop>
                     <div class="dots">
-                        <img src="../../assets/pictures/icons/Dots.png">
+                        <img src="../../assets/pictures/icons/Dots.png" alt="Dots">
                     </div>
                     <div class="dropdown-content">
-                        <button class="button_dropdown" @click="shareModalVisible = true">Partager</button>
-                        <button class="button_dropdown" :disabled="!isOwner"
-                            @click="askDeletionConfirm = true">Supprimer</button>
+                        <button class="button_dropdown"
+                                @click="shareModalVisible = true">Partager</button>
+                        <button class="button_dropdown"
+                                :disabled="!isOwner"
+                                @click="askDeletionConfirm = true">Supprimer</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <SharePopUp :isVisible="shareModalVisible" @dismiss="shareModalVisible = false" />
+        <SharePopUp :isVisible="shareModalVisible"
+                    @dismiss="shareModalVisible = false" />
 
-        <PopUp v-if="this.askDeletionConfirm" popup-class="error" :choice="true" @dismiss="this.hideConfirmDeletion(false)"
-            @confirm="this.hideConfirmDeletion(true)" title="Suppression du tableau."
-            message="Cette action est irréversible. Souhaitez vous continuer ?" />
+        <PopUp v-if="this.askDeletionConfirm"
+               popup-class="error"
+               :choice="true"
+               @dismiss="this.hideConfirmDeletion(false)"
+               @confirm="this.hideConfirmDeletion(true)"
+               title="Suppression du tableau."
+               message="Cette action est irréversible. Souhaitez vous continuer ?" />
 
     </div>
 </template>

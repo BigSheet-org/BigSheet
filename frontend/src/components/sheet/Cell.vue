@@ -50,6 +50,12 @@
                     );
                 }
             },
+            cleanContent(e) {
+                if (this.modifyingUser !== null && e.key === "Delete") {      // We check that the cell is the one being selected.
+                    this.model = '' ;
+                    this.sendChange()
+                }
+            },
             selectedCell() { this.$emit('selectedCell', this.id); }
         },
         watch: {    // We watch for props value changes.
@@ -77,6 +83,7 @@
            v-model="this.model"
            :style="Style"
            :disabled="this.lockCellModifications"
+           @keydown.delete="this.cleanContent($event)"
            @click="this.selectedCell"
            @keyup="this.sendChange"/>
 </template>

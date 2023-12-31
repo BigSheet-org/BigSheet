@@ -1,5 +1,6 @@
 <script>
 import PopUpTransition from "../transitions/PopUpTransition.vue";
+import User from "../../scripts/DAO/User.js";
 
 export default {
     components: { PopUpTransition },
@@ -11,31 +12,64 @@ export default {
     },
     data() {
         return {
-            searchTerm: ''
+            searchTerm: '',
+            selectedUser: null,
+            filteredUsers: null,
+            lock: false
         }
     },
     emits: {
         dismiss() { return true; }
     },
     methods: {
+        selectUser(id) {
+            this.selectedUser = id;
+            console.log("[INFO] - Selected user with id : " + this.selectedUser);
+        },
+        shareToUser() {
+            if (this.selectedUser !== null) {
+                console.log("[INFO] - Sharing to user with id : " + this.selectedUser);
+            }
+            // We close the popup.
+            this.$emit('dismiss');
+        },
+        async fetchUsers() {
+            if (this.searchTerm && !this.lock) {
+                this.lock = true;
+                setTimeout(
+                    () => { this.lock = false; },
+                    500
+                );
+                this.filteredUsers = await User.fetchUsersByLogin(this.searchTerm);
+            }
+        }
     }
 }
 </script>
 
 <template>
     <PopUpTransition>
-        <div v-if="isVisible" class="pop_up_mask active">
+        <div v-if="isVisible"
+             class="pop_up_mask active">
             <div class="wrapper">
                 <div class="container">
                     <h1>Partager</h1>
                     <div class="searchbar-container">
-                        <input class="searchbar-input" v-model="searchTerm" type="text" placeholder="Ajouter des personnes">
+                        <input class="searchbar-input"
+                               v-model="searchTerm"
+                               type="text"
+                               placeholder="Ajouter des personnes"
+                               @keyup="this.fetchUsers">
                     </div>
-                    <h2>Voici la liste des utilisateurs :</h2>
-                    <ul>
-                        <li v-for="user in filteredUsers" :key="user.id">{{ user.name }}</li>
+                    <h2>Utilisateurs :</h2>
+                    <ul class="popup_user_list">
+                        <li v-for="user in this.filteredUsers"
+                            @click="this.selectUser(user.id)"
+                            :key="user.id">
+                            {{ user.login }}
+                        </li>
                     </ul>
-                    <button @click="$emit('dismiss')">
+                    <button @click="this.shareToUser">
                         Fermer
                     </button>
                 </div>

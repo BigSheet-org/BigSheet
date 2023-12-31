@@ -16,7 +16,7 @@ export default {
     props: {
         sheet: {
             type: Object,
-            required: true,
+            required: true
         },
     },
     components: {

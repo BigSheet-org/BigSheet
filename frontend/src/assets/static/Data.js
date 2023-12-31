@@ -8,7 +8,7 @@ class Data {
     };
 
     static COMPARISON_DATA = {
-        ERROR_INVALID_CREDENTIALS: "L'identifiant ou le mot de passe est incorrect.",
+        ERROR_INVALID_CREDENTIALS: "L'identifiant ou le mot de passe est incorrect."
     };
 
     // Qualifiers for the Input component.
@@ -18,7 +18,7 @@ class Data {
         CHECKBOX: "checkbox",
         PASSWORD: "password",
         TEXTAREA: "textarea",
-        TEXT: "text",
+        TEXT: "text"
     };
 
     static MESSAGES = {
@@ -45,7 +45,7 @@ class Data {
         RESPONSE_SELECT_CELL : 'responseSelectCell',
         USER_SELECT_CELL : 'userSelectCell',
         LOAD_CELLS : 'loadCells',
-        SELECT_CELL : 'selectCell',
+        SELECT_CELL : 'selectCell'
     }
 }
 

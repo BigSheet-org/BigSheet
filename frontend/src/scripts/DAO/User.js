@@ -1,6 +1,6 @@
 import {api} from './API.js'
 import Formatters from "../Utility/Formatters.js";
-import LocalStorage from "./LocalStorage.js";
+import Storage from "./Storage.js";
 
 class User {
     /** Base path for the users routes. */
@@ -22,7 +22,7 @@ class User {
         let promise = User.loginUser(login, password)
             .then((data) => {
                 if (data.error_code === undefined) {
-                    LocalStorage.saveToLocalStorage(data.access_token, data.refresh_token);
+                    Storage.saveToStorage(data.access_token, data.refresh_token);
                 }
                 return data;
             });
@@ -37,7 +37,7 @@ class User {
      */
     static async logout() {
         await User.logoutUser();
-        LocalStorage.cleanLocalStorage();
+        Storage.cleanStorage();
         window.location.reload();
     }
 
@@ -67,8 +67,8 @@ class User {
             api.METHODS.POST,
             api.AUTH_BASE_PATH + '/logout',
             JSON.stringify({
-                access_token: LocalStorage.getAccessToken(),
-                refresh_token: LocalStorage.getRefreshToken()
+                access_token: Storage.getAccessToken(),
+                refresh_token: Storage.getRefreshToken()
             }),
             api.CONTENT_TYPE.JSON
         );
@@ -83,15 +83,15 @@ class User {
         // Trying to log in user
         return api.request(api.METHODS.POST,
             api.AUTH_BASE_PATH + "/refresh",
-            JSON.stringify({"refresh_token": LocalStorage.getRefreshToken()})
+            JSON.stringify({"refresh_token": Storage.getRefreshToken()})
         ).then((response) => {
             // If the refresh was unsuccessful, we disconnect the user.
             if (response.error_code === 401) {
-                LocalStorage.cleanLocalStorage();
+                Storage.cleanStorage();
                 window.location.reload();
             } else {
-                LocalStorage.cleanLocalStorage();
-                LocalStorage.saveToLocalStorage(
+                Storage.cleanStorage();
+                Storage.saveToStorage(
                     response['access_token'],
                     response['refresh_token']
                 );
@@ -104,7 +104,7 @@ class User {
      * @returns {boolean} If the user is connected or not.
      */
     static isUserConnected() {
-        return (LocalStorage.getAccessToken() !== null && LocalStorage.getRefreshToken() !== null);
+        return (Storage.getAccessToken() !== null && Storage.getRefreshToken() !== null);
     }
 
     /**

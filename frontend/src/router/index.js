@@ -20,7 +20,9 @@ const router = new createRouter({
 router.beforeEach((to) => {
     // Redirections from pages that needs an authentication.
     if (!User.isUserConnected() &&
-        (to.path === Routes.COMPTE.path)) {
+        (to.path === Routes.COMPTE.path
+            || to.path === Routes.SHEET.path
+        )) {
         return Routes.CONNEXION.path;
     }
 

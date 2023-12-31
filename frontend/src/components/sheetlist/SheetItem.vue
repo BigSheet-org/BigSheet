@@ -2,7 +2,16 @@
 import PopUp from "../common/PopUp.vue";
 import SharePopUp from "../common/SharePopUp.vue";
 
+import router from "../../router/index.js";
+import Routes from "../../assets/static/Routes.js";
+import Formatters from "../../scripts/Utility/Formatters.js";
+
 export default {
+    computed: {
+        Formatters() {
+            return Formatters
+        }
+    },
     props: {
         sheet: {
             type: Object,
@@ -24,7 +33,10 @@ export default {
             //TODO
         },
         handleItemClick() {
-            // TODO : Faire en sorte que ca redirige vers la page avec le bon tableau
+            router.push({
+                name: Routes.SHEET.name,
+                query: { sheetID: this.sheet.id }
+            });
         },
         async hideConfirmDeletion(confirms) {
             if (confirms) {

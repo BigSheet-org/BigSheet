@@ -71,6 +71,24 @@
     }
 }
 
+/* -- Append -- */
+.append-enter-active {
+    animation: append-in variables.$timing_popup_transition;
+}
+.append-leave-active {
+    animation: append-in variables.$timing_popup_transition reverse;
+}
+@keyframes append-in {
+    0% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0px);
+        opacity: 100%;
+    }
+}
+
 
 /* Minor Transitions */
 * {

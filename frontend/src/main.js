@@ -14,6 +14,7 @@ import './assets/stylesheet/popup_style.scss'
 import './assets/stylesheet/sheet_list_style.scss'
 import './assets/stylesheet/sheet.scss'
 import './assets/stylesheet/share_popup_style.scss'
+import './assets/stylesheet/tooltip_style.scss'
 
 
 createApp(App)

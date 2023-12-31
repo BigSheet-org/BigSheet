@@ -19,8 +19,14 @@ export default {
     methods: {
         async fetchSheets() {
             this.loading = true;
-            this.sheets = await Sheets.getOwnedSheets();
+            this.sheets = await Sheets.getAllSheets();
             this.loading = false;
+        },
+        async createSheet() {
+            await Sheets.createSheet({
+                title: "TestTitle",
+                detail: "TestDetail"
+            })
         }
     },
     async beforeMount() {
@@ -46,7 +52,9 @@ export default {
             <Loading v-else />
         </div>
 
-        <router-link class="add_button" :to="Routes.NOT_FOUND.path">
+        <router-link class="add_button"
+                     :to="Routes.NOT_FOUND.path"
+                     @click="this.createSheet">
             <img src="../../assets/pictures/icons/Ajouter.png" alt="Add">
         </router-link>
     </div>

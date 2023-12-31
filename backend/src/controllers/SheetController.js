@@ -61,7 +61,8 @@ class SheetController {
     static async createSheet(req, res) {
         // get user connected
         let userID = Params.getAddedParams(res).connectedUserID;
-        let sheet = await SheetModel.create();
+        let body = Params.getRequestParams(res);
+        let sheet = await SheetModel.create(body);
         let user = await UserModel.getById(userID);
         await sheet.addUser(user);
         await sheet.save();

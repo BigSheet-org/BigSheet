@@ -163,7 +163,14 @@ export default {
 
         // Method called when a user connects to the room.
         handleUserConnect(payload) {
-            this.users.addUser(new UserModel(payload.login, payload.userId));
+            const user = new UserModel(payload.login, payload.userId);
+            user.lastCellSelected = payload.cell === null ? "" : Formatters.formatColumnAndLinesToCellID(payload.cell.column, payload.cell.line)
+            if (user.lastCellSelected !== "") {
+                this.cellsColors[user.lastCellSelected] = user.color;
+                this.modifyingUsers[user.lastCellSelected] = user;
+                this.locks[user.lastCellSelected] = true;
+            }
+            this.users.addUser(user);
         },
 
         // Method called when a user disconnects from a room.

@@ -4,7 +4,7 @@ export default {
     data() {
         return { show: false };
     },
-    mounted() { this.show = true; },
+    mounted() { this.show = true; }
 }
 </script>
 

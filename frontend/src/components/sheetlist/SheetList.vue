@@ -54,5 +54,6 @@ export default {
         <div class="add_button" @click="this.createSheet">
             <img src="../../assets/pictures/icons/Ajouter.png" alt="Add">
         </div>
+        
     </div>
 </template>

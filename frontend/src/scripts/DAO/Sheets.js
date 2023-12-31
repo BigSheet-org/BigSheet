@@ -66,6 +66,19 @@ class Sheets {
         );
     }
 
+    /**
+     * Method to create a new sheet. Owned by the current user.
+     *
+     * @param data Must be in the following format : {title: "example", detail: "detail"}. Detail field is NOT mandatory.
+     * @returns {Promise<void>}
+     */
+    static async deleteSheet(sheetID) {
+        return await api.request_logged(
+            api.METHODS.DELETE,
+            "/sheets/" + sheetID,
+        );
+    }
+
 }
 
 export default Sheets

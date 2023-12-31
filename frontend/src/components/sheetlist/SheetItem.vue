@@ -41,7 +41,7 @@ export default {
         },
         async hideConfirmDeletion(confirms) {
             if (confirms) {
-                await Sheets.deleteSheet({sheetID: this.sheet.id})
+                await Sheets.deleteSheet(this.sheet.id);
             }
             this.askDeletionConfirm = false;
         }
@@ -50,6 +50,12 @@ export default {
 </script>
 
 <template>
+    <SharePopUp :isVisible="shareModalVisible" @dismiss="shareModalVisible = false" />
+
+    <PopUp v-if="this.askDeletionConfirm" popup-class="error" :choice="true" @dismiss="this.hideConfirmDeletion(false)"
+        @confirm="this.hideConfirmDeletion(true)" title="Suppression du tableau."
+        message="Cette action est irréversible. Souhaitez vous continuer ?" />
+
     <div class="sheet_item" @click="this.handleItemClick()">
         <div class="sheet_info">
             <h3>{{ sheet.title }}</h3>
@@ -63,26 +69,12 @@ export default {
                         <img src="../../assets/pictures/icons/Dots.png" alt="Dots">
                     </div>
                     <div class="dropdown-content">
-                        <button class="button_dropdown"
-                                @click="shareModalVisible = true">Partager</button>
-                        <button class="button_dropdown"
-                                :disabled="!isOwner"
-                                @click="askDeletionConfirm = true">Supprimer</button>
+                        <button class="button_dropdown" @click.stop="shareModalVisible = true">Partager</button>
+                        <button class="button_dropdown" :disabled="!isOwner"
+                            @click.stop="askDeletionConfirm = true">Supprimer</button>
                     </div>
                 </div>
             </div>
         </div>
-
-        <SharePopUp :isVisible="shareModalVisible"
-                    @dismiss="shareModalVisible = false" />
-
-        <PopUp v-if="this.askDeletionConfirm"
-               popup-class="error"
-               :choice="true"
-               @dismiss="this.hideConfirmDeletion(false)"
-               @confirm="this.hideConfirmDeletion(true)"
-               title="Suppression du tableau."
-               message="Cette action est irréversible. Souhaitez vous continuer ?" />
-
     </div>
 </template>

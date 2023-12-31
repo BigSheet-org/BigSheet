@@ -1,6 +1,7 @@
 <script>
 import PopUpTransition from "../transitions/PopUpTransition.vue";
 import User from "../../scripts/DAO/User.js";
+import Data from "../../assets/static/Data.js";
 
 export default {
     components: { PopUpTransition },
@@ -36,11 +37,12 @@ export default {
         async fetchUsers() {
             if (this.searchTerm && !this.lock) {
                 this.lock = true;
-                setTimeout(
-                    () => { this.lock = false; },
-                    500
+                setTimeout(async () => {
+                        this.lock = false;
+                        this.filteredUsers = await User.fetchUsersByLogin(this.searchTerm);
+                    },
+                    Data.PROGRAM_VALUES.TIMEOUT_BETWEEN_DATA_SENDS
                 );
-                this.filteredUsers = await User.fetchUsersByLogin(this.searchTerm);
             }
         }
     }

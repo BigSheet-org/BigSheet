@@ -44,8 +44,10 @@
             sendChange() {
                 if (!this.lock) {
                     this.lock = true;
-                    this.$emit('valueChange', this.id, this.model);
-                    setTimeout(() => { this.lock = false; },
+                    setTimeout(() => {
+                            this.lock = false;
+                            this.$emit('valueChange', this.id, this.model);
+                        },
                         Data.PROGRAM_VALUES.TIMEOUT_BETWEEN_DATA_SENDS
                     );
                 }

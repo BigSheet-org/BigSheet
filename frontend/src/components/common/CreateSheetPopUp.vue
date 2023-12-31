@@ -29,14 +29,14 @@ export default {
         <div class="pop_up_mask active">
             <div class="wrapper">
                 <div class="container">
-                    <h1 :class="this.popupClass">{{ this.title }}</h1>
+                    <h1 :class="this.popupClass">{{ "Création d'un nouveau tableau" }}</h1>
                     <div>
                         <label for="title">Titre :</label>
                         <input type="text" id="title" v-model="sheetTitle" />
                     </div>
                     <div>
                         <label for="details">Détails :</label>
-                        <textarea id="details" v-model="sheetDetails"></textarea>
+                        <input id="details" v-model="sheetDetails"/>
                     </div>
                     <div class="choice">
                         <button @click="confirm()">Valider</button>

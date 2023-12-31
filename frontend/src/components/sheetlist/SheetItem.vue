@@ -35,7 +35,8 @@ export default {
     },
     methods: {
         isOwner() {
-            //TODO
+            const ownedSheets = Sheets.getOwnedSheets();
+            return ownedSheets.some(sheet => sheet.id === this.sheet.id);
         },
         handleItemClick() {
             router.push({
@@ -69,13 +70,14 @@ export default {
             <p>Propriétaire : {{ sheet.users[0].login }}</p>
             <p>Feuille créée le : {{ Formatters.formatDate(sheet.createdAt) }}</p>
             <div class="button_container">
-                <div class="dropdown" @click.stop>
+                <div v-if="isOwner" class="dropdown" @click.stop>
                     <div class="dots">
                         <img src="../../assets/pictures/icons/Dots.png" alt="Dots">
                     </div>
                     <div class="dropdown-content">
-                        <button class="button_dropdown" @click.stop="shareModalVisible = true">Partager</button>
-                        <button class="button_dropdown" :disabled="!isOwner"
+                        <button class="button_dropdown" 
+                            @click.stop="shareModalVisible = true">Partager</button>
+                        <button class="button_dropdown"
                             @click.stop="askDeletionConfirm = true">Supprimer</button>
                     </div>
                 </div>

@@ -73,7 +73,7 @@ export default {
             <p v-else>Détails : Aucun détails</p>
             <p>Propriétaire : {{ sheet.users[0].login }}</p>
             <p>Feuille créée le : {{ Formatters.formatDate(sheet.createdAt) }}</p>
-            <div class="button_container" v-if="this.isOwner()">
+            <div class="button_container" v-if="this.connectedUser === null ? false : this.isOwner()">
                 <div class="dropdown" @click.stop>
                     <div class="dots">
                         <img src="../../assets/pictures/icons/Dots.png" alt="Dots">

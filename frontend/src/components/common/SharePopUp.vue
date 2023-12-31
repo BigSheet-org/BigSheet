@@ -45,7 +45,7 @@ export default {
             this.$emit('dismiss');
         },
         async fetchUsers() {
-            if (this.searchTerm && !this.lock) {
+            if (this.searchTerm && this.searchTerm !== "" && !this.lock) {
                 this.lock = true;
                 setTimeout(async () => {
                         this.lock = false;

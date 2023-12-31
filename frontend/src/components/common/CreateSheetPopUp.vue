@@ -36,7 +36,7 @@ export default {
                     </div>
                     <div>
                         <label for="details">Détails :</label>
-                        <textarea id="details" v-model="sheetDetails"></textarea>
+                        <input id="details" v-model="sheetDetails"/>
                     </div>
                     <div class="choice">
                         <button @click="confirm()">Valider</button>

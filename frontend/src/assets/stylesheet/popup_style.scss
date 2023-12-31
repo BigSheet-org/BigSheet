@@ -47,6 +47,16 @@
                 column-gap: 1em;
                 width: 30%;
             }
+
+            ul {
+                .popup_user_list {
+                    cursor: pointer;
+                }
+
+                li {
+                    .selected { color: variables.$right_highlight; }
+                }
+            }
         }
     }
 

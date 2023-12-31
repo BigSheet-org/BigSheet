@@ -35,7 +35,7 @@ export default {
             console.log("[INFO] - Selected user with id : " + this.selectedUser);
         },
         async shareToUser() {
-            if (this.selectedUser !== null) {
+            if (this.selectedUser !== null && this.permissionModel) {
                 console.log(this.selectedUser.id)
                 console.log(this.concernedSheet)
                 console.log(this.permissionModel)
@@ -77,6 +77,7 @@ export default {
                     <ul class="popup_user_list">
                         <li v-for="user in this.filteredUsers"
                             @click="this.selectUser(user.id)"
+                            :class="{selected: true}"
                             :key="user.id">
                             {{ user.login }}
                         </li>

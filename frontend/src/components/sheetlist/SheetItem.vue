@@ -6,14 +6,12 @@ import Sheets from "../../scripts/DAO/Sheets.js";
 import router from "../../router/index.js";
 import Routes from "../../assets/static/Routes.js";
 import Formatters from "../../scripts/Utility/Formatters.js";
+import User from "../../scripts/DAO/User.js";
 
 export default {
     computed: {
         Formatters() {
             return Formatters
-        },
-        IsOwner() {
-
         }
     },
     props: {
@@ -33,7 +31,8 @@ export default {
     data() {
         return {
             askDeletionConfirm: false,
-            shareModalVisible: false
+            shareModalVisible: false,
+            connectedUser: null,
         }
     },
     methods: {
@@ -49,8 +48,14 @@ export default {
                 this.updateSheetList();
             }
             this.askDeletionConfirm = false;
+        },
+        isOwner() {
+            return this.connectedUser.id === this.sheet.users[0].id;
         }
     },
+    async beforeMount() {
+        this.connectedUser = await User.fetchUserData();
+    }
 };
 </script>
 
@@ -68,8 +73,8 @@ export default {
             <p v-else>Détails : Aucun détails</p>
             <p>Propriétaire : {{ sheet.users[0].login }}</p>
             <p>Feuille créée le : {{ Formatters.formatDate(sheet.createdAt) }}</p>
-            <div class="button_container">
-                <div v-if="IsOwner" class="dropdown" @click.stop>
+            <div class="button_container" v-if="this.isOwner()">
+                <div class="dropdown" @click.stop>
                     <div class="dots">
                         <img src="../../assets/pictures/icons/Dots.png" alt="Dots">
                     </div>
